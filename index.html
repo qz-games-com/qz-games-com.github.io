@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+
+        <title>
+            Qz Games
+        </title>
+        <link rel="stylesheet" href="./main.css">
+        <link rel="stylesheet" href="./animations.css">
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <meta name="language" content="English">
+
+        <link rel="manifest" href="manifest.json">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    </head>
+
+    <body>
+
+        <!--Menus-->
+        <div class="filtercontainer" id="filterM">
+
+            
+            
+            <div style="width: 100%; position: relative; height: 70px;"> 
+
+                <span class="material-icons closefilterw notranslate" onclick="ToggleFilter()" style="">
+                    close
+                </span>
+
+            </div>
+
+            <div class="filter-radio-group">
+                <label class="filter-radio-container">
+                <input type="radio" name="custom-radio" value="no filter" checked/>
+                <span class="filter-radio-checkmark">     
+                </span>
+                    No Filter
+                </label>
+                <label class="filter-radio-container">
+                <input type="radio" name="custom-radio" value="Casual" />
+                <span class="filter-radio-checkmark"></span>
+                    Casual
+                </label>
+                <label class="filter-radio-container">
+                <input type="radio" name="custom-radio" value="Shooter" />
+                <span class="filter-radio-checkmark"></span>
+                    Shooter
+                </label>
+            </div>
+            
+        </div>
+
+        <div class="translatecontainer" id="translateM">
+
+            <p style="font-size: 18px; font-weight: 500; left: 10px; position: relative;">Translate</p>
+            <span class="material-icons notranslate" onclick="ToggleTranslate()" style="float: right; cursor: pointer; position: relative; top: -40.5px; right: 10px;">
+                close
+            </span>
+            <div class="lineidk" style="top: -13px;"></div>
+
+            <div style="top: 50%; position: absolute; left: 50%; transform: translate(-50%, -50%);" id="google_translate_element"></div>
+
+            <script type="text/javascript">
+                function googleTranslateElementInit() {
+                new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                }
+            </script>
+
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+        </div>
+        
+
+        <div id="sidenavcont" class="sidenavcont">
+            <div id="sidenav" class="sidenav">
+
+                <div class="topnavp">
+                    
+                    <div class="navelement1"> 
+                        <img src="./Q-placeholder.png" style="width: 55px; top: 50%; position: relative; left: 10px; transform: translateY(-50%); float: left;"> 
+                        <p style=" font-size: 20px; float: left; position: relative; top: 12.5%; left: 17px; font-weight: 550; transform: translateY(0%);">Quartz Games</p>
+                    
+                        <span onclick="ToggleSideNav()" class="material-icons sidenavicon notranslate">
+                            close
+                        </span>
+
+                        <span class="material-icons sidenavicon notranslate" style="right: 34px;">
+                            settings
+                        </span>
+
+                    </div>
+
+                    <div class="Optionssidecont">
+                       
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="backdropside" id="backdropside">
+
+            </div>
+        </div>
+
+        <div class="topnav" class="topnav">
+            <img src="./Q-placeholder.png" style="float: left; height: 90%; top: 50%; transform: translateY(-50%); margin-left: 5px; margin-right: 5px; position: relative;"/>
+            <h1 class="txtnav" style="position: relative; float: left; ">
+                Qz Games
+            </h1>
+
+            <div class="iconsnav">
+
+                <span onclick="ToggleSideNav()" class="material-icons naviconsit notranslate">
+                    menu
+                </span>
+
+                <span onclick="ToggleTranslate()" class="material-icons naviconsit notranslate" style="font-size: 18.5px;">
+                    translate
+                </span>
+
+            </div>
+        </div>
+
+        <div class="header">
+            <div class="headericoncontainer">
+                <img class="headericon" src="./Q-placeholder.png" alt="Iconimg">
+                <h1 class="headtxt">Qz Games</h1>
+            </div>
+
+            <div id="featgamescont" class="ftgamescont">
+
+                <div id="topft" style="position: relative;">
+                    <h1 style="left: 50%; transform: translateX(-50%); position: absolute; font-size: 22px;">Featured Games</h1>
+                </div>
+    
+            </div>
+    
+        </div>
+
+
+        <!--Main-->
+
+        <div class="searchoptions" id="searchoptions">
+            <input placeholder="Searth the site..." type="text" name="text" class="inputSEARCH">
+            <div onclick="ToggleFilter()" class="filterbutton">
+                <span  class="material-icons notranslate" style="font-size: 18.5px;">
+                    tune
+                </span>
+            </div>
+        </div>
+
+        <div id="games">
+
+        </div>
+
+
+    </body>
+    <script src="./main.js"></script>
+</html>
