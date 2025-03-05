@@ -1,0 +1,18 @@
+{
+    "slope": {
+        "cover": "slope.jpg",
+        "name": "Slope",
+        "gradient": "green",
+        "catagory": "casual",
+        "link": "./Games01/slope",
+        "type": "html"   
+    },
+    "tunnel rush": {
+        "cover": "tunnel-rush.png",
+        "name": "Tunnel Rush",
+        "gradient": "red",
+        "catagory": "casual",
+        "link": "./Games01/tunnel-rush",
+        "type": "html"   
+    }
+}
