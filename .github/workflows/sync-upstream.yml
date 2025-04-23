@@ -1,0 +1,31 @@
+# .github/workflows/sync-upstream.yml
+on:
+  schedule:
+    - cron: '*/5 * * * *'    # every 15 minutes
+
+jobs:
+  build-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out your fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # get full history
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/AccountA/the-repo.git
+          git fetch upstream
+
+      - name: Merge upstream into local main
+        run: |
+          git checkout main
+          git merge upstream/main --no-edit
+
+      - name: Push merge (optional)
+        run: git push origin main
+
+      - name: Build & Deploy
+        run: |
+          ./build.sh
+          ./deploy.sh
