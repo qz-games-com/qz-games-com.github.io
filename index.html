@@ -13,6 +13,8 @@
 
         <meta name="language" content="English">
 
+        <link rel="icon" href="./Q.png">
+        
         <link rel="manifest" href="manifest.json">
         
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -67,7 +69,7 @@
 
             <script type="text/javascript">
                 function googleTranslateElementInit() {
-                new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                new google.translate.TranslateElement ({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
                 }
             </script>
 
@@ -82,7 +84,7 @@
                 <div class="topnavp">
                     
                     <div class="navelement1"> 
-                        <img src="./Q-placeholder.png" style="width: 55px; top: 50%; position: relative; left: 10px; transform: translateY(-50%); float: left;"> 
+                        <img src="./Q.png" style="width: 55px; top: 50%; position: relative; left: 10px; transform: translateY(-50%); float: left;"> 
                         <p style=" font-size: 20px; float: left; position: relative; top: 12.5%; left: 17px; font-weight: 550; transform: translateY(0%);">Quartz Games</p>
                     
                         <span onclick="ToggleSideNav()" class="material-icons sidenavicon notranslate">
@@ -129,7 +131,7 @@
         </div>
 
         <div class="topnav" class="topnav">
-            <img src="./Q-placeholder.png" style="float: left; height: 90%; top: 50%; transform: translateY(-50%); margin-left: 5px; margin-right: 5px; position: relative;"/>
+            <img src="./Q.png" style="float: left; height: 90%; top: 50%; transform: translateY(-50%); margin-left: 5px; margin-right: 5px; position: relative;"/>
             <h1 class="txtnav" style="position: relative; float: left; ">
                 Qz Games
             </h1>
@@ -145,12 +147,16 @@
                 </span>
 
             </div>
+            <div class="backgroundtopnav">
+
+            </div>
         </div>
 
         <div class="header">
             <div class="headericoncontainer">
-                <img class="headericon" src="./Q-placeholder.png" alt="Iconimg">
+                <img class="headericon" src="./Q-BIG.png" alt="Iconimg">
                 <h1 class="headtxt">Qz Games</h1>
+                <p style="margin: -15px; font-size: 25px; left: 50%; transform: translateX(-5%); position: relative;">Beta</p>
             </div>
 
             <div id="featgamescont" class="ftgamescont">
@@ -166,6 +172,16 @@
 
         <!--Main-->
 
+        <div style="align-items: flex-start; backdrop-filter: filter(5px); gap: 20px; padding: 10px; padding-top: 0; padding-bottom: 0; align-items: center; display: flex; width: max-content; position: relative; left: 50%; transform: translateX(-50%); margin-top: 20px; border-radius: 15px; box-shadow: 0px 0px 10px black; background-color: rgba(58, 58, 58, 0.507); height: 70px;">
+            <span  style=" color: rgb(216, 216, 216); text-shadow: 0px 0px 10px black; font-size: 40px; left: 5px; top: 0%; position: relative; " class="material-icons notranslate">error</span>
+
+            <div style="margin: 5px; margin-left: -5px; position: relative;">
+                <h1 style=" font-size: 17px; margin: 0;">Beta Version</h1>
+                <p style="margin: 0;">Some Features may not be available.</p>
+            </div>
+            <div style="position: absolute; z-index: -5; margin: 0; height: 50px; width: 50px; border-radius: 50%; filter: blur(5px); background-color: rgb(75, 75, 75);"></div>
+        </div>
+
         <div class="searchoptions" id="searchoptions">
             <input placeholder="Searth the site..." type="text" name="text" class="inputSEARCH">
             <div onclick="ToggleFilter()" class="filterbutton">
@@ -179,6 +195,7 @@
 
         </div>
 
+ 
 
     </body>
     <script src="./main.js"></script>

@@ -24,11 +24,21 @@ function renderGames(data) {
 
     var coverlink = './covers/' + game.cover
 
+    var gamelink = game.link
+
+    if (game.type === 'html') {
+      gamelink = './Games/game.html?game=' + game.link
+    } else if (game.type === 'unity') {
+      gamelink = './Games/unity.html?game=' + game.link
+    } else if (game.type === 'flash') {
+      gamelink = './Games/Flash.html?game=' + game.link
+    }
+
     const gameItem = document.createElement('div');
     gameItem.classList.add('gameitem');
 
     gameItem.innerHTML = `
-      <a href="${game.link}">
+      <a href="${gamelink}">
         <div class="gametextover">${game.name}</div>
         <img class="gamecover" data-src="${coverlink}" alt="${game.name} Cover">
       </a>

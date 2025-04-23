@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Coming Soon</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('https://hips.hearstapps.com/hmg-prod/images/2025-audi-rs7-125-67f68b49cafa4.jpg?crop=0.764xw:0.572xh;0.103xw,0.257xh&resize=1200:*') fixed;
+      background-size: cover;
+      object-fit: scale-down;
+      backdrop-filter: blur(5px) brightness(75%);
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .container {
+      text-align: center;
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0);
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      padding: 10px;
+    }
+
+    #datetime {
+        padding: 10px;
+        background-color: rgba(54, 54, 54, 0.37);
+        border-radius: 15px;
+        box-shadow: black 0px 5px 5px;
+        width: fit-content;
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body>
+  <header id="datetime">Loading date & time...</header>
+  <div class="container">
+    <h1>Site Coming Soon</h1>
+    <p></p>
+  </div>
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const date = now.toLocaleDateString(undefined, options);
+      const time = now.toLocaleTimeString();
+      document.getElementById('datetime').textContent = `${date} - ${time}`;
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+  </script>
+</body>
+</html>

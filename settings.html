@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QZ Games | Settings</title>
+  <link rel="icon" href="./Q.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="./styles/settings.css">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js');
+    }
+  </script>
+
+</head>
+<body>
+  <div class="settings-container">
+    <nav>
+      <ul>
+        <div class="bottomm">
+
+        </div>
+        <li><button class="tab-btn active" data-target="main">General</button></li>
+        <li><button class="tab-btn" data-target="custom">Customize</button></li>
+        <li><button class="tab-btn" data-target="theme">Themes</button></li>
+
+        
+      </ul>
+    </nav>
+    <main>
+      <section id="main" class="section active">
+
+        <div id="PreventP" class="toggle-container">
+            <span class="toggle-label">Prevent Page Close</span>
+            <label class="toggle-switch">
+            <input id="checkprevent" type="checkbox" />
+            <span class="slider"></span>
+            </label>
+        </div>
+  
+      
+      </section>
+      <section id="custom" class="section">
+       
+      </section>
+      <section id="theme" class="section">
+       
+      </section>
+    </main>
+  </div>
+  <script src="scripts/settings.js">
+  </script>
+</body>
+</html>
