@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Qz Games</title>
+        <link rel="stylesheet" href="./main.css">
+        <link rel="stylesheet" href="./animations.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <meta name="language" content="English">
+        <link rel="icon" href="./Q.png">
+        <link rel="manifest" href="manifest.json">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            /* Custom Theme Button Styles */
+            .theme-button {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(to top right, rgb(140, 0, 255), rgb(143, 0, 187));
+                box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+                border: none;
+                cursor: pointer;
+                z-index: 1000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: transform 0.3s ease;
+            }
+            
+            .theme-button:hover {
+                transform: scale(1.1);
+            }
+            
+            /* Theme Customizer Panel */
+            .theme-customizer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: rgb(43, 43, 43);
+                border-top: 3px solid rgb(70, 70, 70);
+                box-shadow: 0px -5px 15px rgba(0,0,0,0.3);
+                z-index: 999;
+                padding: 20px;
+                display: none;
+                box-sizing: border-box;
+                max-height: 60vh;
+                overflow-y: auto;
+                transition: transform 0.5s ease;
+                transform: translateY(100%);
+            }
+            
+            .theme-customizer.open {
+                display: block;
+                transform: translateY(0);
+            }
+            
+            .customizer-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            
+            .customizer-content {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .element-selector {
+                padding: 12px;
+                border-radius: 10px;
+                background-color: rgb(65, 65, 65);
+                border: 1.5px solid rgb(48, 48, 48);
+                color: white;
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .element-selector:focus {
+                border: 2px solid rgb(94, 94, 94);
+                outline: none;
+            }
+            
+            .property-editor {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .property-group {
+                flex: 1;
+                min-width: 250px;
+                background-color: rgba(66, 66, 66, 0.39);
+                border: solid 2px rgb(92, 92, 92);
+                border-radius: 10px;
+                padding: 15px;
+            }
+            
+            .property-field {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 12px;
+            }
+            
+            .property-field label {
+                margin-bottom: 5px;
+                font-size: 14px;
+            }
+            
+            .property-field input, 
+            .property-field select {
+                padding: 8px;
+                border-radius: 8px;
+                background-color: rgb(65, 65, 65);
+                border: 1.5px solid rgb(48, 48, 48);
+                color: white;
+            }
+            
+            .button-row {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+            }
+            
+            .theme-btn {
+                padding: 12px 25px;
+                border-radius: 10px;
+                border: none;
+                cursor: pointer;
+                font-weight: bold;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            
+            .theme-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+            }
+            
+            .theme-btn.primary {
+                background: linear-gradient(to top right, rgb(140, 0, 255), rgb(143, 0, 187));
+                color: white;
+            }
+            
+            .theme-btn.secondary {
+                background-color: rgb(65, 65, 65);
+                color: white;
+            }
+            
+            .name-dialog {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 300px;
+                background-color: rgb(43, 43, 43);
+                border: 3px solid rgb(70, 70, 70);
+                border-radius: 15px;
+                padding: 20px;
+                z-index: 1001;
+                box-shadow: 0px 0px 15px rgba(0,0,0,0.5);
+            }
+            
+            .name-dialog input {
+                width: 100%;
+                padding: 10px;
+                margin: 15px 0;
+                border-radius: 8px;
+                background-color: rgb(65, 65, 65);
+                border: 1.5px solid rgb(48, 48, 48);
+                color: white;
+                box-sizing: border-box;
+            }
+            
+            .dialog-backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.6);
+                z-index: 1000;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Your existing content -->
+        <!--Menus-->
+        <div class="filtercontainer" id="filterM">
+            <div style="width: 100%; position: relative; height: 70px;"> 
+                <span class="material-icons closefilterw notranslate" onclick="ToggleFilter()" style="">
+                    close
+                </span>
+            </div>
+
+            <div class="filter-radio-group">
+                <label class="filter-radio-container">
+                <input type="radio" name="custom-radio" value="no filter" checked/>
+                <span class="filter-radio-checkmark">     
+                </span>
+                    No Filter
+                </label>
+                <label class="filter-radio-container">
+                <input type="radio" name="custom-radio" value="Casual" />
+                <span class="filter-radio-checkmark"></span>
+                    Casual
+                </label>
+                <label class="filter-radio-container">
+                <input type="radio" name="custom-radio" value="Shooter" />
+                <span class="filter-radio-checkmark"></span>
+                    Shooter
+                </label>
+            </div>
+        </div>
+
+        <div class="translatecontainer" id="translateM">
+            <p style="font-size: 18px; font-weight: 500; left: 10px; position: relative;">Translate</p>
+            <span class="material-icons notranslate" onclick="ToggleTranslate()" style="float: right; cursor: pointer; position: relative; top: -40.5px; right: 10px;">
+                close
+            </span>
+            <div class="lineidk" style="top: -13px;"></div>
+
+            <div style="top: 50%; position: absolute; left: 50%; transform: translate(-50%, -50%);" id="google_translate_element"></div>
+
+            <script type="text/javascript">
+                function googleTranslateElementInit() {
+                new google.translate.TranslateElement ({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                }
+            </script>
+
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+        </div>
+
+        <div id="sidenavcont" class="sidenavcont">
+            <div id="sidenav" class="sidenav">
+                <div class="topnavp">
+                    <div class="navelement1"> 
+                        <img src="./Q.png" style="width: 55px; top: 50%; position: relative; left: 10px; transform: translateY(-50%); float: left;"> 
+                        <p style=" font-size: 20px; float: left; position: relative; top: 12.5%; left: 17px; font-weight: 550; transform: translateY(0%);">Quartz Games</p>
+                    
+                        <span onclick="ToggleSideNav()" class="material-icons sidenavicon notranslate">
+                            close
+                        </span>
+
+                        <span class="material-icons sidenavicon notranslate" style="right: 34px;">
+                            settings
+                        </span>
+                    </div>
+
+                    <div class="Optionssidecont">
+                        <a style="color: white;" href="./index.html">
+                            <div class="sideoption">
+                                <h1 class="">Home</h1>
+                                <span class="material-icons notranslate">home</span> 
+                            </div>
+                        </a>
+
+                        <a style="color: white;" href="https://forms.gle/ZePL2go47CXFLnbH9">
+                            <div class="sideoption" style="background: linear-gradient(to top right, rgb(140, 0, 255), rgb(143, 0, 187));">
+                                <h1 class="">Game Request</h1>
+                                <span class="material-icons notranslate">insert_drive_file</span> 
+                            </div>
+                        </a>
+
+                        <a style="color: white;" href="https://forms.gle/yLyC7rFkY1xeNk3TA">
+                            <div class="sideoption" style="background: linear-gradient(to top right, rgb(255, 111, 15), rgb(206, 168, 1));">
+                                <h1 class="">Report a bug</h1>
+                                <span class="material-icons notranslate">bug_report</span> 
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="backdropside" id="backdropside">
+            </div>
+        </div>
+
+        <div class="topnav" class="topnav">
+            <img src="./Q.png" style="float: left; height: 90%; top: 50%; transform: translateY(-50%); margin-left: 5px; margin-right: 5px; position: relative;"/>
+            <h1 class="txtnav" style="position: relative; float: left; ">
+                Qz Games
+            </h1>
+
+            <div class="iconsnav">
+                <span onclick="ToggleSideNav()" class="material-icons naviconsit notranslate">
+                    menu
+                </span>
+
+                <span onclick="ToggleTranslate()" class="material-icons naviconsit notranslate" style="font-size: 18.5px;">
+                    translate
+                </span>
+            </div>
+            <div class="backgroundtopnav">
+            </div>
+        </div>
+
+        <div class="header">
+            <div class="headericoncontainer">
+                <img class="headericon" src="./Q-BIG.png" alt="Iconimg">
+                <h1 class="headtxt">Qz Games</h1>
+                <p style="margin: -15px; font-size: 25px; left: 50%; transform: translateX(-5%); position: relative;">Beta</p>
+            </div>
+
+            <div id="featgamescont" class="ftgamescont">
+                <div id="topft" style="position: relative;">
+                    <h1 style="left: 50%; transform: translateX(-50%); position: absolute; font-size: 22px;">Featured Games</h1>
+                </div>
+            </div>
+        </div>
+
+        <!--Main-->
+        <div style="align-items: flex-start; backdrop-filter: filter(5px); gap: 20px; padding: 10px; padding-top: 0; padding-bottom: 0; align-items: center; display: flex; width: max-content; position: relative; left: 50%; transform: translateX(-50%); margin-top: 20px; border-radius: 15px; box-shadow: 0px 0px 10px black; background-color: rgba(58, 58, 58, 0.507); height: 70px;">
+            <span style="color: rgb(216, 216, 216); text-shadow: 0px 0px 10px black; font-size: 40px; left: 5px; top: 0%; position: relative;" class="material-icons notranslate">error</span>
+
+            <div style="margin: 5px; margin-left: -5px; position: relative;">
+                <h1 style="font-size: 17px; margin: 0;">Beta Version</h1>
+                <p style="margin: 0;">Some Features may not be available.</p>
+            </div>
+            <div style="position: absolute; z-index: -5; margin: 0; height: 50px; width: 50px; border-radius: 50%; filter: blur(5px); background-color: rgb(75, 75, 75);"></div>
+        </div>
+
+        <div class="searchoptions" id="searchoptions">
+            <input placeholder="Search the site..." type="text" name="text" class="inputSEARCH">
+            <div onclick="ToggleFilter()" class="filterbutton">
+                <span class="material-icons notranslate" style="font-size: 18.5px;">
+                    tune
+                </span>
+            </div>
+        </div>
+
+        <div id="games">
+        </div>
+
+        <!-- Theme Customizer Button -->
+        <button class="theme-button" id="themeButton">
+            <span class="material-icons notranslate" style="color: white; font-size: 30px;">
+                palette
+            </span>
+        </button>
+
+        <!-- Theme Customizer Panel -->
+        <div class="theme-customizer" id="themeCustomizer">
+            <div class="customizer-header">
+                <h2>Theme Customizer</h2>
+                <span class="material-icons notranslate" onclick="toggleThemeCustomizer()" style="cursor: pointer; font-size: 24px;">
+                    close
+                </span>
+            </div>
+            
+            <div class="customizer-content">
+                <select class="element-selector" id="elementSelector">
+                    <option value="">-- Select an element to customize --</option>
+                    <option value="body">Page Background</option>
+                    <option value=".header">Header</option>
+                    <option value=".topnav">Top Navigation</option>
+                    <option value=".sidenav">Side Navigation</option>
+                    <option value=".sideoption">Side Menu Options</option>
+                    <option value=".inputSEARCH">Search Input</option>
+                    <option value=".gameitem">Game Items</option>
+                </select>
+                
+                <div class="property-editor" id="propertyEditor">
+                    <div class="property-group">
+                        <h3>Colors</h3>
+                        <div class="property-field">
+                            <label for="background-color">Background Color</label>
+                            <input type="color" id="background-color" data-property="background-color">
+                        </div>
+                        <div class="property-field">
+                            <label for="text-color">Text Color</label>
+                            <input type="color" id="text-color" data-property="color">
+                        </div>
+                        <div class="property-field">
+                            <label for="border-color">Border Color</label>
+                            <input type="color" id="border-color" data-property="border-color">
+                        </div>
+                    </div>
+                    
+                    <div class="property-group">
+                        <h3>Borders & Effects</h3>
+                        <div class="property-field">
+                            <label for="border-width">Border Width (px)</label>
+                            <input type="number" id="border-width" data-property="border-width" min="0" max="10" value="1">
+                        </div>
+                        <div class="property-field">
+                            <label for="border-radius">Border Radius (px)</label>
+                            <input type="number" id="border-radius" data-property="border-radius" min="0" max="50" value="0">
+                        </div>
+                        <div class="property-field">
+                            <label for="box-shadow">Box Shadow</label>
+                            <select id="box-shadow" data-property="box-shadow">
+                                <option value="none">None</option>
+                                <option value="0px 0px 5px rgba(0,0,0,0.3)">Light</option>
+                                <option value="0px 0px 10px rgba(0,0,0,0.5)">Medium</option>
+                                <option value="0px 0px 15px rgba(0,0,0,0.7)">Heavy</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-row">
+                    <button class="theme-btn secondary" onclick="resetCustomizations()">Reset</button>
+                    <button class="theme-btn primary" onclick="saveCustomizations()">Next</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Name Dialog -->
+        <div class="dialog-backdrop" id="dialogBackdrop"></div>
+        <div class="name-dialog" id="nameDialog">
+            <h3>Name Your Theme</h3>
+            <input type="text" id="themeName" placeholder="My Custom Theme">
+            <div class="button-row">
+                <button class="theme-btn secondary" onclick="cancelNameDialog()">Cancel</button>
+                <button class="theme-btn primary" onclick="downloadCSS()">Download</button>
+            </div>
+        </div>
+
+        <script src="./main.js"></script>
+        <script src="./gameloader.js"></script>
+        <script>
+            // Theme customizer functionality
+            const themeButton = document.getElementById('themeButton');
+            const themeCustomizer = document.getElementById('themeCustomizer');
+            const elementSelector = document.getElementById('elementSelector');
+            const propertyEditor = document.getElementById('propertyEditor');
+            const nameDialog = document.getElementById('nameDialog');
+            const dialogBackdrop = document.getElementById('dialogBackdrop');
+            
+            // Store custom CSS properties
+            let customCSS = {};
+            
+            // Toggle theme customizer
+            function toggleThemeCustomizer() {
+                themeCustomizer.classList.toggle('open');
+            }
+            
+            // Initialize event listeners
+            themeButton.addEventListener('click', function() {
+                toggleThemeCustomizer();
+            });
+            
+            // Element selector change event
+            elementSelector.addEventListener('change', function() {
+                const selectedElement = this.value;
+                if (selectedElement) {
+                    // Load current CSS properties for the selected element
+                    loadElementProperties(selectedElement);
+                }
+            });
+            
+            // Load element properties
+            function loadElementProperties(selector) {
+                // Get a sample element to read current styles
+                let element;
+                try {
+                    element = document.querySelector(selector);
+                } catch (e) {
+                    console.error("Invalid selector:", selector);
+                    return;
+                }
+                
+                if (!element) return;
+                
+                const computedStyle = window.getComputedStyle(element);
+                
+                // Set input values based on computed style
+                document.getElementById('background-color').value = rgbToHex(computedStyle.backgroundColor);
+                document.getElementById('text-color').value = rgbToHex(computedStyle.color);
+                document.getElementById('border-color').value = rgbToHex(computedStyle.borderColor);
+                document.getElementById('border-width').value = parseInt(computedStyle.borderWidth) || 0;
+                document.getElementById('border-radius').value = parseInt(computedStyle.borderRadius) || 0;
+                
+                // Initialize change listeners for all property inputs
+                const propertyInputs = document.querySelectorAll('[data-property]');
+                propertyInputs.forEach(input => {
+                    input.onchange = function() {
+                        applyPropertyChange(selector, this.dataset.property, this.value);
+                    };
+                });
+            }
+            
+            // Apply property change to the selected element
+            function applyPropertyChange(selector, property, value) {
+                // Store in our custom CSS object
+                if (!customCSS[selector]) {
+                    customCSS[selector] = {};
+                }
+                
+                // For numerical inputs, add 'px' unit
+                if (property === 'border-width' || property === 'border-radius') {
+                    value = value + 'px';
+                }
+                
+                customCSS[selector][property] = value;
+                
+                // Apply the change to all matching elements
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    el.style[camelCase(property)] = value;
+                });
+            }
+            
+            // Reset customizations
+            function resetCustomizations() {
+                const selector = elementSelector.value;
+                if (!selector) return;
+                
+                // Remove custom styles
+                if (customCSS[selector]) {
+                    delete customCSS[selector];
+                }
+                
+                // Reset the element's styles
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    el.removeAttribute('style');
+                });
+                
+                // Reload element properties
+                loadElementProperties(selector);
+            }
+            
+            // Save customizations and show name dialog
+            function saveCustomizations() {
+                if (Object.keys(customCSS).length === 0) {
+                    alert('No changes have been made.');
+                    return;
+                }
+                
+                nameDialog.style.display = 'block';
+                dialogBackdrop.style.display = 'block';
+            }
+            
+            // Cancel name dialog
+            function cancelNameDialog() {
+                nameDialog.style.display = 'none';
+                dialogBackdrop.style.display = 'none';
+            }
+            
+            // Download CSS file
+            function downloadCSS() {
+                const themeName = document.getElementById('themeName').value || 'custom-theme';
+                
+                // Generate CSS content
+                let cssContent = `/* ${themeName} - Custom Theme for Qz Games */\n\n`;
+                
+                for (const selector in customCSS) {
+                    cssContent += `${selector} {\n`;
+                    
+                    for (const property in customCSS[selector]) {
+                        cssContent += `  ${property}: ${customCSS[selector][property]};\n`;
+                    }
+                    
+                    cssContent += `}\n\n`;
+                }
+                
+                // Create download link
+                const blob = new Blob([cssContent], { type: 'text/css' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${themeName.toLowerCase().replace(/\s+/g, '-')}.css`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // Close dialog
+                cancelNameDialog();
+                toggleThemeCustomizer();
+            }
+            
+            // Helper: Convert RGB to Hex color
+            function rgbToHex(rgb) {
+                // Default to black if not available
+                if (!rgb || rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') {
+                    return '#000000';
+                }
+                
+                // Check if it's already a hex color
+                if (rgb.charAt(0) === '#') {
+                    return rgb;
+                }
+                
+                // Extract RGB values
+                const rgbMatch = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)$/i);
+                if (!rgbMatch) {
+                    return '#000000';
+                }
+                
+                const r = parseInt(rgbMatch[1], 10).toString(16).padStart(2, '0');
+                const g = parseInt(rgbMatch[2], 10).toString(16).padStart(2, '0');
+                const b = parseInt(rgbMatch[3], 10).toString(16).padStart(2, '0');
+                
+                return `#${r}${g}${b}`;
+            }
+            
+            // Helper: Convert kebab-case to camelCase for style properties
+            function camelCase(str) {
+                return str.replace(/-([a-z])/g, function(g) { 
+                    return g[1].toUpperCase(); 
+                });
+            }
+            
+            // Add the functions to window for HTML onclick access
+            window.toggleThemeCustomizer = toggleThemeCustomizer;
+            window.resetCustomizations = resetCustomizations;
+            window.saveCustomizations = saveCustomizations;
+            window.cancelNameDialog = cancelNameDialog;
+            window.downloadCSS = downloadCSS;
+        </script>
+    </body>
+</html>
