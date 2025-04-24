@@ -1,7 +1,11 @@
 # .github/workflows/sync-upstream.yml
 on:
+  # manual trigger in the UI
+  workflow_dispatch:
+
+  # automatic trigger every 5 minutes
   schedule:
-    - cron: '*/5 * * * *'    # every 15 minutes
+    - cron: '*/5 * * * *'
 
 jobs:
   build-upstream:
