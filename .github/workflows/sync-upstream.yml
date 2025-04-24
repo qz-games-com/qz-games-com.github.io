@@ -1,5 +1,8 @@
 # .github/workflows/sync-upstream.yml
 on:
+
+  workflow_dispatch:
+
   schedule:
     - cron: '*/5 * * * *'
 
