@@ -32,20 +32,3 @@ jobs:
 
       - name: Push merge (optional)
         run: git push origin main
-
-     
-      - name: Build
-        run: |
-          # example for a Jekyll site:
-          bundle install
-          bundle exec jekyll build
-          # or for an npm site:
-          # npm ci
-          # npm run build
-
-      - name: Deploy
-        run: |
-          # example using the GitHub Pages action:
-          npx peaceiris/actions-gh-pages@v3 \
-            --personal-token ${{ secrets.GITHUB_TOKEN }} \
-            --publish-dir ./_site
