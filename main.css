@@ -1,13 +1,14 @@
+
 body {
-    background-color: rgb(34, 34, 34);
+    background-color: var(--main-bg-color);
     font-family: Arial, Helvetica, sans-serif;
-    color: white;
+    color: var(--text-color);
     margin: 0;
     min-width: 350px;
 }
 
 .header {
-    background-color: rgb(49, 49, 49);
+    background-color: var(--main-header-color);
     height: 600px;
     width: 100%;
     position: relative;
@@ -17,11 +18,11 @@ body {
 .topnav {
     top: 0;
     left: 50%;
-    background-color: rgba(34, 34, 34, 0.63);
+    background-color: var(--main-topnav-color);
     height: 50px;
     top: 15px;
     border-radius: 20px;
-    box-shadow: 0px 0px 5px 5px rgb(32, 32, 32);
+    box-shadow: 0px 0px 5px 5px var(--main-topnav-shadow);
     z-index: 100;
     transform: translateX(-50%);
     width: 97.5%;
@@ -88,7 +89,8 @@ body {
     position: fixed;
     visibility: hidden;
     height: 100%;
-    z-index: 1000;
+    z-index: 10003;
+
 }
 
 .backdropside {
@@ -99,27 +101,27 @@ body {
     opacity: 0;
     transition: 0.5s;
     height: 100%;
-    background-color: rgba(19, 19, 19, 0.541);
+    background-color: var(--main-backdrop-side);
     
 }
 
 .sidenav {
     width: 355px;
     height: 95%;
-    background-color: rgb(53, 53, 53);
+    background-color: var(--side-nav-bg);
     top: 50%;
     transform: translateY(-50%);
     border-radius: 15px;
-    border: solid 3px rgb(95, 95, 95);
+    border: solid 3px var(--side-nav-border);
     right: 15px;
     position: absolute;
-    box-shadow: 0px 0px 5px 5px rgb(10, 10, 10);
+    box-shadow: 0px 0px 5px 5px var(--side-nav-shadow);
     z-index: 1001;
 }
 
 .topnavp {
     height: 80px;
-    background-color: rgba(56, 56, 56, 0.76);
+    background-color: var(--side-nav-top);
     width: 96%;
     border-radius: 15px;
     left: 50%;
@@ -127,7 +129,7 @@ body {
     position: relative;
     
     top: 7px;
-    box-shadow: 0px 0px 5px 5px rgb(24, 24, 24);
+    box-shadow: 0px 0px 5px 5px var(--side-nav-top-shadow);
 }
 .navelement1 {
     height: 100%;
@@ -143,8 +145,8 @@ body {
     float: right;
     padding: 3px;
     border-radius: 10px;
-    border: solid 3px rgba(19, 19, 19, 0.397);
-    box-shadow: 0px 0px 7px 3px rgba(20, 20, 20, 0.589);
+    border: solid 3px var(--side-nav-icons-border);
+    box-shadow: 0px 0px 7px 3px var(--side-nav-icons-shadow);
     cursor: pointer;
 }
 
@@ -158,19 +160,20 @@ body {
 }
 
 .translatecontainer {
-    box-shadow: 0px 0px 7px 4px rgb(19, 19, 19);
+    box-shadow: 0px 0px 7px 4px var(--translate-container-shadow);
     width: 380px;
     border-radius: 15px;
     height: 200px;
     visibility: hidden;
     opacity: 0;
     position: fixed;
-    background-color: rgb(43, 43, 43);
-    border: solid 3px rgb(70, 70, 70);
+    background-color: var(--translate-container-bg);
+    border: solid 3px var(--translate-container-border);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 300;
+    backdrop-filter: blur(5px);
 }
 
 .lineidk {
@@ -211,20 +214,20 @@ body {
     height: 45px;               
     padding: 0 12px;             
     border-radius: 12px;
-    color: white;
-    background-color: rgb(65, 65, 65);
-    border: 1.5px solid rgb(48, 48, 48);
+    color: var(--input-txt-color);
+    background-color: var(--input-bg);
+    border: 1.5px solid var(--input-border);
     outline: none;
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
     box-shadow: 0px 0px 20px -18px;
 }
   
 .inputSEARCH:hover {
-    border: 2px solid rgb(77, 77, 77);
+    border: 2px solid var(--input-border-hover);
     box-shadow: 0px 0px 20px -17px;
 }
 .inputSEARCH::placeholder {
-    color: white;
+    color: var(--text-color);
     text-align: center;
 }
   
@@ -233,7 +236,7 @@ body {
 }
   
 .inputSEARCH:focus {
-    border: 2px solid rgb(94, 94, 94);
+    border: 2px solid var(--input-focus);
 }
   
 .filterbutton {
@@ -245,9 +248,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(68, 68, 68);
-    border: solid 2px rgb(37, 37, 37);
-    box-shadow: 0px 0px 5px 2px rgb(29, 29, 29);
+    background-color: var(--filter-btn-bg);
+    border: solid 2px var(--filter-btn-border);
+    box-shadow: 0px 0px 5px 2px var(--filter-btn-shadow);
 }
 .filtercontainer { 
     position: fixed;
@@ -256,7 +259,8 @@ body {
     width: 450px;
     height: 100%;
     right: 0;
-    background-color: rgba(24, 24, 24, 0.884);
+    background-color: var(--filter-container-bg);
+    backdrop-filter: blur(5px);
 }
 .closefilterw {
     cursor: pointer; 
@@ -275,9 +279,9 @@ body {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 12px;
-    background: rgba(148, 148, 148, 0.2);
+    background: var(--filter-radio-group-bg);
     padding: 16px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px var(--filter-radio-group-shadoow);
   }
   .filter-radio-container {
     position: relative;
@@ -286,20 +290,20 @@ body {
     cursor: pointer;
     padding: 12px 20px;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--filter-radio-container-bg);
     transition:
       background-color 0.3s ease,
       transform 0.3s ease,
       box-shadow 0.3s ease;
     font-size: 16px;
-    color: #ffffff;
+    color: var(--text-color);
     user-select: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px var(--filter-radio-container-shadow);
   }
   .filter-radio-container:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: var(--filter-radio-container-bg-hover);
     transform: scale(1.03);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 12px var(--filter-radio-container-shadow-hover);
   }
   .filter-radio-container input[type="radio"] {
     opacity: 0;
@@ -309,21 +313,21 @@ body {
     position: relative;
     height: 24px;
     width: 24px;
-    border: 2px solid #ffffff;
+    border: 2px solid var(--filter-radio-checkmark-border);
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: var(--filter-radio-checkmark-bg) ;
     transition:
       background-color 0.4s ease,
       transform 0.4s ease;
     margin-right: 12px;
     display: inline-block;
     vertical-align: middle;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 6px var(--filter-radio-checkmark-shadow);
   }
   .filter-radio-container input[type="radio"]:checked + .filter-radio-checkmark {
     background-color: #b9b9b9;
     border-color: #cccccc;
-    box-shadow: 0 0 0 8px rgba(218, 218, 218, 0.2);
+    box-shadow: 0 0 0 8px var(--filter-radio-checkmark-shadow-pulse);
     transform: scale(1.2);
     animation: pulse 0.6s forwards;
   }
@@ -341,21 +345,21 @@ body {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: #424242;
+    background: var(--filter-radio-checkmark-after);
     transform: translate(-50%, -50%);
   }
   .sideoption {
     position: relative;
     width: 90%;
     height: 85px;
-    background: linear-gradient(to top right, rgb(82, 82, 82), rgb(133, 133, 133));
-    border: solid 3px rgb(37, 37, 37);
+    background: var(--side-nav-options-bg);
+    border: solid 3px var(--side-nav-options-border);
     cursor: pointer;
     border-radius: 15px;
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: 15px;
-    box-shadow: 0px 0px 4px 5px rgb(39, 39, 39);
+    box-shadow: 0px 0px 4px 5px var(--side-nav-options-shadow);
     overflow: hidden;
   }
 
@@ -374,7 +378,7 @@ body {
     top: 50%;
     font-size: 80px;
     color: rgb(255, 255, 255);
-    text-shadow: 0px 0px 10px black;
+    text-shadow: 0px 0px 10px var(--side-nav-options-icon-shadow);
     opacity: 0.5;
   }
 
@@ -388,11 +392,11 @@ body {
     position: relative;
     overflow: hidden;
     transition: 0.5s;
-    box-shadow: 0px 0px 8px 5px rgb(10, 10, 10);
+    box-shadow: 0px 0px 8px 5px var(--game-item-shadow);
 }
 
 .gameitem:hover {
-    box-shadow: 0px 0px 8px 4px rgb(77, 77, 77);
+    box-shadow: 0px 0px 8px 4px var(--game-item-shadow-hover);
     transform: scale(1.05);
 }
 
@@ -408,14 +412,84 @@ body {
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
-    color: rgb(255, 255, 255);
-    background-color: rgba(26, 26, 26, 0.952);
+    color: var(--game-item-text-over-text-color);
+    background-color: var(--game-item-text-over-bg);
     width: 90%;
     padding: 3px;
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0px 0px 5px 3px black;
+    box-shadow: 0px 0px 5px 3px var(--game-item-text-over-shadow);
+    backdrop-filter: blur(5px);
     font-weight: 550;
     font-size: 15px;
    
+}
+
+.notafication {
+    position: fixed;
+    width: 95%;
+    max-width: 400px;
+    min-width: 150px;
+    height: 65px;
+    background-color: var(--note-bg);
+    backdrop-filter: blur(10px);
+    border: solid 2px var(--note-border);
+    box-shadow: 0px 0px 5px 2px var(--note-shadow);
+    z-index: 5;
+    bottom: 10px;
+    left: 10px;
+    opacity: 1;
+    display: none;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+.notaficationin {
+    display: flex; 
+    flex-direction: row; 
+    position: relative; 
+    width: 100%; 
+    height: 100%;
+    
+}
+
+.notaficationinn {
+    margin-left: 5px;
+    flex-direction: row;
+}
+
+.notaficationin h1 {
+    font-size: 17px;
+}
+.notaficationin p {
+    margin-top: -7px;
+}
+
+.notaficationin span {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+}
+
+.bgblackholetheme {
+    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(2.5px)
+}
+.bgearththeme {
+    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(2.5px);
+    transition: 0.8s;
 }

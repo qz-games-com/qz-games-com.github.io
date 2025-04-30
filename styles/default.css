@@ -1,0 +1,68 @@
+:root {
+    --text-color: white;
+
+    --main-bg-color: rgb(34, 34, 34);
+    --main-topnav-color: rgba(34, 34, 34, 0.63);
+    --main-topnav-shadow: rgb(32, 32, 32);
+    --main-header-color: rgb(49, 49, 49);
+    --main-backdrop-side: rgba(19, 19, 19, 0.541);
+
+    --side-nav-bg: rgb(53, 53, 53);
+    --side-nav-border: rgb(95, 95, 95);
+    --side-nav-shadow: rgb(10, 10, 10);
+
+    --side-nav-top: rgba(56, 56, 56, 0.76);
+    --side-nav-top-shadow: rgb(24, 24, 24);
+    --side-nav-icons-border: rgba(19, 19, 19, 0.397);
+    --side-nav-icons-shadow: rgba(20, 20, 20, 0.589);
+
+    --side-nav-options-bg: linear-gradient(to top right, rgb(82, 82, 82), rgb(133, 133, 133));
+    --side-nav-options-border: rgb(37, 37, 37);
+    --side-nav-options-shadow: rgb(39, 39, 39);
+    --side-nav-options-icon-shadow: black;
+
+    --translate-container-bg: rgba(43, 43, 43, 0.842);
+    --translate-container-shadow: rgb(19, 19, 19);
+    --translate-container-border: rgb(70, 70, 70);
+
+    --feat-games-bg: none;
+    --feat-games-border: none;
+
+    --input-bg: rgb(65, 65, 65);
+    --input-border: rgb(48, 48, 48);
+    --input-txt-color: var(--text-color);
+    --input-border-hover: rgb(77, 77, 77);
+    --input-focus: rgb(94, 94, 94);
+
+    --filter-btn-bg: rgb(68, 68, 68);
+    --filter-btn-border: rgb(37, 37, 37);
+    --filter-btn-shadow: rgb(29, 29, 29);
+
+    --filter-container-bg: rgba(24, 24, 24, 0.884);
+
+    --filter-radio-group-bg: rgba(148, 148, 148, 0.2);
+    --filter-radio-group-shadoow: rgba(0, 0, 0, 0.3);
+    --filter-radio-container-bg: rgba(255, 255, 255, 0.2);
+    --filter-radio-container-shadow: rgba(0, 0, 0, 0.2);
+    --filter-radio-container-bg-hover: rgba(255, 255, 255, 0.3);
+    --filter-radio-container-shadow-hover: rgba(0, 0, 0, 0.4);
+
+    --filter-radio-checkmark-border: #ffffff;
+    --filter-radio-checkmark-bg: rgba(0, 0, 0, 0.3);
+    --filter-radio-checkmark-shadow: rgba(0, 0, 0, 0.4);
+    --filter-radio-checkmark-after: #424242;
+
+    --filter-radio-checkmark-shadow-pulse: rgba(218, 218, 218, 0.2);
+
+    --game-item-shadow: rgb(10, 10, 10);
+    --game-item-shadow-hover: rgb(77, 77, 77);
+
+    --game-item-text-over-bg-old: rgba(26, 26, 26, 0.952);
+    --game-item-text-over-bg: rgba(26, 26, 26, 0.719);
+    --game-item-text-over-shadow: black;
+    --game-item-text-over-text-color: rgb(255, 255, 255);
+
+    --note-bg: rgba(32, 32, 32, 0.849);
+    --note-border: rgb(37, 37, 37);
+    --note-shadow: rgb(7, 7, 7);
+}

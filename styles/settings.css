@@ -11,10 +11,11 @@
     font-family: Arial, sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
+    overflow-x: hidden;
   }
   .settings-container {
     display: flex;
-    min-height: 100vh;
+    min-height: 78vh;
     position: relative;
   }
   nav {
@@ -23,6 +24,9 @@
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.2);
     position: relative;
+    height: 100vh;
+    min-width: 220px;
+    border-radius: 15px;
   }
   nav ul { list-style: none; padding: 0; margin: 0;position: relative; }
   nav li { margin-bottom: 12px; }
@@ -35,7 +39,7 @@
     width: 100%;
     text-align: left;
     border-radius: var(--border-radius);
-    transition: background var(--transition);
+    transition: var(--transition);
     color: var(--text-color);
   }
   nav button.active,
@@ -54,8 +58,9 @@
     padding: 30px;
     border-radius: var(--border-radius);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    
   }
-  .section.active { display: block; }
+  .section.active { display: block;  width: 70vw; }
   .section h2 { margin-top: 0; }
   .form-group { margin-bottom: 20px; }
   .form-group label {
@@ -131,12 +136,12 @@
   }
   .btn:hover { background: #686868; }
 
-  /* CSS */
+
 .toggle-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 250px;   /* adjust as needed */
+    width: 250px;
     padding: 1rem ;
     border-radius: 15px;
     background-color: #2c2c2c;
@@ -207,3 +212,95 @@
     margin-left: -20px;
     height: 30px;
   }
+
+  .themeoption {
+    width: 250px;
+    height: 150px;
+    background-color: rgb(49, 49, 49);
+    border-radius: 15px;
+    border: 2px rgb(70, 70, 70) solid;
+    position: relative;
+    float: left;
+    margin: 10px;
+    box-shadow: 0px 0px 5px #000000;
+    cursor: pointer;
+    transition: 0.5s;
+  }
+  .themeoption:hover {
+    transform: scale(1.05);
+  }
+
+.navtheme {
+    width: 90%;
+    position: absolute;
+    border-radius: 15px;
+    background-color: rgb(34, 34, 34);
+    height: 25px;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.themecont {
+    position: relative;
+    margin-top: 50px;
+    width: 100%;
+}
+.texttheme {
+  z-index: 4;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.texttheme h3 {
+  text-shadow: 0px 0px 10px black;
+}
+
+.activenav {
+  outline: solid 3px rgba(214, 214, 214, 0.842);
+  animation: outlinetheme 0.5s;
+}
+
+.themeoptioncen {
+  left: 50%;
+  position: relative;
+  width: fit-content;
+  transform: translateX(-45%);
+  width: 70vw;
+}
+
+.buttonhome {
+  width: 100px;
+  height: 35px;
+  background-color: rgba(71, 71, 71, 0.61);
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0px 0px 5px 2px #161616;
+  transition: 0.5s;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+}
+.buttonhome:hover {
+  box-shadow: 0px 0px 5px 2px #5a5a5a;
+}
+.buttonhome span {
+  font-size: 18px;
+  top: 50%;
+  position: relative;
+  transform: translateY(-50%);
+  float: left;
+  margin-left: 4px;
+}
+.buttonhome p {
+  float: left;
+  margin-top: 1.8px;
+  margin-left: 10px;
+}
+.buttontopsetcont {
+  display: flex; 
+  flex-direction: row;
+  float: left;
+}

@@ -7,8 +7,9 @@
             Qz Games
         </title>
         <link rel="stylesheet" href="./main.css">
+        
         <link rel="stylesheet" href="./animations.css">
-
+        <link id="themecss" rel="stylesheet" href="./styles/default.css" >
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <meta name="language" content="English">
@@ -19,9 +20,35 @@
         
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J246XWP5WQ"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-J246XWP5WQ');
+        </script>
+        <script src="./cookieshandle.js"></script>
+        <script src="./themeshandler.js"></script>
+
+
     </head>
 
     <body>
+
+        <!--NOTAFICATION-->
+
+        <div id="notafication" class="notafication">
+            <div class="notaficationin">
+                <img id="cookiepic" src="./cookieimg.png"/>
+                <div class="notaficationinn">
+                    <h1 id="titlenote">We Use Cookies</h1>
+                    <p id="descnote">By using our site you agree to cookies.</p>
+                    <span id="closenote" class="material-icons notranslate">close</span>
+                </div>
+            </div>
+        </div>
 
         <!--Menus-->
         <div class="filtercontainer" id="filterM">
@@ -84,7 +111,7 @@
                 <div class="topnavp">
                     
                     <div class="navelement1"> 
-                        <img src="./Q.png" style="width: 55px; top: 50%; position: relative; left: 10px; transform: translateY(-50%); float: left;"> 
+                        <img id="naviconside" src="./Q.png" style="width: 55px; top: 50%; position: relative; left: 10px; transform: translateY(-50%); float: left;"> 
                         <p style=" font-size: 20px; float: left; position: relative; top: 12.5%; left: 17px; font-weight: 550; transform: translateY(0%);">Quartz Games</p>
                     
                         <span onclick="ToggleSideNav()" class="material-icons sidenavicon notranslate">
@@ -92,7 +119,10 @@
                         </span>
 
                         <span class="material-icons sidenavicon notranslate" style="right: 34px;">
-                            settings
+                            <a style="text-decoration: none; color: white;" class="material-icons notranslate" href="./settings.html">
+                                settings
+                            </a>
+                            
                         </span>
 
                     </div>
@@ -131,7 +161,7 @@
         </div>
 
         <div class="topnav" class="topnav">
-            <img src="./Q.png" style="float: left; height: 90%; top: 50%; transform: translateY(-50%); margin-left: 5px; margin-right: 5px; position: relative;"/>
+            <img id="navicon" src="./Q.png" style="float: left; height: 90%; top: 50%; transform: translateY(-50%); margin-left: 5px; margin-right: 5px; position: relative;"/>
             <h1 class="txtnav" style="position: relative; float: left; ">
                 Qz Games
             </h1>
@@ -154,7 +184,7 @@
 
         <div class="header">
             <div class="headericoncontainer">
-                <img class="headericon" src="./Q-BIG.png" alt="Iconimg">
+                <img id="headericon" class="headericon" src="./Q-BIG.png" alt="Iconimg">
                 <h1 class="headtxt">Qz Games</h1>
                 <p style="margin: -15px; font-size: 25px; left: 50%; transform: translateX(-5%); position: relative;">Beta</p>
             </div>
@@ -200,5 +230,6 @@
     </body>
     <script src="./main.js"></script>
     <script src="./gameloader.js"></script>
-
+    <script src="./note.js"></script>
+    
 </html>

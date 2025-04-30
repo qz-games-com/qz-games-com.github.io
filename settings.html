@@ -7,19 +7,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="./styles/settings.css">
+  <link rel="stylesheet" href="./animations.css">
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js');
     }
   </script>
 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-J246XWP5WQ"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J246XWP5WQ');
+  </script>
+  <script src="./cookieshandle.js"></script>
 </head>
 <body>
   <div class="settings-container">
     <nav>
       <ul>
         <div class="bottomm">
-
+          <div class="buttontopsetcont">
+            <a href="./index.html">
+              <button class="buttonhome" style="margin-right: 12px;">
+                <span class="material-icons notranslate">
+                  home
+                </span>
+                  <p>Home</p>
+              </button>
+            </a>
+          </div>
         </div>
         <li><button class="tab-btn active" data-target="main">General</button></li>
         <li><button class="tab-btn" data-target="custom">Customize</button></li>
@@ -45,11 +64,75 @@
        
       </section>
       <section id="theme" class="section">
+
+        <h1>Themes:</h1>
+        <div id="themes" class="themecont">
+
+          <div id="themeoptioncent" class="themeoptioncen">
+
+            <div class="themeoption activenav" id="classic" themetype="default">
+              <div class="navtheme"></div>
+              <div class="texttheme">
+                <h3>Classic</h3>
+              </div>
+            </div>
+
+            <div class="themeoption" style="background-color: rgb(14, 14, 14)" id="space" themetype="space">
+              <div class="navtheme" style="z-index: 1; background-color: rgba(34, 34, 34, 0.651)"></div>
+              <div style="width: 100px; height: 100px; background-color: rgb(63, 63, 63); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; position: absolute;">
+
+              </div>
+              <div class="texttheme">
+                <h3 style="width: max-content;">Space | Black Hole</h3>
+              </div>
+            </div>
+
+            <div class="themeoption" style="background-color: rgb(14, 14, 14)" id="spaceearth" themetype="spaceearth">
+              <div class="navtheme" style="z-index: 1; background-color: rgba(34, 34, 34, 0.651)"></div>
+              <div style="width: 100px; height: 100px; background-color: lightblue; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; position: absolute;">
+
+              </div>
+              <div class="texttheme">
+                <h3 style="">Space | Earth</h3>
+              </div>
+            </div>
+
+            <div class="themeoption" style="background-color: rgb(80, 55, 83);" id="midpurp" themetype="midnight-purple">
+              <div class="navtheme" style="background-color: rgba(53, 23, 54, 0.445);"></div>
+              <div class="texttheme">
+                <h3 style="width: max-content;">Midnight Purple</h3>
+              </div>
+            </div>
+
+            <div class="themeoption" style="background-color: rgb(55, 182, 55);" id="mlg" themetype="mlg">
+              <div class="navtheme" style="background-color: rgba(30, 54, 23, 0.445);"></div>
+              <div class="texttheme">
+                <h3 style=" width: max-content;">MLG</h3>
+              </div>
+            </div>
+
+            <div class="themeoption" style="background-color: rgb(182, 106, 55);" id="mc" themetype="mc">
+              <div class="navtheme" style="background-color: rgba(30, 54, 23, 0.445);"></div>
+              <div class="texttheme">
+                <h3 style=" width: max-content;">Minecraft</h3>
+              </div>
+            </div>
+
+            <div class="themeoption" style="background-color: rgb(255, 255, 255);" id="light" themetype="light">
+              <div class="navtheme" style="background-color: rgba(172, 172, 172, 0.445);"></div>
+              <div class="texttheme">
+                <h3 style=" width: max-content;">Light</h3>
+              </div>
+            </div>
+
+          </div>
+        </div>
        
       </section>
     </main>
   </div>
-  <script src="scripts/settings.js">
+  <script src="./scripts/settings.js">
+  
   </script>
 </body>
 </html>

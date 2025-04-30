@@ -19,32 +19,32 @@ var translatemenu = document.getElementById('translateM')
 //functions
 
 function ToggleSideNav() {
-    if(sidenavstatus===false) {    
-        sidenavstatus = true
+    if (!sidenavstatus) {
+      // OPEN 
+      sidenavcont.style.visibility = 'visible';
+      backdropside.style.visibility = 'visible';
+      backdropside.style.opacity    = '1';
+      sidenav.style.animation       = 'sidenavin 0.5s forwards';
+      sidenavstatus = true;
+    } else {
+      // CLOSE 
+      sidenavstatus = false;
+      backdropside.style.opacity = '0';
+  
+      function onNavDone(e) {
+        if (e.animationName === 'sidenavout') {
+          sidenavcont.style.visibility  = 'hidden';
+          backdropside.style.visibility = 'hidden';
+          sidenav.removeEventListener('animationend', onNavDone);
+        }
+      }
+      sidenav.addEventListener('animationend', onNavDone);
 
-        sidenavcont.style.visibility = 'visible'
-
-        backdropside.style.visibility = 'visible'
-
-        backdropside.style.opacity = 1
-
-        sidenav.style.animation = 'sidenavin 0.5s'
-
-    } else if (sidenavstatus===true) {
-        sidenavstatus = false
-
-        backdropside.style.opacity = 0
-
-        sidenav.style.animation = 'sidenavout 0.5s'
-
-        setTimeout(() => {
-            backdropside.style.visibility = 'hidden'
-            sidenavcont.style.visibility = 'hidden'
-
-        }, 450);
+      sidenav.style.animation    = 'sidenavout 0.5s forwards';
 
     }
-}
+  }
+  
 
 
 function ToggleTranslate() {
@@ -82,12 +82,12 @@ function ToggleFilter() {
         filtermenu.style.animation = 'filterwin 0.5s'
 
     } else if (filtermenustatus===true) {
-        filtermenustatus = false
+        
 
         filtermenu.style.opacity = 0
 
         filtermenu.style.animation = 'filterwout 0.5s'
-
+        filtermenustatus = false
         setTimeout(() => {
             filtermenu.style.visibility = 'hidden'
         }, 450);
