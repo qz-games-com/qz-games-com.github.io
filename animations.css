@@ -42,3 +42,27 @@
 
 
 }
+
+@keyframes noteshow {
+  from {transform: translateY(130%); opacity: 0;}
+  to {transform: translateY(0%); opacity: 1;}
+}
+
+@keyframes notehide {
+  from {transform: translateY(0%); opacity: 1;}
+  to {transform: translateY(130%); opacity: 0;}
+}
+
+@keyframes outlinetheme {
+  0% {outline: solid 3px rgba(27, 27, 27, 0.842);}
+  100% {outline: solid 3px rgba(214, 214, 214, 0.842);}
+}
+
+@keyframes earthin {
+  from {top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0;}
+  to {    transform: scale(4.3) translate(-12%, 16%); opacity: 1; }
+}
+@keyframes earthout {
+  from {    transform: scale(4.3) translate(-12%, 16%); opacity: 0; }
+  to {top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 1;}
+}

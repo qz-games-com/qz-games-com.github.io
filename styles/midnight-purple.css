@@ -1,0 +1,68 @@
+:root {
+    --text-color: white;
+
+    --main-bg-color: rgb(80, 55, 83);;
+    --main-topnav-color: rgba(53, 23, 54, 0.445);;
+    --main-topnav-shadow: rgba(66, 46, 73, 0.582);
+    --main-header-color: rgba(70, 48, 70, 0.74);
+    --main-backdrop-side: rgba(19, 19, 19, 0.541);
+
+    --side-nav-bg: rgb(72, 48, 80);
+    --side-nav-border: rgb(62, 43, 65);
+    --side-nav-shadow: rgba(69, 41, 80, 0.692);
+
+    --side-nav-top: rgba(71, 53, 78, 0.582);
+    --side-nav-top-shadow: rgb(54, 39, 58);
+    --side-nav-icons-border: rgba(71, 35, 80, 0.397);
+    --side-nav-icons-shadow: rgba(33, 24, 39, 0.575);
+
+    --side-nav-options-bg: linear-gradient(to top right, rgb(82, 82, 82), rgb(133, 133, 133));
+    --side-nav-options-border: rgb(70, 23, 97);
+    --side-nav-options-shadow: rgb(51, 32, 58);
+    --side-nav-options-icon-shadow: black;
+
+    --translate-container-bg: rgba(88, 66, 97, 0.842);
+    --translate-container-shadow: rgb(73, 59, 78);
+    --translate-container-border: rgb(74, 55, 83);
+
+    --feat-games-bg: none;
+    --feat-games-border: none;
+
+    --input-bg: rgba(133, 101, 155, 0.363);
+    --input-border: rgb(84, 64, 100);
+    --input-txt-color: var(--text-color);
+    --input-border-hover: rgb(81, 51, 99);
+    --input-focus: rgb(113, 81, 139);
+
+    --filter-btn-bg: rgba(133, 101, 155, 0.363);
+    --filter-btn-border: rgb(107, 76, 119);
+    --filter-btn-shadow: rgb(76, 51, 87);
+
+    --filter-container-bg: rgba(66, 45, 70, 0.884);
+
+    --filter-radio-group-bg: rgba(65, 30, 65, 0.2);
+    --filter-radio-group-shadoow: rgba(0, 0, 0, 0.3);
+    --filter-radio-container-bg: rgba(97, 97, 97, 0.2);
+    --filter-radio-container-shadow: rgba(0, 0, 0, 0.2);
+    --filter-radio-container-bg-hover: rgba(112, 112, 112, 0.3);
+    --filter-radio-container-shadow-hover: rgba(0, 0, 0, 0.4);
+
+    --filter-radio-checkmark-border: #714a79;
+    --filter-radio-checkmark-bg: rgba(58, 32, 66, 0.3);
+    --filter-radio-checkmark-shadow: rgba(0, 0, 0, 0.4);
+    --filter-radio-checkmark-after: #815b83;
+
+    --filter-radio-checkmark-shadow-pulse: rgba(174, 104, 175, 0.2);
+
+    --game-item-shadow: rgb(52, 30, 61);
+    --game-item-shadow-hover: rgb(101, 59, 107);
+
+    --game-item-text-over-bg-old: rgba(26, 26, 26, 0.952);
+    --game-item-text-over-bg: rgba(26, 26, 26, 0.719);
+    --game-item-text-over-shadow: black;
+    --game-item-text-over-text-color: rgb(255, 255, 255);
+
+    --note-bg: rgba(72, 52, 77, 0.849);
+    --note-border: rgb(75, 54, 75);
+    --note-shadow: rgb(40, 29, 43);
+}

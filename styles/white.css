@@ -1,0 +1,74 @@
+:root {
+    --text-color: rgb(0, 0, 0);
+
+    --main-bg-color: rgb(236, 236, 236);
+    --main-topnav-color: rgba(218, 218, 218, 0.63);
+    --main-topnav-shadow: rgb(153, 153, 153);
+    --main-header-old: rgb(19, 19, 19);
+    --main-header-color: rgba(224, 224, 224, 0.644);
+    --main-backdrop-side: rgba(19, 19, 19, 0.541);
+
+    --side-nav-bg: rgb(209, 209, 209);
+    --side-nav-border: rgb(161, 161, 161);
+    --side-nav-shadow: rgb(124, 124, 124);
+
+    --side-nav-top: rgba(202, 202, 202, 0.76);
+    --side-nav-top-shadow: rgb(102, 102, 102);
+    --side-nav-icons-border: rgba(70, 70, 70, 0.397);
+    --side-nav-icons-shadow: rgba(71, 71, 71, 0.589);
+
+    --side-nav-options-bg: linear-gradient(to top right, rgb(82, 82, 82), rgb(133, 133, 133));
+    --side-nav-options-border: rgb(148, 148, 148);
+    --side-nav-options-shadow: rgb(150, 150, 150);
+    --side-nav-options-icon-shadow: black;
+
+    --translate-container-bg: rgba(223, 223, 223, 0.842);
+    --translate-container-shadow: rgb(134, 134, 134);
+    --translate-container-border: rgb(133, 133, 133);
+
+    --feat-games-bg: none;
+    --feat-games-border: none;
+
+    --input-bg: rgba(148, 148, 148, 0.363);
+    --input-border: rgb(122, 122, 122);
+    --input-txt-color: var(--text-color);
+    --input-border-hover: rgb(129, 129, 129);
+    --input-focus: rgb(146, 146, 146);
+
+    --filter-btn-bg: rgb(184, 184, 184);
+    --filter-btn-border: rgb(201, 201, 201);
+    --filter-btn-shadow: rgb(151, 151, 151);
+
+    --filter-container-bg: rgba(204, 204, 204, 0.884);
+
+    --filter-radio-group-bg: rgba(160, 160, 160, 0.2);
+    --filter-radio-group-shadoow: rgba(0, 0, 0, 0.3);
+    --filter-radio-container-bg: rgba(97, 97, 97, 0.2);
+    --filter-radio-container-shadow: rgba(0, 0, 0, 0.2);
+    --filter-radio-container-bg-hover: rgba(112, 112, 112, 0.3);
+    --filter-radio-container-shadow-hover: rgba(0, 0, 0, 0.4);
+
+    --filter-radio-checkmark-border: #ffffff;
+    --filter-radio-checkmark-bg: rgba(0, 0, 0, 0.3);
+    --filter-radio-checkmark-shadow: rgba(0, 0, 0, 0.4);
+    --filter-radio-checkmark-after: #424242;
+
+    --filter-radio-checkmark-shadow-pulse: rgba(218, 218, 218, 0.2);
+
+    --game-item-shadow: rgb(129, 129, 129);
+    --game-item-shadow-hover: rgb(31, 31, 31);
+
+    --game-item-text-over-bg-old: rgba(26, 26, 26, 0.952);
+    --game-item-text-over-bg: rgba(26, 26, 26, 0.719);
+    --game-item-text-over-shadow: black;
+    --game-item-text-over-text-color: rgb(255, 255, 255);
+
+    --note-bg: rgba(241, 241, 241, 0.849);
+    --note-border: rgb(170, 170, 170);
+    --note-shadow: rgb(95, 95, 95);
+}
+
+.html {
+    color: rgb(0, 0, 0);
+}
+
