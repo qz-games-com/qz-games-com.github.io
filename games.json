@@ -4,7 +4,7 @@
         "name": "Slope",
         "gradient": "green",
         "catagory": "casual",
-        "link": "./Games01/slope",
+        "link": "../Games01/slope",
         "type": "html"   
     },
     "tunnel rush": {
@@ -12,7 +12,7 @@
         "name": "Tunnel Rush",
         "gradient": "red",
         "catagory": "casual",
-        "link": "./Games01/tunnel-rush",
+        "link": "../Games01/tunnel-rush",
         "type": "html"   
     }
 }
