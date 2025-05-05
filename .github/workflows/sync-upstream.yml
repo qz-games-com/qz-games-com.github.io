@@ -1,8 +1,6 @@
 # .github/workflows/sync-upstream.yml
 on:
-
   workflow_dispatch:
-
   schedule:
     - cron: '*/5 * * * *'
 
@@ -20,15 +18,26 @@ jobs:
           git config user.name  "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Add upstream remote
+      - name: Add & fetch upstream
         run: |
           git remote add upstream https://github.com/qz-games/qz-games.github.io.git
           git fetch upstream
 
-      - name: Merge upstream into main
+      - name: Merge only if there are new commits
+        working-directory: ${{ github.workspace }}
         run: |
           git checkout main
+
+          # count how many commits upstream/main is ahead of HEAD
+          AHEAD=$(git rev-list --count HEAD...upstream/main)
+
+          if [ "$AHEAD" -eq 0 ]; then
+            echo "✅ No new commits in upstream/main — skipping merge & push."
+            exit 0
+          fi
+
+          echo "🔄 Found $AHEAD new commit(s) — merging…"
           git merge upstream/main --no-edit
 
-      - name: Push merge (optional)
-        run: git push origin main
+          echo "🚀 Pushing merged changes back to origin/main"
+          git push origin main
