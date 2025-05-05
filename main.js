@@ -49,6 +49,17 @@ function ToggleSideNav() {
 
 function ToggleTranslate() {
     if(translatemenustatus===false) {    
+        if(document.getElementById('translatescript')) {
+          console.log('already loaded translate')
+        } else {
+          var translatesc = document.createElement('script')
+          translatesc.setAttribute('src', 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit')
+          translatesc.type = 'text/javascript'
+          translatesc.id = "translatescript"
+          document.body.appendChild(translatesc)
+          console.log('appended translate')
+        }
+
         translatemenustatus = true
 
         translatemenu.style.visibility = 'visible'

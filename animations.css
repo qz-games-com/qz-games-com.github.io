@@ -66,3 +66,7 @@
   from {    transform: scale(4.3) translate(-12%, 16%); opacity: 0; }
   to {top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 1;}
 }
+@keyframes showGame {
+  from {opacity: 0; filter: blur(5px);}
+  to {opacity: 1; filter: blur(0px);}
+}

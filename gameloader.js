@@ -2,13 +2,12 @@ let gamesData = null;
 
 function fetchGames() {
   if (gamesData) {
-   
     renderGames(gamesData);
   } else {
     fetch('games.json')
       .then(response => response.json())
       .then(data => {
-        gamesData = data; 
+        gamesData = data;
         renderGames(gamesData);
       })
       .catch(error => console.error('Error fetching games:', error));
@@ -21,47 +20,51 @@ function renderGames(data) {
 
   Object.keys(data).forEach(key => {
     const game = data[key];
-
-    var coverlink = './covers/' + game.cover
-
-    var gamelink = game.link
+    const coverLink = `./covers/${game.cover}`;
+    let gameLink = game.link;
 
     if (game.type === 'html') {
-      gamelink = './Games/game.html?game=' + game.link
+      gameLink = `./Games/game.html?game=${game.link}`;
     } else if (game.type === 'unity') {
-      gamelink = './Games/unity.html?game=' + game.link
+      gameLink = `./Games/unity.html?game=${game.link}`;
     } else if (game.type === 'flash') {
-      gamelink = './Games/Flash.html?game=' + game.link
+      gameLink = `./Games/Flash.html?game=${game.link}`;
     }
 
     const gameItem = document.createElement('div');
     gameItem.classList.add('gameitem');
-
+    gameItem.classList.add('hide');
     gameItem.innerHTML = `
-      <a href="${gamelink}">
+      <a href="${gameLink}">
         <div class="gametextover">${game.name}</div>
-        <img class="gamecover" data-src="${coverlink}" alt="${game.name} Cover">
+        <!-- no src yet, only data-src, and add "loading" class -->
+        <img 
+          class="gamecover loading" 
+          data-src="${coverLink}" 
+          alt="${game.name} Cover"
+        >
       </a>
     `;
-
     container.appendChild(gameItem);
   });
 
-    const lazyImages = document.querySelectorAll('.gamecover');
-
-    const observer = new IntersectionObserver((entries, observer) => {
+  const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
-        if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.getAttribute('data-src');
-        observer.unobserve(img);
-        }
+      if (!entry.isIntersecting) return;
+      const img = entry.target;
+      img.parentElement.parentElement.classList.remove('hide')
+      img.parentElement.parentElement.style.animation = 'showGame 0.5s'
+      img.addEventListener('load', () => img.classList.remove('loading'), { once: true });
+      img.src = img.getAttribute('data-src');
+      obs.unobserve(img);
     });
-    }, { threshold: 0.1 });
+  }, {
+    threshold: 0.1
+  });
 
-    lazyImages.forEach(image => observer.observe(image));
-
+  document.querySelectorAll('.gamecover').forEach(img => {
+    observer.observe(img);
+  });
 }
-fetchGames()
 
-
+fetchGames();
