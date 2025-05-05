@@ -5,7 +5,7 @@ on:
     - cron: '*/5 * * * *'
 
 jobs:
-  build-upstream:
+  sync-upstream:
     runs-on: ubuntu-latest
     steps:
       - name: Check out your fork
@@ -23,21 +23,20 @@ jobs:
           git remote add upstream https://github.com/qz-games/qz-games.github.io.git
           git fetch upstream
 
-      - name: Merge only if there are new commits
-        working-directory: ${{ github.workspace }}
+      - name: Merge upstream into main only if there are new commits
         run: |
           git checkout main
 
-          # count how many commits upstream/main is ahead of HEAD
-          AHEAD=$(git rev-list --count HEAD...upstream/main)
+          # count commits on upstream/main not in HEAD
+          NEW=$(git rev-list --count HEAD..upstream/main)
 
-          if [ "$AHEAD" -eq 0 ]; then
-            echo "✅ No new commits in upstream/main — skipping merge & push."
+          if [ "$NEW" -eq 0 ]; then
+            echo "✅ No new commits upstream — skipping."
             exit 0
           fi
 
-          echo "🔄 Found $AHEAD new commit(s) — merging…"
-          git merge upstream/main --no-edit
+          echo "🔄 $NEW new commit(s) on upstream — merging…"
+          git merge --no-edit upstream/main
 
-          echo "🚀 Pushing merged changes back to origin/main"
+          echo "🚀 Pushing merged changes to origin/main"
           git push origin main
