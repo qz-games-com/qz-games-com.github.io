@@ -68,9 +68,9 @@ function loadThemeCSS() {
         const mapScript = document.createElement("script");
         mapScript.type = "importmap";
         mapScript.textContent = JSON.stringify(importMap);
-        mapScript.addEventListener('onload', loadScript('./scripts/earth.js', 'module'))
         console.log('loadlol');
-        document.head.appendChild(mapScript);
+        document.head.appendChild(mapScript); 
+        loadScript('./scripts/earth.js', 'module')
     }
     console.log ('crazy')
     link.addEventListener('load',  loadcssfile());
