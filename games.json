@@ -156,7 +156,7 @@
         "name": "MotoX3M Pool",
         "gradient": "red",
         "catagory": "casual driver flash",
-        "link": "../Games01/motox3mpool",
+        "link": "../Games01/motox3m-pool",
         "type": "html"   
     },
     "moto x3m spooky": {
@@ -164,7 +164,7 @@
         "name": "MotoX3M Spooky",
         "gradient": "red",
         "catagory": "casual driver flash",
-        "link": "../Games01/motox3mspooky",
+        "link": "../Games01/motox3m-spooky",
         "type": "html"   
     },
     "moto x3m winter": {
@@ -172,7 +172,7 @@
         "name": "MotoX3M Winter",
         "gradient": "red",
         "catagory": "casual driver flash",
-        "link": "../Games01/motox3mwinter",
+        "link": "../Games01/motox3m-winter",
         "type": "html"   
     },
     "pizza tower": {
