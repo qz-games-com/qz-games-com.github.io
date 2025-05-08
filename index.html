@@ -2,10 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-
+        <meta name="theme-color" content="#454545">
         <title>
-            Qz Games
-        </title>
+            Quartz Games
+        </title> 
+        
+        <meta property="og:title" content="Quartz Games" />
+        <meta name="title" content="Quartz Games" />
+        <meta name="author" content="Quartz Games" />
         <link rel="stylesheet" href="./main.css">
         
         <link rel="stylesheet" href="./animations.css">
@@ -13,10 +17,23 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <meta name="language" content="English">
+        <script type="application/ld+json">
+            {
+              "@context": "http://schema.org",
+              "@type": "WebPage",
+              "name": "Quartz Games",
+              "logo": "https://qz-games.github.io/logo-search.png"
+            }
+        </script>
+       
+        <meta name="description" property="og:description" content="Play high quality unblocked games anywhere!"/>
+        <meta name="description" content="Play high quality unblocked games anywhere!" />
 
         <link rel="icon" href="./Q.png">
-        
+
         <link rel="manifest" href="manifest.json">
+
+        <meta name="keywords" content="qz games, quartz games, qz games unblocked, quartz games unblocked, unblocked games github, games, github unblocked, unblocked sites github, unblocked games, school, games, games to play, games on the web, html5 games, qz, quartz, play games online,  online games, quartz games site"/>
         
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -31,7 +48,13 @@
         </script>
         <script src="./cookieshandle.js"></script>
         <script src="./themeshandler.js"></script>
-
+        <script>
+            window.addEventListener('load', function () {
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js')
+              }
+            })
+        </script>
 
     </head>
 

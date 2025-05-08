@@ -86,5 +86,157 @@
         "catagory": "casual sport",
         "link": "../Games01/gbase",
         "type": "html"   
-    }   
+    },
+    "basket bros": {
+        "cover": "basket.png",
+        "name": "Basket Bros",
+        "gradient": "orange",
+        "catagory": "casual sport",
+        "link": "../Games01/basketbros",
+        "type": "html"   
+    },
+    "basketball stars": {
+        "cover": "basketball-s.png",
+        "name": "Basketball Stars",
+        "gradient": "orange",
+        "catagory": "casual sport",
+        "link": "../Games01/basketball-stars",
+        "type": "html"   
+    },
+    "flip the gun": {
+        "cover": "flip.png",
+        "name": "Flip The Gun!",
+        "gradient": "yellow",
+        "catagory": "casual",
+        "link": "../Games01/FLIPTHEGUN",
+        "type": "html"   
+    },
+    "blockblast": {
+        "cover": "block.png",
+        "name": "Blockblast (clone)",
+        "gradient": "blue",
+        "catagory": "casual puzzle",
+        "link": "../Games01/blockblast",
+        "type": "html"   
+    },
+    "funny battle 2": {
+        "cover": "funnyb.png",
+        "name": "Funny Battle 2",
+        "gradient": "white",
+        "catagory": "casual shooter",
+        "link": "../Games01/FUNNYBATTLE2",
+        "type": "html"   
+    },
+    "geometry dash": {
+        "cover": "GDASH.png",
+        "name": "Geometry Dash",
+        "gradient": "lightblue",
+        "catagory": "casual",
+        "link": "../Games01/geodash",
+        "type": "html"   
+    },
+    "moto x3m": {
+        "cover": "moto.png",
+        "name": "MotoX3M",
+        "gradient": "red",
+        "catagory": "casual driver flash",
+        "link": "../Games01/motox3m",
+        "type": "html"   
+    },
+    "moto x3m 2": {
+        "cover": "moto2.png",
+        "name": "MotoX3M 2",
+        "gradient": "red",
+        "catagory": "casual driver flash",
+        "link": "../Games01/motox3m2",
+        "type": "html"   
+    },
+    "moto x3m pool": {
+        "cover": "motop.png",
+        "name": "MotoX3M Pool",
+        "gradient": "red",
+        "catagory": "casual driver flash",
+        "link": "../Games01/motox3mpool",
+        "type": "html"   
+    },
+    "moto x3m spooky": {
+        "cover": "motospook.png",
+        "name": "MotoX3M Spooky",
+        "gradient": "red",
+        "catagory": "casual driver flash",
+        "link": "../Games01/motox3mspooky",
+        "type": "html"   
+    },
+    "moto x3m winter": {
+        "cover": "motow.png",
+        "name": "MotoX3M Winter",
+        "gradient": "red",
+        "catagory": "casual driver flash",
+        "link": "../Games01/motox3mwinter",
+        "type": "html"   
+    },
+    "pizza tower": {
+        "cover": "pizzat.png",
+        "name": "pizza tower",
+        "gradient": "red",
+        "catagory": "casual driver",
+        "link": "../Games01/pizza-tower",
+        "type": "html"   
+    },
+    "push your luck": {
+        "cover": "pushyl.png",
+        "name": "Push Your Luck",
+        "gradient": "blue",
+        "catagory": "casual",
+        "link": "../Games01/push-your-luck",
+        "type": "html"   
+    },
+    "rocket league": {
+        "cover": "rocketl.png",
+        "name": "Rocket Luague",
+        "gradient": "blue",
+        "catagory": "casual driver",
+        "link": "../Games01/Rocket-League",
+        "type": "html"   
+    },
+    "tactical weapon pack 2": {
+        "cover": "twp.png",
+        "name": "Tactical Weapon Pack 2",
+        "gradient": "grey",
+        "catagory": "casual shooter",
+        "link": "../Games01/tactical-weapon-pack-2",
+        "type": "html"   
+    },
+    "time shooter 2": {
+        "cover": "tms.png",
+        "name": "Time Shooter 2",
+        "gradient": "red",
+        "catagory": "casual shooter",
+        "link": "../Games01/time-shooter-2",
+        "type": "html"   
+    },
+    "minecraft": {
+        "cover": "mc.png",
+        "name": "Minecraft",
+        "gradient": "brown",
+        "catagory": "casual sandbox",
+        "link": "../Games01/mc",
+        "type": "html"   
+    },
+    "madalin stunt cars 2": {
+        "cover": "msc.png",
+        "name": "Madalin Stunt Cars 2",
+        "gradient": "grey",
+        "catagory": "casual driver",
+        "link": "../Games01/madalin-stunt-cars-2",
+        "type": "html"   
+    },
+    "madalin stunt cars 3": {
+        "cover": "msc3.png",
+        "name": "Madalin Stunt Cars 3",
+        "gradient": "grey",
+        "catagory": "casual driver",
+        "link": "../Games01/madalin-stunt-cars-3",
+        "type": "html"   
+    }
 }
