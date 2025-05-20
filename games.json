@@ -238,5 +238,133 @@
         "catagory": "casual driver",
         "link": "../Games01/madalin-stunt-cars-3",
         "type": "html"   
+    },
+    "csgo clicker": {
+        "cover": "csgo.png",
+        "name": "CSGO Clicker",
+        "gradient": "grey",
+        "catagory": "casual idle",
+        "link": "../Games02/CSGO-CLICKER",
+        "type": "html"   
+    },
+    "air battle": {
+        "cover": "airb.png",
+        "name": "Air battle",
+        "gradient": "grey",
+        "catagory": "casual shooter",
+        "link": "../Games02/airbattle",
+        "type": "html"   
+    },
+    "cat tennis": {
+        "cover": "catte.png",
+        "name": "Cat Tennis",
+        "gradient": "white",
+        "catagory": "casual",
+        "link": "../Games02/cat tennis",
+        "type": "html"   
+    },
+    "drift boss": {
+        "cover": "driftb.png",
+        "name": "Drift boss",
+        "gradient": "yellow",
+        "catagory": "casual driver",
+        "link": "../Games02/drift-boss",
+        "type": "html"   
+    },
+    "superhot": {
+        "cover": "superhot.png",
+        "name": "Superhot",
+        "gradient": "red",
+        "catagory": "casual shooter",
+        "link": "../Games02/superhot",
+        "type": "html"   
+    },
+    "tomb of the mask": {
+        "cover": "tombo.png",
+        "name": "Tomb of the Mask",
+        "gradient": "purple",
+        "catagory": "casual",
+        "link": "../Games02/tomb",
+        "type": "html"   
+    },
+    "stickman-hook": {
+        "cover": "stickhook.png",
+        "name": "Stickman Hook",
+        "gradient": "red",
+        "catagory": "casual",
+        "link": "../Games02/stickman-hook",
+        "type": "html"   
+    },
+    "1v1 lol": {
+        "cover": "1v1lol.png",
+        "name": "1v1 lol",
+        "gradient": "green",
+        "catagory": "casual shooter multiplayer",
+        "link": "../Games02/lol",
+        "type": "html"   
+    },
+    "cookie clicker": {
+        "cover": "cookie.png",
+        "name": "Cookie Clicker",
+        "gradient": "brown",
+        "catagory": "casual idle",
+        "link": "../Games02/cookieclicker-master",
+        "type": "html"   
+    },
+    "fruit ninja": {
+        "cover": "fruitn.png",
+        "name": "Fruit Ninja",
+        "gradient": "brown",
+        "catagory": "casual",
+        "link": "../Games02/fruitninja",
+        "type": "html"   
+    },
+    "backrooms": {
+        "cover": "backrooms.png",
+        "name": "Backrooms",
+        "gradient": "yellow",
+        "catagory": "casual horror",
+        "link": "../Games02/backrooms",
+        "type": "html"   
+    },
+    "basket random": {
+        "cover": "basketran.png",
+        "name": "Basket random",
+        "gradient": "orange",
+        "catagory": "casual sport",
+        "link": "../Games02/basketrandom",
+        "type": "html"   
+    },
+    "drive mad": {
+        "cover": "drivem.png",
+        "name": "Drive mad",
+        "gradient": "yellow",
+        "catagory": "casual driver",
+        "link": "../Games02/drive-mad",
+        "type": "html"   
+    },
+    "hexgl": {
+        "cover": "hexgl.png",
+        "name": "Hexgl",
+        "gradient": "lightblue",
+        "catagory": "casual driver",
+        "link": "../Games02/HexGL-master",
+        "type": "html"   
+    },
+    "monkey mart": {
+        "cover": "monkeym.png",
+        "name": "Monkey Mart",
+        "gradient": "lightgreen",
+        "catagory": "casual idle",
+        "link": "../Games02/monkey-mart",
+        "type": "html"   
+    },
+    "sniper shot bullet time": {
+        "cover": "sniper.png",
+        "name": "Sniper Shot: Bullet Time",
+        "gradient": "lightblue",
+        "catagory": "casual shooter",
+        "link": "../Games02/SNIPERFIXED",
+        "type": "html"   
     }
 }
