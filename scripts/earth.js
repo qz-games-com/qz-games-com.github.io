@@ -434,7 +434,7 @@ scene.add(sunLight);
 const updateSunPosition = () => {
 const date = new Date();
 
-const hoursFromMidnight = date.getUTCHours() + date.getUTCMinutes() / 60;
+const hoursFromMidnight = date.getHours() + date.getMinutes() / 60;
 const angleRadians = (hoursFromMidnight / 24) * Math.PI * 2;
 
 sunLight.position.x = Math.cos(angleRadians) * 5;

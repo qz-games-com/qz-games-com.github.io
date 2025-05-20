@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>QZ Games | Settings</title>
+  <title>Quartz Games | Settings</title>
   <link rel="icon" href="./Q.png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="./styles/settings.css">
   <link rel="stylesheet" href="./animations.css">
   <script>
@@ -23,116 +24,361 @@
       gtag('config', 'G-J246XWP5WQ');
   </script>
   <script src="./cookieshandle.js"></script>
+  <script src="./GlobalSettings.js"></script>
 </head>
 <body>
-  <div class="settings-container">
-    <nav>
-      <ul>
-        <div class="bottomm">
-          <div class="buttontopsetcont">
-            <a href="./index.html">
-              <button class="buttonhome" style="margin-right: 12px;">
-                <span class="material-icons notranslate">
-                  home
-                </span>
-                  <p>Home</p>
-              </button>
-            </a>
-          </div>
-        </div>
-        <li><button class="tab-btn active" data-target="main">General</button></li>
-        <li><button class="tab-btn" data-target="custom">Customize</button></li>
-        <li><button class="tab-btn" data-target="theme">Themes</button></li>
+  <div class="page-wrapper">
+    <header class="top-header">
+      <div class="logo">
+        <a href="./index.html" class="home-link">
+          <span class="material-icons">home</span>
+          <span>Home</span>
+        </a>
+      </div>
+      <h1 class="page-title">Settings</h1>
+      <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+        <span class="material-icons">menu</span>
+      </button>
+    </header>
 
-        
-      </ul>
-    </nav>
-    <main>
-      <section id="main" class="section active">
-
-        <div id="PreventP" class="toggle-container">
-            <span class="toggle-label">Prevent Page Close</span>
-            <label class="toggle-switch">
-            <input id="checkprevent" type="checkbox" />
-            <span class="slider"></span>
-            </label>
-        </div>
-  
+    <div class="settings-container">
+      <nav class="settings-nav">
+        <ul class="nav-list">
+          <li><button class="tab-btn active" data-target="main">General</button></li>
+          <li><button class="tab-btn" data-target="custom">Performance</button></li>
+          <li><button class="tab-btn" data-target="theme">Themes</button></li>
+        </ul>
+      </nav>
       
-      </section>
-      <section id="custom" class="section">
-       
-      </section>
-      <section id="theme" class="section">
+      <main class="settings-main">
+        <section id="main" class="section active">
+          <div class="section-header">
+            <h2>General Settings</h2>
+            <p class="section-description">Configure basic functionality of your Quartz Games experience</p>
+          </div>
 
-        <h1>Themes:</h1>
-        <div id="themes" class="themecont">
+          <div class="settings-group">
+            <div class="toggle-container">
+              <div class="toggle-info">
+                <span class="toggle-label">Prevent Page Close</span>
+                <span class="toggle-description">Show a confirmation before page is closed, prevents unintentional page close attempts (works on goguardian and others).</span>
+              </div>
+              <label class="toggle-switch">
+                <input id="checkprevent" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            
+          
+            <div class="toggle-container">
+              <div class="toggle-info">
+                <span class="toggle-label">Sound Effects</span>
+                <span class="toggle-description">Enable or disable sound.</span>
+              </div>
+              <label style="filter: brightness(50%);" class="toggle-switch" >
+                <input id="" type="checkbox"  disabled/>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+        
+        <section id="custom" class="section">
+          <div class="section-header">
+            <h2>Performance Settings</h2>
+            <p class="section-description">Customize your performance related settings.</p>
+          </div>
+          
+          <div class="settings-group">
+            <div class="toggle-container">
+              <div class="toggle-info">
+                <span class="toggle-label">Disable Animations</span>
+                <span class="toggle-description">Disables page animations, on deviced such as chromebooks this can improve loading times and performance. <br> (does not apply to games and may break some functions of the site) </span>
+              </div>
+              <label class="toggle-switch">
+                <input id="disab" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
 
-          <div id="themeoptioncent" class="themeoptioncen">
-
-            <div class="themeoption activenav" id="classic" themetype="default">
-              <div class="navtheme"></div>
-              <div class="texttheme">
+        </section>
+        
+        <section id="theme" class="section">
+          <div class="section-header">
+            <h2>Themes</h2>
+            <p class="section-description">Choose your preferred theme</p>
+          </div>
+          
+          <div class="themes-grid">
+            <div class="theme-option active" id="classic" data-theme="default">
+              <div class="theme-preview">
+                <div class="preview-nav"></div>
+              </div>
+              <div class="theme-info">
                 <h3>Classic</h3>
               </div>
             </div>
 
-            <div class="themeoption" style="background-color: rgb(14, 14, 14)" id="space" themetype="space">
-              <div class="navtheme" style="z-index: 1; background-color: rgba(34, 34, 34, 0.651)"></div>
-              <div style="width: 100px; height: 100px; background-color: rgb(63, 63, 63); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; position: absolute;">
-
+            <div class="theme-option" id="space" data-theme="space">
+              <div class="theme-preview space-theme">
+                <div class="preview-nav"></div>
+                <div class="space-circle"></div>
               </div>
-              <div class="texttheme">
-                <h3 style="width: max-content;">Space | Black Hole</h3>
-              </div>
-            </div>
-
-            <div class="themeoption" style="background-color: rgb(14, 14, 14)" id="spaceearth" themetype="spaceearth">
-              <div class="navtheme" style="z-index: 1; background-color: rgba(34, 34, 34, 0.651)"></div>
-              <div style="width: 100px; height: 100px; background-color: lightblue; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; position: absolute;">
-
-              </div>
-              <div class="texttheme">
-                <h3 style="">Space | Earth</h3>
+              <div class="theme-info">
+                <h3>Space | Black Hole</h3>
               </div>
             </div>
 
-            <div class="themeoption" style="background-color: rgb(80, 55, 83);" id="midpurp" themetype="midnight-purple">
-              <div class="navtheme" style="background-color: rgba(53, 23, 54, 0.445);"></div>
-              <div class="texttheme">
-                <h3 style="width: max-content;">Midnight Purple</h3>
+            <div class="theme-option" id="spaceearth" data-theme="spaceearth">
+              <div class="theme-preview space-earth-theme">
+                <div class="preview-nav"></div>
+                <div class="earth-circle"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Space | Earth</h3>
               </div>
             </div>
 
-            <div class="themeoption" style="background-color: rgb(55, 182, 55);" id="mlg" themetype="mlg">
-              <div class="navtheme" style="background-color: rgba(30, 54, 23, 0.445);"></div>
-              <div class="texttheme">
-                <h3 style=" width: max-content;">MLG</h3>
+            <div class="theme-option" id="midpurp" data-theme="midnight-purple">
+              <div class="theme-preview midnight-purple-theme">
+                <div class="preview-nav"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Midnight Purple</h3>
               </div>
             </div>
 
-            <div class="themeoption" style="background-color: rgb(182, 106, 55);" id="mc" themetype="mc">
-              <div class="navtheme" style="background-color: rgba(30, 54, 23, 0.445);"></div>
-              <div class="texttheme">
-                <h3 style=" width: max-content;">Minecraft</h3>
+            <div class="theme-option" id="mlg" data-theme="mlg">
+              <div class="theme-preview mlg-theme">
+                <div class="preview-nav"></div>
+              </div>
+              <div class="theme-info">
+                <h3>MLG</h3>
               </div>
             </div>
 
-            <div class="themeoption" style="background-color: rgb(255, 255, 255);" id="light" themetype="light">
-              <div class="navtheme" style="background-color: rgba(172, 172, 172, 0.445);"></div>
-              <div class="texttheme">
-                <h3 style=" width: max-content;">Light</h3>
+            <div class="theme-option" id="mc" data-theme="mc">
+              <div class="theme-preview mc-theme">
+                <div class="preview-nav"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Minecraft</h3>
               </div>
             </div>
 
+            <div class="theme-option" id="light" data-theme="light">
+              <div class="theme-preview light-theme">
+                <div class="preview-nav"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Light</h3>
+              </div>
+            </div>
           </div>
-        </div>
-       
-      </section>
-    </main>
+        </section>
+      </main>
+    </div>
   </div>
-  <script src="./scripts/settings.js">
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  // Tab switching functionality
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('.section');
   
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Remove active class from all buttons and sections
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      sections.forEach(section => section.classList.remove('active'));
+      
+      // Add active class to clicked button and corresponding section
+      button.classList.add('active');
+      const target = button.getAttribute('data-target');
+      document.getElementById(target).classList.add('active');
+    });
+  });
+  
+  // Theme selection functionality
+  const themeOptions = document.querySelectorAll('.theme-option');
+  
+  themeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      themeOptions.forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+      
+      // Get selected theme type
+      const selectedTheme = option.getAttribute('data-theme');
+      
+      // Save theme preference to localStorage
+      setCookie('theme', selectedTheme);
+      
+      // Apply theme (this would connect to your theme system)
+      applyTheme(selectedTheme);
+    });
+  });
+  
+  // Mobile menu toggle functionality
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const navMenu = document.querySelector('.settings-nav');
+  
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+      
+      // Change menu icon based on state
+      const menuIcon = mobileMenuToggle.querySelector('.material-icons');
+      if (navMenu.classList.contains('show')) {
+        menuIcon.textContent = 'close';
+      } else {
+        menuIcon.textContent = 'menu';
+      }
+    });
+  }
+  
+  // Range slider functionality
+  const interfaceSlider = document.getElementById('interface-size');
+  const rangeValue = document.querySelector('.range-value');
+  
+  if (interfaceSlider && rangeValue) {
+    interfaceSlider.addEventListener('input', () => {
+      rangeValue.textContent = `${interfaceSlider.value}%`;
+    });
+  }
+  
+  // Prevent page close functionality
+  const preventPageClose = document.getElementById('checkprevent');
+  
+  if (preventPageClose) {
+    // Load saved preference
+    preventPageClose.checked = getCookie('preventPageClose') === 'true';
+    
+    preventPageClose.addEventListener('change', () => {
+      setCookie('preventPageClose', preventPageClose.checked);
+      
+      if (preventPageClose.checked) {
+        enablePreventPageClose();
+      } else {
+        disablePreventPageClose();
+      }
+    });
+    
+    // Initialize state based on saved preference
+    if (preventPageClose.checked) {
+      enablePreventPageClose();
+    }
+  }
+  
+  // Load and initialize all saved preferences
+  loadSavedPreferences();
+});
+
+// Apply selected theme
+function applyTheme(theme) {
+  console.log(`Theme applied: ${theme}`);
+  // This would connect to your existing theme system
+  // For example:
+  // document.body.setAttribute('data-theme', theme);
+}
+
+// Prevent page close functionality
+function enablePreventPageClose() {
+  window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+function disablePreventPageClose() {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+}
+
+function handleBeforeUnload(event) {
+  event.preventDefault();
+  event.returnValue = '';
+  return '';
+}
+
+// Load all saved preferences
+// Apply interface size scaling
+function applyInterfaceSize(size) {
+  // This sets a CSS variable that could be used to scale UI elements
+  document.documentElement.style.setProperty('--ui-scale', `${size / 100}`);
+  console.log(`Interface size set to ${size}%`);
+}
+
+// Responsive behavior when window is resized
+window.addEventListener('resize', handleWindowResize);
+
+function handleWindowResize() {
+  const isMobile = window.innerWidth <= 768;
+  const navMenu = document.querySelector('.settings-nav');
+  
+  if (!isMobile && navMenu) {
+    // Always show nav on desktop/tablet
+    navMenu.classList.remove('show');
+    
+    // Reset menu icon
+    const menuIcon = document.querySelector('.mobile-menu-toggle .material-icons');
+    if (menuIcon) {
+      menuIcon.textContent = 'menu';
+    }
+  }
+}
+
+function loadSavedPreferences() {
+  // Load theme preference
+  const savedTheme =getCookie('theme');
+  if (savedTheme) {
+    const themeElement = document.querySelector(`[data-theme="${savedTheme}"]`);
+    if (themeElement) {
+      themeElement.click();
+    }
+  }
+  
+  // Load notification preference
+  const disab = document.getElementById('disab');
+  
+  if (disab) {
+    // Load saved preference
+    disab.checked = getCookie('disableAnimations') === 'true';
+    
+    disab.addEventListener('change', () => {
+      setCookie('disableAnimations', disab.checked);
+      console.log(getCookie('disableAnimations'))
+    });
+
+  }
+
+ 
+
+  // Load sound effects preference
+  const soundEffectsToggle = document.getElementById('soundeffects');
+  if (soundEffectsToggle) {
+    const savedSoundEffects = localStorage.getItem('enableSoundEffects');
+    soundEffectsToggle.checked = savedSoundEffects === null ? true : savedSoundEffects === 'true';
+    
+    soundEffectsToggle.addEventListener('change', () => {
+      localStorage.setItem('enableSoundEffects', soundEffectsToggle.checked);
+    });
+  }
+
+  
+  // Handle interface size if available
+  const interfaceSizeSlider = document.getElementById('interface-size');
+  if (interfaceSizeSlider) {
+    const savedSize = localStorage.getItem('interfaceSize');
+    if (savedSize) {
+      interfaceSizeSlider.value = savedSize;
+      document.querySelector('.range-value').textContent = `${savedSize}%`;
+      applyInterfaceSize(savedSize);
+    }
+    
+    interfaceSizeSlider.addEventListener('change', () => {
+      const newSize = interfaceSizeSlider.value;
+      localStorage.setItem('interfaceSize', newSize);
+      applyInterfaceSize(newSize);
+    });
+  }
+}
   </script>
 </body>
 </html>
