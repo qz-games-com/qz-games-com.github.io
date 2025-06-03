@@ -366,5 +366,21 @@
         "catagory": "casual shooter",
         "link": "../Games02/SNIPERFIXED",
         "type": "html"   
+    },
+    "speedstars": {
+        "cover": "speedstars.png",
+        "name": "Speedstars",
+        "gradient": "red",
+        "catagory": "casual sports",
+        "link": "../Games02/speed-stars",
+        "type": "html"   
+    },
+    "granny": {
+        "cover": "granny.png",
+        "name": "Granny",
+        "gradient": "grey",
+        "catagory": "casual horror",
+        "link": "../Games02/granny",
+        "type": "html"   
     }
 }
