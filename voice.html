@@ -2,140 +2,544 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Voice Chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: rgba(42, 42, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+      max-width: 400px;
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #667eea;
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.02);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(45deg, #56ab2f 0%, #a8e6cf 100%);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(86, 171, 47, 0.3);
+    }
+
+    .btn-danger {
+      background: linear-gradient(45deg, #ff6b6b 0%, #ee5a52 100%);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-mute {
+      background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .btn-mute:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);
+    }
+
+    .btn-mute.muted {
+      background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 100%);
+    }
+
+    #controls {
+      text-align: center;
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .status.connected {
+      background: rgba(86, 171, 47, 0.2);
+      border-color: rgba(86, 171, 47, 0.3);
+      color: #a8e6cf;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #667eea;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .audio-controls {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .remote-audio {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h2>Voice Chat</h2>
+  <div class="container">
+    <h1>🎙️ Voice Chat</h1>
 
-  <div>
-    <input id="roomName" placeholder="Room Name" />
-    <input id="roomPass" type="password" placeholder="Password" />
-    <button onclick="createRoom()">Create Room</button>
-    <button onclick="joinRoom()">Join Room</button>
-  </div>
+    <div id="joinForm">
+      <div class="form-group">
+        <input id="roomName" placeholder="Enter room name" maxlength="50" />
+      </div>
+      <div class="form-group">
+        <input id="roomPass" type="password" placeholder="Enter password" maxlength="50" />
+      </div>
+      <div class="button-group">
+        <button class="btn-primary" onclick="createRoom()">Create Room</button>
+        <button class="btn-secondary" onclick="joinRoom()">Join Room</button>
+      </div>
+    </div>
 
-  <div id="controls" style="display:none;">
-    <button onclick="toggleMute()">Mute/Unmute</button>
-    <button onclick="leaveCall()">Leave Call</button>
+    <div id="controls" style="display:none;">
+      <div class="button-group">
+        <button id="muteBtn" class="btn-mute" onclick="toggleMute()">🎤 Unmuted</button>
+        <button class="btn-danger" onclick="leaveCall()">📞 Leave Call</button>
+      </div>
+      <div class="audio-controls" id="audioContainer"></div>
+    </div>
+
+    <div id="status" class="status" style="display:none;"></div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    // Your Firebase config
     const firebaseConfig = {
-    apiKey: "AIzaSyBaLTDvJY8ru-sjyfjcr4eTvZpUWp8uEYE",
-    authDomain: "musicnow-abc0e.firebaseapp.com",
-    databaseURL: "https://musicnow-abc0e-default-rtdb.firebaseio.com",
-    projectId: "musicnow-abc0e",
-    storageBucket: "musicnow-abc0e.firebasestorage.app",
-    messagingSenderId: "432927188114",
-    appId: "1:432927188114:web:428311a29b56fa972ff24b",
-    measurementId: "G-RWBCBKWJ54"
-  };
+      apiKey: "AIzaSyBaLTDvJY8ru-sjyfjcr4eTvZpUWp8uEYE",
+      authDomain: "musicnow-abc0e.firebaseapp.com",
+      databaseURL: "https://musicnow-abc0e-default-rtdb.firebaseio.com",
+      projectId: "musicnow-abc0e",
+      storageBucket: "musicnow-abc0e.firebasestorage.app",
+      messagingSenderId: "432927188114",
+      appId: "1:432927188114:web:428311a29b56fa972ff24b",
+      measurementId: "G-RWBCBKWJ54"
+    };
+    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     let localStream;
     let peerConnection;
     let isMuted = false;
+    let currentRoom = null;
+    let isConnected = false;
+    let userCount = 0;
+    
     const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
 
+    function showStatus(message, isConnected = false) {
+      const statusEl = document.getElementById("status");
+      statusEl.textContent = message;
+      statusEl.style.display = "block";
+      statusEl.className = isConnected ? "status connected" : "status";
+    }
+
     async function createRoom() {
-      const name = document.getElementById("roomName").value;
-      const pass = document.getElementById("roomPass").value;
+      const name = document.getElementById("roomName").value.trim();
+      const pass = document.getElementById("roomPass").value.trim();
+      
+      if (!name || !pass) {
+        showStatus("Please enter both room name and password");
+        return;
+      }
+
+      showStatus("Creating room...");
       const roomRef = db.ref("rooms/" + name);
 
-      const snap = await roomRef.get();
-      if (snap.exists()) return alert("Room already exists!");
+      try {
+        const snap = await roomRef.get();
+        if (snap.exists()) {
+          showStatus("Room already exists! Try joining instead.");
+          return;
+        }
 
-      await roomRef.set({ password: pass });
+        await roomRef.set({ 
+          password: pass,
+          created: Date.now(),
+          users: 1
+        });
 
-      startCall(true, roomRef);
+        currentRoom = name;
+        showStatus("Room created successfully!");
+        startCall(true, roomRef);
+      } catch (error) {
+        showStatus("Error creating room: " + error.message);
+      }
     }
 
     async function joinRoom() {
-      const name = document.getElementById("roomName").value;
-      const pass = document.getElementById("roomPass").value;
+      const name = document.getElementById("roomName").value.trim();
+      const pass = document.getElementById("roomPass").value.trim();
+      
+      if (!name || !pass) {
+        showStatus("Please enter both room name and password");
+        return;
+      }
+
+      showStatus("Joining room...");
       const roomRef = db.ref("rooms/" + name);
 
-      const snap = await roomRef.get();
-      if (!snap.exists()) return alert("Room doesn't exist.");
-      if (snap.val().password !== pass) return alert("Wrong password!");
+      try {
+        const snap = await roomRef.get();
+        if (!snap.exists()) {
+          showStatus("Room doesn't exist. Create it first!");
+          return;
+        }
+        
+        const roomData = snap.val();
+        if (roomData.password !== pass) {
+          showStatus("Wrong password!");
+          return;
+        }
 
-      startCall(false, roomRef);
+        if (roomData.users >= 2) {
+          showStatus("Room is full! Maximum 2 users allowed.");
+          return;
+        }
+
+        // Increment user count
+        await roomRef.child("users").set((roomData.users || 0) + 1);
+        
+        currentRoom = name;
+        showStatus("Joined room successfully!");
+        startCall(false, roomRef);
+      } catch (error) {
+        showStatus("Error joining room: " + error.message);
+      }
     }
 
     async function startCall(isCaller, roomRef) {
-      document.getElementById("controls").style.display = "block";
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      peerConnection = new RTCPeerConnection(servers);
+      try {
+        showStatus("Connecting...");
+        document.getElementById("joinForm").style.display = "none";
+        document.getElementById("controls").style.display = "block";
 
-      localStream.getTracks().forEach(track => {
-  peerConnection.addTrack(track, localStream);
-});
+        // Get user media
+        localStream = await navigator.mediaDevices.getUserMedia({ 
+          audio: { 
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
 
+        peerConnection = new RTCPeerConnection(servers);
 
-      peerConnection.ontrack = event => {
-        const audio = document.createElement('audio');
-audio.srcObject = event.streams[0];
-audio.autoplay = true;
-audio.controls = true;
-document.body.appendChild(audio);
+        // Add local stream
+        localStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, localStream);
+        });
 
-      };
+        // Handle remote stream
+        peerConnection.ontrack = event => {
+          const audio = document.createElement('audio');
+          audio.srcObject = event.streams[0];
+          audio.autoplay = true;
+          audio.controls = true;
+          audio.className = 'remote-audio';
+          document.getElementById('audioContainer').appendChild(audio);
+          
+          showStatus("Connected to peer!", true);
+          isConnected = true;
+        };
 
-      const candidatesRef = roomRef.child(isCaller ? "callerCandidates" : "calleeCandidates");
-      peerConnection.onicecandidate = e => {
-        if (e.candidate) {
-          candidatesRef.push(JSON.stringify(e.candidate));
+        // Handle connection state
+        peerConnection.onconnectionstatechange = () => {
+          if (peerConnection.connectionState === 'connected') {
+            showStatus("Voice call connected!", true);
+            isConnected = true;
+          } else if (peerConnection.connectionState === 'disconnected') {
+            showStatus("Peer disconnected");
+            isConnected = false;
+          }
+        };
+
+        // Handle ICE candidates
+        const candidatesRef = roomRef.child(isCaller ? "callerCandidates" : "calleeCandidates");
+        peerConnection.onicecandidate = e => {
+          if (e.candidate) {
+            candidatesRef.push(JSON.stringify(e.candidate));
+          }
+        };
+
+        if (isCaller) {
+          showStatus("Waiting for someone to join...");
+          const offer = await peerConnection.createOffer();
+          await peerConnection.setLocalDescription(offer);
+          await roomRef.child("offer").set(JSON.stringify(offer));
+
+          roomRef.child("answer").on("value", async snapshot => {
+            const answer = snapshot.val();
+            if (answer && !peerConnection.currentRemoteDescription) {
+              const remoteDesc = new RTCSessionDescription(JSON.parse(answer));
+              await peerConnection.setRemoteDescription(remoteDesc);
+            }
+          });
+        } else {
+          roomRef.child("offer").once("value", async snapshot => {
+            const offer = snapshot.val();
+            if (offer) {
+              await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
+              const answer = await peerConnection.createAnswer();
+              await peerConnection.setLocalDescription(answer);
+              await roomRef.child("answer").set(JSON.stringify(answer));
+            }
+          });
         }
-      };
 
-      if (isCaller) {
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        await roomRef.child("offer").set(JSON.stringify(offer));
+        // Listen for remote ICE candidates
+        roomRef.child(isCaller ? "calleeCandidates" : "callerCandidates")
+          .on("child_added", async snapshot => {
+            const candidate = new RTCIceCandidate(JSON.parse(snapshot.val()));
+            await peerConnection.addIceCandidate(candidate);
+          });
 
-        roomRef.child("answer").on("value", async snapshot => {
-          const answer = snapshot.val();
-          if (answer && !peerConnection.currentRemoteDescription) {
-            const remoteDesc = new RTCSessionDescription(JSON.parse(answer));
-            await peerConnection.setRemoteDescription(remoteDesc);
+        // Monitor user count for cleanup
+        roomRef.child("users").on("value", snapshot => {
+          userCount = snapshot.val() || 0;
+          if (userCount === 0 && currentRoom) {
+            // Clean up room if no users
+            roomRef.remove();
           }
         });
-      } else {
-        roomRef.child("offer").once("value", async snapshot => {
-          const offer = snapshot.val();
-          if (offer) {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            await roomRef.child("answer").set(JSON.stringify(answer));
-          }
-        });
+
+      } catch (error) {
+        showStatus("Error starting call: " + error.message);
+        console.error("Call start error:", error);
       }
-
-      roomRef.child(isCaller ? "calleeCandidates" : "callerCandidates")
-        .on("child_added", async snapshot => {
-          const candidate = new RTCIceCandidate(JSON.parse(snapshot.val()));
-          await peerConnection.addIceCandidate(candidate);
-        });
     }
 
     function toggleMute() {
       if (!localStream) return;
+      
       isMuted = !isMuted;
       localStream.getAudioTracks()[0].enabled = !isMuted;
+      
+      const muteBtn = document.getElementById("muteBtn");
+      if (isMuted) {
+        muteBtn.textContent = "🔇 Muted";
+        muteBtn.classList.add("muted");
+      } else {
+        muteBtn.textContent = "🎤 Unmuted";
+        muteBtn.classList.remove("muted");
+      }
     }
 
-    function leaveCall() {
-      if (peerConnection) peerConnection.close();
-      if (localStream) localStream.getTracks().forEach(t => t.stop());
-      document.getElementById("controls").style.display = "none";
-      alert("You left the call.");
+    async function leaveCall() {
+      try {
+        // Clean up peer connection
+        if (peerConnection) {
+          peerConnection.close();
+        }
+        
+        // Stop local stream
+        if (localStream) {
+          localStream.getTracks().forEach(track => track.stop());
+        }
+
+        // Decrement user count and clean up room if needed
+        if (currentRoom) {
+          const roomRef = db.ref("rooms/" + currentRoom);
+          const snap = await roomRef.get();
+          
+          if (snap.exists()) {
+            const currentUsers = snap.val().users || 0;
+            const newUserCount = Math.max(0, currentUsers - 1);
+            
+            if (newUserCount === 0) {
+              // Delete the entire room if no users left
+              await roomRef.remove();
+            } else {
+              // Update user count
+              await roomRef.child("users").set(newUserCount);
+            }
+          }
+        }
+
+        // Reset UI
+        document.getElementById("controls").style.display = "none";
+        document.getElementById("joinForm").style.display = "block";
+        document.getElementById("audioContainer").innerHTML = "";
+        document.getElementById("roomName").value = "";
+        document.getElementById("roomPass").value = "";
+        
+        // Reset variables
+        currentRoom = null;
+        isConnected = false;
+        isMuted = false;
+        
+        showStatus("You left the call. Room cleaned up successfully.");
+        
+        // Hide status after 3 seconds
+        setTimeout(() => {
+          document.getElementById("status").style.display = "none";
+        }, 3000);
+
+      } catch (error) {
+        console.error("Error leaving call:", error);
+        showStatus("Error leaving call: " + error.message);
+      }
     }
+
+    // Clean up on page unload
+    window.addEventListener("beforeunload", () => {
+      if (currentRoom) {
+        leaveCall();
+      }
+    });
+
+    // Handle Enter key for room creation/joining
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && document.getElementById("joinForm").style.display !== "none") {
+        const roomName = document.getElementById("roomName").value.trim();
+        const roomPass = document.getElementById("roomPass").value.trim();
+        
+        if (roomName && roomPass) {
+          createRoom(); // Default to create room on Enter
+        }
+      }
+    });
   </script>
 </body>
 </html>
