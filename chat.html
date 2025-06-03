@@ -524,6 +524,7 @@
 
       const userRef = firebase.database().ref(`users/${user.uid}`);
       const snapshot = await userRef.once('value');
+      const DEFAULT_USERNAME = 'Bobby';
 
       let userData = snapshot.val();
       if (!userData) {
