@@ -60,6 +60,506 @@
 
     <body>
 
+        <!--overlay-->
+            <style>
+                  .widget {
+            width: 55px;
+            height: 55px;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            background: linear-gradient(135deg, #686868, #383838);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 8px rgba(0, 0, 0, 0.747);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+         
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .widget.loaded {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .widget.expanded {
+            width: 300px;
+            height: 160px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #666666, #3a3a3a);
+        }
+
+        .confetti {
+            font-size: 1.5rem;
+            position: absolute;
+            bottom: 15px;
+            transition: all 0.5s ease;
+        }
+
+        .widget.expanded .confetti {
+            top: 8px;
+            bottom: auto;
+            font-size: 1.2rem;
+        }
+
+        .countdown-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease 0.3s;
+            text-align: center;
+            color: white;
+        }
+
+        .widget.expanded .countdown-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .countdown-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .countdown-time {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .time-unit {
+            display: inline-block;
+            margin: 0 5px;
+            text-align: center;
+        }
+
+        .time-number {
+            display: block;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.6rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            animation: pulseww 2s infinite;
+        }
+
+        @keyframes pulseww {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .demo-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+
+        .demo-content h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .demo-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #5a6fd8;
+        }
+
+        /* Popup Overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Popup Content */
+        .popup {
+            background: rgb(48, 48, 48);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            max-width: 400px;
+            width: 90%;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.show .popup {
+            transform: scale(1);
+        }
+
+        .popup-header {
+            padding: 24px 24px 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        .popup-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #797979, #3f3f3f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .popup-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .popup-description {
+            color: #ebebeb;
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 0 8px;
+        }
+
+        .popup-buttons {
+            padding: 24px;
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3d3d3d, #272727);
+            color: white;
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #646464, #424242);
+            transform: translateY(-2px);
+            transition: 0.5s;
+            box-shadow: 0 8px 20px rgba(71, 71, 71, 0.4);
+        }
+
+        .btn-secondary {
+            background: #3f3f3f;
+            color: #ffffff;
+            transition: 0.5s;
+            border: 2px solid #e9ecef00;
+        }
+
+        .btn-secondary:hover {
+            background: #5e5e5e;
+            color: #ffffff;
+            transition: 0.5s;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        /* Floating particles animation */
+        .confettii {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffd93d;
+            animation: fall 3s linear infinite;
+        }
+
+        .confettii:nth-child(2) {
+            left: 20%;
+            animation-delay: 0.5s;
+            background: #ff6b6b;
+        }
+
+        .confettii:nth-child(3) {
+            left: 40%;
+            animation-delay: 1s;
+            background: #4ecdc4;
+        }
+
+        .confettii:nth-child(4) {
+            left: 60%;
+            animation-delay: 1.5s;
+            background: #45b7d1;
+        }
+
+        .confettii:nth-child(5) {
+            left: 80%;
+            animation-delay: 2s;
+            background: #96ceb4;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+            </style>
+
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+        <div class="confettii"></div>
+        <div class="confettii"></div>
+        <div class="confettii"></div>
+        <div class="confettii"></div>
+        <div class="confettii"></div>
+        
+        <div class="popup-header">
+            <button class="close-btn" onclick="closePopup()">&times;</button>
+            <div class="popup-icon">🎉</div>
+            <h2 class="popup-title">New feature available!</h2>
+            <p class="popup-description">The chat is now available for the final days of school!</p>
+        </div>
+        
+        <div class="popup-buttons">
+            <a href="/chat" class="btn btn-primary" onclick="goToChat()">Go to Chat</a>
+            <button class="btn btn-secondary" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+  // Check localStorage to see if the popup has already been shown
+let popupShown = localStorage.getItem('popupShown') === 'true';
+
+function showPopup() {
+    if (!popupShown) {
+        const overlay = document.getElementById('popupOverlay');
+        overlay.classList.add('show');
+        popupShown = true;
+        localStorage.setItem('popupShown', 'true');
+    }
+}
+
+function closePopup() {
+    const overlay = document.getElementById('popupOverlay');
+    overlay.classList.remove('show');
+}
+
+function goToChat() {
+    // Here you would typically redirect to your chat page
+    closePopup();
+}
+
+function resetAndReload() {
+    // Clear the flag in localStorage so the popup can show again, then reload
+    localStorage.removeItem('popupShown');
+    popupShown = false;
+    location.reload();
+}
+
+// Show popup when page loads (only if not shown before)
+window.addEventListener('load', function() {
+    setTimeout(showPopup, 500); // Small delay for better UX
+});
+
+</script>
+
+<div class="widget" id="widget">
+    <div class="confetti">🎉</div>
+    <div class="countdown-content">
+        <div class="countdown-title">Final day of School ends in</div>
+        <div class="countdown-time" id="countdown-time">
+            <div class="time-unit">
+                <span class="time-number" id="days">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-unit">
+                <span class="time-number" id="hours">00</span>
+                <span class="time-label">Hours</span>
+            </div>
+            <div class="time-unit">
+                <span class="time-number" id="minutes">00</span>
+                <span class="time-label">Minutes</span>
+            </div>
+            <div class="time-unit">
+                <span class="time-number" id="seconds">00</span>
+                <span class="time-label">Seconds</span>
+            </div>
+        </div>
+    </div>
+    <div class="click-hint">Click to expand!</div>
+</div>
+
+<script>
+    const widget = document.getElementById('widget');
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    
+    // Set the target date - you can change this to your actual end of school date
+    // Currently set to June 15, 2025 at 3:00 PM
+    const endOfSchoolDate = new Date('2025-06-03T15:00:00');
+
+    
+    let isExpanded = false;
+
+    // Fade in animation after page loads
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            widget.classList.add('loaded');
+        }, 500);
+    });
+
+    // Click to expand/collapse
+    widget.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        if (isExpanded) {
+            widget.classList.add('expanded');
+            updateCountdown();
+            startCountdown();
+        } else {
+            widget.classList.remove('expanded');
+            stopCountdown();
+        }
+    });
+
+    let countdownInterval;
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = endOfSchoolDate.getTime() - now;
+
+        if (distance < 0) {
+            daysEl.textContent = '00';
+            hoursEl.textContent = '00';
+            minutesEl.textContent = '00';
+            secondsEl.textContent = '00';
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        daysEl.textContent = days.toString().padStart(2, '0');
+        hoursEl.textContent = hours.toString().padStart(2, '0');
+        minutesEl.textContent = minutes.toString().padStart(2, '0');
+        secondsEl.textContent = seconds.toString().padStart(2, '0');
+    }
+
+    function startCountdown() {
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000); // Update every second
+    }
+
+    function stopCountdown() {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+    }
+</script>
+
         <!--NOTAFICATION-->
 
         <div id="notafication" class="notafication">
