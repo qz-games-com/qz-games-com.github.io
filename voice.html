@@ -73,13 +73,17 @@
       peerConnection = new RTCPeerConnection(servers);
 
       localStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, localStream);
-      });
+  peerConnection.addTrack(track, localStream);
+});
+
 
       peerConnection.ontrack = event => {
-        const audio = new Audio();
-        audio.srcObject = event.streams[0];
-        audio.play();
+        const audio = document.createElement('audio');
+audio.srcObject = event.streams[0];
+audio.autoplay = true;
+audio.controls = true;
+document.body.appendChild(audio);
+
       };
 
       const candidatesRef = roomRef.child(isCaller ? "callerCandidates" : "calleeCandidates");
