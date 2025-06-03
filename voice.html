@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice Chat</title>
+</head>
+<body>
+  <h2>Voice Chat</h2>
+
+  <div>
+    <input id="roomName" placeholder="Room Name" />
+    <input id="roomPass" type="password" placeholder="Password" />
+    <button onclick="createRoom()">Create Room</button>
+    <button onclick="joinRoom()">Join Room</button>
+  </div>
+
+  <div id="controls" style="display:none;">
+    <button onclick="toggleMute()">Mute/Unmute</button>
+    <button onclick="leaveCall()">Leave Call</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+    apiKey: "AIzaSyBaLTDvJY8ru-sjyfjcr4eTvZpUWp8uEYE",
+    authDomain: "musicnow-abc0e.firebaseapp.com",
+    databaseURL: "https://musicnow-abc0e-default-rtdb.firebaseio.com",
+    projectId: "musicnow-abc0e",
+    storageBucket: "musicnow-abc0e.firebasestorage.app",
+    messagingSenderId: "432927188114",
+    appId: "1:432927188114:web:428311a29b56fa972ff24b",
+    measurementId: "G-RWBCBKWJ54"
+  };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let localStream;
+    let peerConnection;
+    let isMuted = false;
+    const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+    async function createRoom() {
+      const name = document.getElementById("roomName").value;
+      const pass = document.getElementById("roomPass").value;
+      const roomRef = db.ref("rooms/" + name);
+
+      const snap = await roomRef.get();
+      if (snap.exists()) return alert("Room already exists!");
+
+      await roomRef.set({ password: pass });
+
+      startCall(true, roomRef);
+    }
+
+    async function joinRoom() {
+      const name = document.getElementById("roomName").value;
+      const pass = document.getElementById("roomPass").value;
+      const roomRef = db.ref("rooms/" + name);
+
+      const snap = await roomRef.get();
+      if (!snap.exists()) return alert("Room doesn't exist.");
+      if (snap.val().password !== pass) return alert("Wrong password!");
+
+      startCall(false, roomRef);
+    }
+
+    async function startCall(isCaller, roomRef) {
+      document.getElementById("controls").style.display = "block";
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      peerConnection = new RTCPeerConnection(servers);
+
+      localStream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, localStream);
+      });
+
+      peerConnection.ontrack = event => {
+        const audio = new Audio();
+        audio.srcObject = event.streams[0];
+        audio.play();
+      };
+
+      const candidatesRef = roomRef.child(isCaller ? "callerCandidates" : "calleeCandidates");
+      peerConnection.onicecandidate = e => {
+        if (e.candidate) {
+          candidatesRef.push(JSON.stringify(e.candidate));
+        }
+      };
+
+      if (isCaller) {
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        await roomRef.child("offer").set(JSON.stringify(offer));
+
+        roomRef.child("answer").on("value", async snapshot => {
+          const answer = snapshot.val();
+          if (answer && !peerConnection.currentRemoteDescription) {
+            const remoteDesc = new RTCSessionDescription(JSON.parse(answer));
+            await peerConnection.setRemoteDescription(remoteDesc);
+          }
+        });
+      } else {
+        roomRef.child("offer").once("value", async snapshot => {
+          const offer = snapshot.val();
+          if (offer) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            await roomRef.child("answer").set(JSON.stringify(answer));
+          }
+        });
+      }
+
+      roomRef.child(isCaller ? "calleeCandidates" : "callerCandidates")
+        .on("child_added", async snapshot => {
+          const candidate = new RTCIceCandidate(JSON.parse(snapshot.val()));
+          await peerConnection.addIceCandidate(candidate);
+        });
+    }
+
+    function toggleMute() {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks()[0].enabled = !isMuted;
+    }
+
+    function leaveCall() {
+      if (peerConnection) peerConnection.close();
+      if (localStream) localStream.getTracks().forEach(t => t.stop());
+      document.getElementById("controls").style.display = "none";
+      alert("You left the call.");
+    }
+  </script>
+</body>
+</html>
