@@ -26,14 +26,14 @@
 
         .container {
             width: 100%;
-
             height: 600px;
             background: rgb(59, 59, 59);
-            border-radius: 0px;
+            border-radius: 0;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative; /* so notification can be positioned */
         }
 
         .auth-container {
@@ -119,6 +119,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .user-info {
@@ -162,7 +163,6 @@
         .messages-container {
             flex: 1;
             overflow-y: scroll;
-            
             padding: 20px;
             background: #3f3f3f;
             max-height: 380px;
@@ -340,6 +340,25 @@
             margin: 20px;
             text-align: center;
         }
+
+        /* ↓ New: Notification bar styling ↓ */
+        #notification {
+            position: absolute;
+            top: 80px; /* a little below the chat-header */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #notification.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -397,6 +416,9 @@
                 </div>
             </div>
 
+            <!-- ↓ New: Notification bar ↓ -->
+            <div id="notification" class="hidden"></div>
+
             <div id="bannedNotice" class="banned-message hidden">
                 You have been banned from the chat.
             </div>
@@ -424,7 +446,6 @@
               <button class="admin-btn" onclick="kickUser()">Kick</button>
             </div>
             
-
             <div class="input-container">
                 <div class="input-group">
                     <input type="text" class="message-input" id="messageInput" placeholder="Type your message..." maxlength="500">
@@ -435,17 +456,12 @@
         </div>
     </div>
 
-   
-      
-  <script id="script1" src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js" type="module"></script>
-  <script id="script2" src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js" type="module"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js" type="module"></script>
-
+    <!-- Firebase v9 compat scripts -->
+    <script id="script1" src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js" type="module"></script>
+    <script id="script2" src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js" type="module"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js" type="module"></script>
 
     <script>
-              
-     
-
       const firebaseConfig = {
         apiKey: "AIzaSyAbtjH2ZZHD9o4yJ5SRBYZ08JVuKQeUrok",
         authDomain: "szgames-d9272.firebaseapp.com",
@@ -455,545 +471,582 @@
         messagingSenderId: "733530201740",
         appId: "1:733530201740:web:e0e6e8f287086121ab65a9",
         measurementId: "G-YQP9MNX8LF"
-        };
-                    firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-            const database = firebase.database();
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const database = firebase.database();
 
-  let currentUser = null;
-  let isOnCooldown = false;
-  let onlineUsersRef = null;
-  let messagesRef = null;
-  let bannedUsers = new Set();
-  let timedOutUsers = new Map();
+      let currentUser = null;
+      let isOnCooldown = false;
+      let onlineUsersRef = null;
+      let messagesRef = null;
+      let bannedUsers = new Set();
+      let timedOutUsers = new Map();
 
-  // Bad words filter
-  const badWords = ['damn', 'shit', 'fuck', 'bitch', 'ass', 'nigga', 'nigger'];
+      // Bad words filter
+      const badWords = ['nigga', 'nigger'];
 
-  // Restricted guest names
-  const restrictedNames = ['admin', 'owner', 'moderator', 'mod', 'administrator', 'system', 'bot'];
+      // Restricted guest names
+      const restrictedNames = ['admin', 'owner', 'moderator', 'mod', 'administrator', 'system', 'bot'];
 
-
-  function filterBadWords(text) {
-    let filtered = text;
-    badWords.forEach(word => {
-      const regex = new RegExp(word, 'gi');
-      filtered = filtered.replace(regex, '*'.repeat(word.length));
-    });
-    return filtered;
-  }
-
-  // Utility: store a “banned guest” flag in localStorage so they cannot re-enter under the same username
-  function markGuestAsPermanentlyBanned(username) {
-    localStorage.setItem(`banned_guest_${username}`, 'true');
-  }
-  function isGuestPermanentlyBanned(username) {
-    return localStorage.getItem(`banned_guest_${username}`) === 'true';
-  }
-
-
-  async function showLogin() {
-    document.getElementById('authChoice').classList.add('hidden');
-    document.getElementById('loginForm').classList.remove('hidden');
-  }
-
-  function showGuest() {
-    document.getElementById('authChoice').classList.add('hidden');
-    document.getElementById('guestForm').classList.remove('hidden');
-  }
-
-  function showAuthChoice() {
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('guestForm').classList.add('hidden');
-    document.getElementById('authChoice').classList.remove('hidden');
-  }
-
-  async function login() {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    const errorDiv = document.getElementById('loginError');
-
-    if (!email || !password) {
-      errorDiv.textContent = 'Please fill in all fields';
-      return;
-    }
-
-    try {
-      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-
-      const userRef = firebase.database().ref(`users/${user.uid}`);
-      const snapshot = await userRef.once('value');
-      const DEFAULT_USERNAME = 'Bobby';
-
-      let userData = snapshot.val();
-      if (!userData) {
-        userData = {
-          email: user.email,
-          username: 'Bobby',
-          role: 'owner',
-          avatar: user.email.charAt(0).toUpperCase(),
-          joinedAt: Date.now()
-        };
-        await userRef.set(userData);
+      function filterBadWords(text) {
+        let filtered = text;
+        badWords.forEach(word => {
+          const regex = new RegExp(word, 'gi');
+          filtered = filtered.replace(regex, '*'.repeat(word.length));
+        });
+        return filtered;
       }
 
-      currentUser = {
-        uid: user.uid,
-        ...userData,
-        isGuest: false
-      };
+      // Utility: store a “banned guest” flag in localStorage so they cannot re-enter under the same username
+      function markGuestAsPermanentlyBanned(username) {
+        localStorage.setItem(`banned_guest_${username}`, 'true');
+      }
+      function isGuestPermanentlyBanned(username) {
+        return localStorage.getItem(`banned_guest_${username}`) === 'true';
+      }
 
-      initializeChat();
-    } catch (error) {
-      errorDiv.textContent = error.message;
-    }
-  }
+      async function showLogin() {
+        document.getElementById('authChoice').classList.add('hidden');
+        document.getElementById('loginForm').classList.remove('hidden');
+      }
 
-  async function enterAsGuest() {
-    const username = document.getElementById('guestUsername').value.trim();
-    const errorDiv = document.getElementById('guestError');
+      function showGuest() {
+        document.getElementById('authChoice').classList.add('hidden');
+        document.getElementById('guestForm').classList.remove('hidden');
+      }
 
-    if (!username) {
-      errorDiv.textContent = 'Please enter a username';
-      return;
-    }
+      function showAuthChoice() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('guestForm').classList.add('hidden');
+        document.getElementById('authChoice').classList.remove('hidden');
+      }
 
-    if (username.length < 3) {
-      errorDiv.textContent = 'Username must be at least 3 characters';
-      return;
-    }
+      async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const errorDiv = document.getElementById('loginError');
 
-    if (restrictedNames.some(name => username.toLowerCase().includes(name.toLowerCase()))) {
-      errorDiv.textContent = 'This username is restricted';
-      return;
-    }
+        if (!email || !password) {
+          errorDiv.textContent = 'Please fill in all fields';
+          return;
+        }
 
-    // Check localStorage to see if this guest username was previously banned
-    if (isGuestPermanentlyBanned(username)) {
-      errorDiv.textContent = 'You are permanently banned from joining as a guest.';
-      return;
-    }
+        try {
+          const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+          const user = userCredential.user;
 
-    // Check if username is already taken
-    const usersRef = database.ref('onlineUsers');
-    const snapshot = await usersRef.once('value');
-    const onlineUsers = snapshot.val() || {};
+          const userRef = firebase.database().ref(`users/${user.uid}`);
+          const snapshot = await userRef.once('value');
+          const DEFAULT_USERNAME = 'Bobby';
 
-    const usernameTaken = Object.values(onlineUsers).some(user =>
-      user.username.toLowerCase() === username.toLowerCase()
-    );
+          let userData = snapshot.val();
+          if (!userData) {
+            userData = {
+              email: user.email,
+              username: 'Bobby',
+              role: 'owner',
+              avatar: user.email.charAt(0).toUpperCase(),
+              joinedAt: Date.now()
+            };
+            await userRef.set(userData);
+          }
 
-    if (usernameTaken) {
-      errorDiv.textContent = 'Username is already taken';
-      return;
-    }
+          currentUser = {
+            uid: user.uid,
+            ...userData,
+            isGuest: false
+          };
 
-    currentUser = {
-      uid: 'guest_' + Date.now(),
-      username: username,
-      role: 'guest',
-      avatar: username.charAt(0).toUpperCase(),
-      isGuest: true
-    };
-    document.getElementById('adminPanel').style.display = 'none';
-    initializeChat();
-  }
+          initializeChat();
+        } catch (error) {
+          errorDiv.textContent = error.message;
+        }
+      }
 
-  function listenForKick() {
-    if (!currentUser) return;
-    const kickRef = database.ref(`kicks/${currentUser.uid}`);
-    kickRef.on('value', (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        document.body.innerHTML = `
-          <div style="padding:40px;text-align:center;background:#ccc;min-height:100vh">
-            <h2>${data.message}</h2>
-            <p>You may reload to rejoin.</p>
-            <button onclick="location.reload()">Reload</button>
+      async function enterAsGuest() {
+        const username = document.getElementById('guestUsername').value.trim();
+        const errorDiv = document.getElementById('guestError');
+
+        if (!username) {
+          errorDiv.textContent = 'Please enter a username';
+          return;
+        }
+
+        if (username.length < 3) {
+          errorDiv.textContent = 'Username must be at least 3 characters';
+          return;
+        }
+
+        if (restrictedNames.some(name => username.toLowerCase().includes(name.toLowerCase()))) {
+          errorDiv.textContent = 'This username is restricted';
+          return;
+        }
+
+        // Check localStorage to see if this guest username was previously banned
+        if (isGuestPermanentlyBanned(username)) {
+          errorDiv.textContent = 'You are permanently banned from joining as a guest.';
+          return;
+        }
+
+        // Check if username is already taken
+        const usersRef = database.ref('onlineUsers');
+        const snapshot = await usersRef.once('value');
+        const onlineUsers = snapshot.val() || {};
+
+        const usernameTaken = Object.values(onlineUsers).some(user =>
+          user.username.toLowerCase() === username.toLowerCase()
+        );
+
+        if (usernameTaken) {
+          errorDiv.textContent = 'Username is already taken';
+          return;
+        }
+
+        currentUser = {
+          uid: 'guest_' + Date.now(),
+          username: username,
+          role: 'guest',
+          avatar: username.charAt(0).toUpperCase(),
+          isGuest: true
+        };
+        document.getElementById('adminPanel').style.display = 'none';
+        initializeChat();
+      }
+
+      function listenForKick() {
+        if (!currentUser) return;
+        const kickRef = database.ref(`kicks/${currentUser.uid}`);
+        kickRef.on('value', (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            document.body.innerHTML = `
+              <div style="padding:40px;text-align:center;background:#ccc;min-height:100vh">
+                <h2>${data.message}</h2>
+                <p>You may reload to rejoin.</p>
+                <button onclick="location.reload()">Reload</button>
+              </div>
+            `;
+          }
+        });
+      }
+
+      function showNotification(message) {
+        const notif = document.getElementById('notification');
+        notif.textContent = message;
+        notif.classList.remove('hidden');
+        // force reflow so transition works even if hidden→show quickly
+        notif.offsetWidth;
+        notif.classList.add('show');
+
+        // After 3 seconds, fade out
+        setTimeout(() => {
+          notif.classList.remove('show');
+          // after transition, re‐hide
+          setTimeout(() => notif.classList.add('hidden'), 300);
+        }, 3000);
+      }
+
+      async function initializeChat() {
+        // 1) One-time check: Is this user already banned in the database?
+        const bannedRef = database.ref(`banned/${currentUser.uid}`);
+        const bannedSnapshot = await bannedRef.once('value');
+
+        if (bannedSnapshot.exists()) {
+          // If they’re a guest, mark localStorage so they can’t re-create same guest
+          if (currentUser.isGuest) {
+            markGuestAsPermanentlyBanned(currentUser.username);
+          }
+
+          document.getElementById('bannedNotice').classList.remove('hidden');
+          document.getElementById('messagesContainer').style.display = 'none';
+          document.getElementById('adminPanel').style.display = 'none';
+          document.querySelector('.input-container').style.display = 'none';
+          return;
+        }
+
+        // 2) Show chat UI
+        document.getElementById('authChoice').classList.add('hidden');
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('guestForm').classList.add('hidden');
+        document.getElementById('chatInterface').classList.remove('hidden');
+
+        // 3) Populate header
+        document.getElementById('username').textContent = currentUser.username;
+        document.getElementById('userAvatar').textContent = currentUser.avatar;
+
+        // Only owners see the admin panel. Guests/non-owners never see it.
+        if (currentUser.role === 'owner') {
+          const userTag = document.getElementById('userTag');
+          userTag.textContent = 'OWNER';
+          userTag.classList.remove('hidden');
+          document.getElementById('adminPanel').classList.remove('hidden');
+        } else {
+          document.getElementById('adminPanel').classList.add('hidden');
+        }
+
+        // 4) Add self to onlineUsers
+        onlineUsersRef = database.ref(`onlineUsers/${currentUser.uid}`);
+        await onlineUsersRef.set({
+          username: currentUser.username,
+          role: currentUser.role,
+          avatar: currentUser.avatar,
+          lastSeen: Date.now()
+        });
+        // Remove on disconnect
+        onlineUsersRef.onDisconnect().remove();
+
+        // 5) Listen for online count
+        database.ref('onlineUsers').on('value', (snapshot) => {
+          const users = snapshot.val() || {};
+          const count = Object.keys(users).length;
+          document.getElementById('onlineCount').textContent = `${count} online`;
+        });
+
+        // 6) Listen for new messages and deletions
+        messagesRef = database.ref('messages').limitToLast(50);
+        messagesRef.on('child_added', displayMessage);
+        messagesRef.on('child_removed', (snapshot) => {
+          const messageId = snapshot.key;
+          const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+          if (messageElement) {
+            messageElement.remove();
+          }
+        });
+
+        // 7) If owner, keep track of banned list
+        if (currentUser.role === 'owner') {
+          database.ref('banned').on('value', (snapshot) => {
+            // no further action needed here unless you want to update a UI list
+          });
+        }
+
+        // 8) Kick listener
+        listenForKick();
+
+        // 9) Real-time ban listener (enforce immediately if owner bans you)
+        database.ref(`banned/${currentUser.uid}`).on('value', (snapshot) => {
+          if (snapshot.exists()) {
+            if (currentUser.isGuest) {
+              markGuestAsPermanentlyBanned(currentUser.username);
+            }
+            document.getElementById('bannedNotice').classList.remove('hidden');
+            document.getElementById('messagesContainer').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.querySelector('.input-container').style.display = 'none';
+          }
+        });
+
+        // 10) Real-time timeout listener (enforce immediately)
+        const timeoutRef = database.ref(`timeouts/${currentUser.uid}`);
+        timeoutRef.on('value', (snapshot) => {
+          const messageInput = document.getElementById('messageInput');
+          const sendBtn = document.getElementById('sendBtn');
+          const cooldownTimer = document.getElementById('cooldownTimer');
+
+          if (!snapshot.exists()) {
+            // No timeout entry = re-enable immediately
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            cooldownTimer.classList.add('hidden');
+            return;
+          }
+
+          // Node exists, read the timeoutEnd timestamp
+          const { timeoutEnd } = snapshot.val();
+          const now = Date.now();
+
+          if (now >= timeoutEnd) {
+            // Timeout has expired → remove the DB entry and re-enable
+            timeoutRef.remove();
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            cooldownTimer.classList.add('hidden');
+          } else {
+            // Still within timeout window → keep input disabled, show remaining seconds
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            const secsLeft = Math.ceil((timeoutEnd - now) / 1000);
+            cooldownTimer.textContent = `Timed out: ${secsLeft}s`;
+            cooldownTimer.classList.remove('hidden');
+
+            let interval = setInterval(() => {
+              const now2 = Date.now();
+              if (now2 >= timeoutEnd) {
+                clearInterval(interval);
+                timeoutRef.remove();
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                cooldownTimer.classList.add('hidden');
+              } else {
+                const secs2 = Math.ceil((timeoutEnd - now2) / 1000);
+                cooldownTimer.textContent = `Timed out: ${secs2}s`;
+              }
+            }, 1000);
+          }
+        });
+
+        // 11) “Enter” key to send
+        const messageInput = document.getElementById('messageInput');
+        messageInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            sendMessage();
+          }
+        });
+
+        // ────────────────
+        // ↓ New: Listen for others joining/leaving ↓
+        const allOnlineRef = database.ref('onlineUsers');
+        allOnlineRef.on('child_added', (snap) => {
+          // If a new child appears AND it's not the current user → someone joined
+          if (snap.key !== currentUser.uid) {
+            const joinedUser = snap.val().username;
+            if(joinedUser === 'balopez1210@gmail.co') {
+              showNotification(`Bobby joined the chat`);
+
+            } else {
+              showNotification(`${joinedUser} joined the chat`);
+
+            }
+          }
+        });
+        allOnlineRef.on('child_removed', (snap) => {
+          // If a child is removed AND it's not the current user → someone left
+          if (snap.key !== currentUser.uid) {
+            const leftUser = snap.val().username;
+            showNotification(`${leftUser} left the chat`);
+          }
+        });
+        // ────────────────
+
+      }
+
+      async function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+        if (!message || isOnCooldown) return;
+
+        // Double-check: are we timed out?
+        const timeoutEntry = await database.ref(`timeouts/${currentUser.uid}`).once('value');
+        if (timeoutEntry.exists()) {
+          alert('You are currently timed out.');
+          return;
+        }
+
+        const filteredMessage = filterBadWords(message);
+        await database.ref('messages').push({
+          text: filteredMessage,
+          username: currentUser.username,
+          role: currentUser.role,
+          avatar: currentUser.avatar,
+          uid: currentUser.uid,
+          timestamp: Date.now()
+        });
+        messageInput.value = '';
+        startCooldown();
+      }
+
+      function startCooldown() {
+        isOnCooldown = true;
+        const sendBtn = document.getElementById('sendBtn');
+        const messageInput = document.getElementById('messageInput');
+        const cooldownTimer = document.getElementById('cooldownTimer');
+
+        sendBtn.disabled = true;
+        messageInput.disabled = true;
+
+        let timeLeft = 1;
+        cooldownTimer.textContent = `Cooldown: ${timeLeft}s`;
+        cooldownTimer.classList.remove('hidden');
+
+        const interval = setInterval(() => {
+          timeLeft--;
+          if (timeLeft > 0) {
+            cooldownTimer.textContent = `Cooldown: ${timeLeft}s`;
+          } else {
+            clearInterval(interval);
+            isOnCooldown = false;
+            sendBtn.disabled = false;
+            messageInput.disabled = false;
+            cooldownTimer.classList.add('hidden');
+          }
+        }, 1000);
+      }
+
+      function displayMessage(snapshot) {
+        const message = snapshot.val();
+        const messageId = snapshot.key;
+        const messagesContainer = document.getElementById('messagesContainer');
+        const time = new Date(message.timestamp).toLocaleTimeString();
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+        messageDiv.setAttribute('data-message-id', messageId);
+        messageDiv.innerHTML = `
+          <div class="message-avatar">${message.avatar}</div>
+          <div class="message-content">
+            <div class="message-header">
+              <span class="message-username">${message.username}</span>
+              ${message.role === 'owner' ? '<span class="message-tag">OWNER</span>' : ''}
+              <span class="message-time">${time}</span>
+            </div>
+            <div class="message-text">${message.text}</div>
+            ${currentUser.role === 'owner' ? `
+              <div class="message-actions">
+                <button class="message-action-btn" onclick="deleteMessage('${messageId}')">Delete</button>
+              </div>
+            ` : ''}
           </div>
         `;
-      }
-    });
-  }
-
-  async function initializeChat() {
-    // 1) One-time check: Is this user already banned in the database?
-    const bannedRef = database.ref(`banned/${currentUser.uid}`);
-    const bannedSnapshot = await bannedRef.once('value');
-
-    if (bannedSnapshot.exists()) {
-      // If they’re a guest, mark localStorage so they can’t create a new guest with same username
-      if (currentUser.isGuest) {
-        markGuestAsPermanentlyBanned(currentUser.username);
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
 
-      document.getElementById('bannedNotice').classList.remove('hidden');
-      document.getElementById('messagesContainer').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'none';
-      document.querySelector('.input-container').style.display = 'none';
-      return;
-    }
-
-    // 2) Show chat UI
-    document.getElementById('authChoice').classList.add('hidden');
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('guestForm').classList.add('hidden');
-    document.getElementById('chatInterface').classList.remove('hidden');
-
-    // 3) Populate header
-    document.getElementById('username').textContent = currentUser.username;
-    document.getElementById('userAvatar').textContent = currentUser.avatar;
-
-    // Only owners see the admin panel. Guests and non-owners never see it.
-    if (currentUser.role === 'owner') {
-      const userTag = document.getElementById('userTag');
-      userTag.textContent = 'OWNER';
-      userTag.classList.remove('hidden');
-      document.getElementById('adminPanel').classList.remove('hidden');
-    } else {
-      document.getElementById('adminPanel').classList.add('hidden');
-    }
-
-    // 4) Add to onlineUsers
-    onlineUsersRef = database.ref(`onlineUsers/${currentUser.uid}`);
-    await onlineUsersRef.set({
-      username: currentUser.username,
-      role: currentUser.role,
-      avatar: currentUser.avatar,
-      lastSeen: Date.now()
-    });
-    onlineUsersRef.onDisconnect().remove();
-
-    // 5) Listen for online count
-    database.ref('onlineUsers').on('value', (snapshot) => {
-      const users = snapshot.val() || {};
-      const count = Object.keys(users).length;
-      document.getElementById('onlineCount').textContent = `${count} online`;
-    });
-
-    // 6) Listen for new messages and deletions
-    messagesRef = database.ref('messages').limitToLast(50);
-    messagesRef.on('child_added', displayMessage);
-    messagesRef.on('child_removed', (snapshot) => {
-      const messageId = snapshot.key;
-      const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-      if (messageElement) {
-        messageElement.remove();
+      async function deleteMessage(messageId) {
+        if (currentUser.role !== 'owner') return;
+        await database.ref(`messages/${messageId}`).remove();
+        // Clients remove via child_removed listener
       }
-    });
 
-    // 7) If owner, keep track of banned list
-    if (currentUser.role === 'owner') {
-      database.ref('banned').on('value', (snapshot) => {
-        // no further action needed here unless you want to update a UI list
-      });
-    }
+      async function banUser() {
+        const targetUsername = document.getElementById('adminTarget').value.trim();
+        if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
 
-    // 8) Kick listener
-    listenForKick();
+        // Look up in onlineUsers
+        const onlineUsersSnapshot = await database.ref('onlineUsers').once('value');
+        const onlineUsers = onlineUsersSnapshot.val() || {};
 
-    // 9) Real-time ban listener: if the owner bans this user while they’re connected
-    database.ref(`banned/${currentUser.uid}`).on('value', (snapshot) => {
-      if (snapshot.exists()) {
-        if (currentUser.isGuest) {
-          markGuestAsPermanentlyBanned(currentUser.username);
+        let targetUid = null, targetRole = null;
+        for (const uid in onlineUsers) {
+          if (onlineUsers[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
+            targetUid = uid;
+            targetRole = onlineUsers[uid].role;
+            break;
+          }
         }
-        document.getElementById('bannedNotice').classList.remove('hidden');
-        document.getElementById('messagesContainer').style.display = 'none';
-        document.getElementById('adminPanel').style.display = 'none';
-        document.querySelector('.input-container').style.display = 'none';
-      }
-    });
 
-    // 10) Real-time timeout listener (enforce immediately)
-    const timeoutRef = database.ref(`timeouts/${currentUser.uid}`);
-timeoutRef.on('value', (snapshot) => {
-  const messageInput = document.getElementById('messageInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const cooldownTimer = document.getElementById('cooldownTimer');
+        if (!targetUid) {
+          return alert('User not found.');
+        }
 
-  if (!snapshot.exists()) {
-    // No timeout entry = re-enable immediately
-    messageInput.disabled = false;
-    sendBtn.disabled = false;
-    cooldownTimer.classList.add('hidden');
-    return;
-  }
-
-  // Node exists, read the timeoutEnd timestamp
-  const { timeoutEnd } = snapshot.val();
-  const now = Date.now();
-
-  if (now >= timeoutEnd) {
-    // Timeout has expired → remove the DB entry and re-enable
-    timeoutRef.remove();
-    messageInput.disabled = false;
-    sendBtn.disabled = false;
-    cooldownTimer.classList.add('hidden');
-  } else {
-    // Still within timeout window → keep input disabled, show remaining seconds
-    messageInput.disabled = true;
-    sendBtn.disabled = true;
-    const secsLeft = Math.ceil((timeoutEnd - now) / 1000);
-    cooldownTimer.textContent = `Timed out: ${secsLeft}s`;
-    cooldownTimer.classList.remove('hidden');
-    
-    // Optional: keep updating the countdown every second
-    // (If you want more precise countdown, uncomment below)
- 
-    let interval = setInterval(() => {
-      const now2 = Date.now();
-      if (now2 >= timeoutEnd) {
-        clearInterval(interval);
-        timeoutRef.remove();
-        messageInput.disabled = false;
-        sendBtn.disabled = false;
-        cooldownTimer.classList.add('hidden');
-      } else {
-        const secs2 = Math.ceil((timeoutEnd - now2) / 1000);
-        cooldownTimer.textContent = `Timed out: ${secs2}s`;
-      }
-    }, 1000);
- 
-  }
-});
-    // 11) “Enter” key to send
-    const messageInput = document.getElementById('messageInput');
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendMessage();
-      }
-    });
-  }
-
-  async function sendMessage() {
-    const messageInput = document.getElementById('messageInput');
-    const message = messageInput.value.trim();
-    if (!message || isOnCooldown) return;
-
-    // Double-check: are we timed out?
-    const timeoutEntry = await database.ref(`timeouts/${currentUser.uid}`).once('value');
-    if (timeoutEntry.exists()) {
-      alert('You are currently timed out.');
-      return;
-    }
-
-    const filteredMessage = filterBadWords(message);
-    await database.ref('messages').push({
-      text: filteredMessage,
-      username: currentUser.username,
-      role: currentUser.role,
-      avatar: currentUser.avatar,
-      uid: currentUser.uid,
-      timestamp: Date.now()
-    });
-    messageInput.value = '';
-    startCooldown();
-  }
-
-  function startCooldown() {
-    isOnCooldown = true;
-    const sendBtn = document.getElementById('sendBtn');
-    const messageInput = document.getElementById('messageInput');
-    const cooldownTimer = document.getElementById('cooldownTimer');
-
-    sendBtn.disabled = true;
-    messageInput.disabled = true;
-
-    let timeLeft = 1;
-    cooldownTimer.textContent = `Cooldown: ${timeLeft}s`;
-    cooldownTimer.classList.remove('hidden');
-
-    const interval = setInterval(() => {
-      timeLeft--;
-      if (timeLeft > 0) {
-        cooldownTimer.textContent = `Cooldown: ${timeLeft}s`;
-      } else {
-        clearInterval(interval);
-        isOnCooldown = false;
-        sendBtn.disabled = false;
-        messageInput.disabled = false;
-        cooldownTimer.classList.add('hidden');
-      }
-    }, 1000);
-  }
-
-  function displayMessage(snapshot) {
-    const message = snapshot.val();
-    const messageId = snapshot.key;
-    const messagesContainer = document.getElementById('messagesContainer');
-    const time = new Date(message.timestamp).toLocaleTimeString();
-
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message';
-    messageDiv.setAttribute('data-message-id', messageId);
-    messageDiv.innerHTML = `
-      <div class="message-avatar">${message.avatar}</div>
-      <div class="message-content">
-        <div class="message-header">
-          <span class="message-username">${message.username}</span>
-          ${message.role === 'owner' ? '<span class="message-tag">OWNER</span>' : ''}
-          <span class="message-time">${time}</span>
-        </div>
-        <div class="message-text">${message.text}</div>
-        ${currentUser.role === 'owner' ? `
-          <div class="message-actions">
-            <button class="message-action-btn" onclick="deleteMessage('${messageId}')">Delete</button>
-          </div>
-        ` : ''}
-      </div>
-    `;
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }
-
-  async function deleteMessage(messageId) {
-    if (currentUser.role !== 'owner') return;
-    await database.ref(`messages/${messageId}`).remove();
-    // Clients will remove it via the child_removed listener
-  }
-
-  async function banUser() {
-    const targetUsername = document.getElementById('adminTarget').value.trim();
-    if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
-
-    // Look up in onlineUsers
-    const onlineUsersSnapshot = await database.ref('onlineUsers').once('value');
-    const onlineUsers = onlineUsersSnapshot.val() || {};
-
-    let targetUid = null, targetRole = null;
-    for (const uid in onlineUsers) {
-      if (onlineUsers[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
-        targetUid = uid;
-        targetRole = onlineUsers[uid].role;
-        break;
-      }
-    }
-
-    if (!targetUid) {
-      return alert('User not found.');
-    }
-
-    // Write ban in database
-    await database.ref(`banned/${targetUid}`).set({
-      username: targetUsername,
-      bannedAt: Date.now(),
-      bannedBy: currentUser.username
-    });
-
-    // If they were a guest, mark their username in localStorage so they cannot rejoin as that same guest.
-    if (targetRole === 'guest') {
-      // The real-time listener on the guest’s side will pick this up and call markGuestAsPermanentlyBanned.
-    }
-
-    alert(`${targetUsername} has been banned.`);
-  }
-
-  async function unbanUser() {
-    const targetUsername = document.getElementById('adminTarget').value.trim();
-    if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
-
-    const bannedSnapshot = await database.ref('banned').once('value');
-    const banned = bannedSnapshot.val() || {};
-
-    for (const uid in banned) {
-      if (banned[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
-        await database.ref(`banned/${uid}`).remove();
-        alert(`${targetUsername} has been unbanned.`);
-        return;
-      }
-    }
-    alert('User not found in ban list.');
-  }
-
-  async function timeoutUser() {
-    const targetUsername = document.getElementById('adminTarget').value.trim();
-    const rawDuration = document.getElementById('timeoutDuration').value.trim();
-    if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
-
-    // Parse duration (e.g. "30s" or "5m")
-    let durationMs = 0;
-    if (/^\d+[sS]$/.test(rawDuration)) {
-      const secs = parseInt(rawDuration.slice(0, -1), 10);
-      durationMs = secs * 1000;
-    } else if (/^\d+[mM]$/.test(rawDuration)) {
-      const mins = parseInt(rawDuration.slice(0, -1), 10);
-      durationMs = mins * 60 * 1000;
-    } else {
-      return alert('Invalid duration. Use “30s” or “5m”.');
-    }
-
-    // Find the user in onlineUsers
-    const onlineUsersSnapshot = await database.ref('onlineUsers').once('value');
-    const onlineUsers = onlineUsersSnapshot.val() || {};
-
-    for (const uid in onlineUsers) {
-      if (onlineUsers[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
-        const timeoutEnd = Date.now() + durationMs;
-        await database.ref(`timeouts/${uid}`).set({
+        // Write ban in database
+        await database.ref(`banned/${targetUid}`).set({
           username: targetUsername,
-          timeoutEnd: timeoutEnd,
-          timeoutBy: currentUser.username
+          bannedAt: Date.now(),
+          bannedBy: currentUser.username
         });
-        alert(`${targetUsername} has been timed out for ${rawDuration}.`);
-        return;
+
+        // If they were a guest, mark their username in localStorage so they cannot rejoin
+        if (targetRole === 'guest') {
+          // The real-time listener on the guest’s side will pick this up and call markGuestAsPermanentlyBanned.
+        }
+
+        alert(`${targetUsername} has been banned.`);
       }
-    }
-    alert('User not found.');
-  }
 
-  async function kickUser() {
-    const targetUsername = document.getElementById('adminTarget').value.trim();
-    if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
+      async function unbanUser() {
+        const targetUsername = document.getElementById('adminTarget').value.trim();
+        if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
 
-    const snapshot = await database.ref('onlineUsers').once('value');
-    const users = snapshot.val() || {};
-    let targetUid = null;
-    for (const uid in users) {
-      if (users[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
-        targetUid = uid;
-        break;
+        const bannedSnapshot = await database.ref('banned').once('value');
+        const banned = bannedSnapshot.val() || {};
+
+        for (const uid in banned) {
+          if (banned[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
+            await database.ref(`banned/${uid}`).remove();
+            alert(`${targetUsername} has been unbanned.`);
+            return;
+          }
+        }
+        alert('User not found in ban list.');
       }
-    }
-    if (!targetUid) {
-      return alert('User not found.');
-    }
 
-    // 1) Write a kick entry so that the client’s kick listener fires immediately
-    await database.ref(`kicks/${targetUid}`).set({
-      message: 'You have been removed from the chat.',
-      kickedBy: currentUser.username,
-      at: Date.now()
-    });
+      async function timeoutUser() {
+        const targetUsername = document.getElementById('adminTarget').value.trim();
+        const rawDuration = document.getElementById('timeoutDuration').value.trim();
+        if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
 
-    // 2) Remove that kick entry after a short delay (so they can rejoin under the same UID if it's a registered user,
-    //    or create a new guest name if it was a guest).
-    setTimeout(() => {
-      database.ref(`kicks/${targetUid}`).remove();
-    }, 3000); // 3 seconds to ensure the client sees it first
+        // Parse duration (e.g. "30s" or "5m")
+        let durationMs = 0;
+        if (/^\d+[sS]$/.test(rawDuration)) {
+          const secs = parseInt(rawDuration.slice(0, -1), 10);
+          durationMs = secs * 1000;
+        } else if (/^\d+[mM]$/.test(rawDuration)) {
+          const mins = parseInt(rawDuration.slice(0, -1), 10);
+          durationMs = mins * 60 * 1000;
+        } else {
+          return alert('Invalid duration. Use “30s” or “5m”.');
+        }
 
-    alert(`${targetUsername} has been kicked.`);
-  }
+        // Find the user in onlineUsers
+        const onlineUsersSnapshot = await database.ref('onlineUsers').once('value');
+        const onlineUsers = onlineUsersSnapshot.val() || {};
 
-  function showBannedUsers() {
-    database.ref('banned').once('value', (snapshot) => {
-      const banned = snapshot.val() || {};
-      const usernames = Object.values(banned).map(user => user.username);
-      if (usernames.length > 0) {
-        alert('Banned users: ' + usernames.join(', '));
-      } else {
-        alert('No banned users.');
+        for (const uid in onlineUsers) {
+          if (onlineUsers[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
+            const timeoutEnd = Date.now() + durationMs;
+            await database.ref(`timeouts/${uid}`).set({
+              username: targetUsername,
+              timeoutEnd: timeoutEnd,
+              timeoutBy: currentUser.username
+            });
+            alert(`${targetUsername} has been timed out for ${rawDuration}.`);
+            return;
+          }
+        }
+        alert('User not found.');
       }
-    });
-  }
 
-  // Clean up on page unload
-  window.addEventListener('beforeunload', () => {
-    if (onlineUsersRef) {
-      onlineUsersRef.remove();
-    }
-  });
+      async function kickUser() {
+        const targetUsername = document.getElementById('adminTarget').value.trim();
+        if (!targetUsername || currentUser.role !== 'owner') return alert('Enter a username.');
+
+        const snapshot = await database.ref('onlineUsers').once('value');
+        const users = snapshot.val() || {};
+        let targetUid = null;
+        for (const uid in users) {
+          if (users[uid].username.toLowerCase() === targetUsername.toLowerCase()) {
+            targetUid = uid;
+            break;
+          }
+        }
+        if (!targetUid) {
+          return alert('User not found.');
+        }
+
+        // 1) Write a kick entry so that the client’s kick listener fires immediately
+        await database.ref(`kicks/${targetUid}`).set({
+          message: 'You have been removed from the chat.',
+          kickedBy: currentUser.username,
+          at: Date.now()
+        });
+
+        // 2) Remove that kick entry after a short delay (so they can rejoin)
+        setTimeout(() => {
+          database.ref(`kicks/${targetUid}`).remove();
+        }, 3000); // 3 seconds
+
+        alert(`${targetUsername} has been kicked.`);
+      }
+
+      function showBannedUsers() {
+        database.ref('banned').once('value', (snapshot) => {
+          const banned = snapshot.val() || {};
+          const usernames = Object.values(banned).map(user => user.username);
+          if (usernames.length > 0) {
+            alert('Banned users: ' + usernames.join(', '));
+          } else {
+            alert('No banned users.');
+          }
+        });
+      }
+
+      // Clean up on page unload
+      window.addEventListener('beforeunload', () => {
+        if (onlineUsersRef) {
+          onlineUsersRef.remove();
+        }
+      });
     </script>
 </body>
 </html>
