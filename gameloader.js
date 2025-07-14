@@ -105,9 +105,10 @@ function createAdElement(adIndex) {
   adElement.setAttribute('data-ad-client', AD_CONFIG.client);
   adElement.setAttribute('data-ad-slot', AD_CONFIG.slot);
   adElement.setAttribute('data-ad-format', AD_CONFIG.format);
+  adElement.setAttribute('data-full-width-responsive', AD_CONFIG.responsive);
   
   gameItem.innerHTML = `
-    <div style="position: relative; width: 100%; height: 100%;">
+    <div style="position: relative; width: 100%; height: 100%; max-height: 185px; max-width: 185px;">
     </div>
   `;
   
