@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Activity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .game-item {
+            background-color: #2d2d2d;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: white;
+            border: 1px solid #404040;
+        }
+        
+        .game-cover {
+            width: 80px;
+            height: 80px;
+            background-color: #3a3a3a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            flex-shrink: 0;
+            border: 2px solid #4a4a4a;
+        }
+        
+        .game-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .game-info {
+            flex: 1;
+        }
+        
+        .game-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .game-playtime {
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+            margin-top: 50px;
+        }
+        
+        .error {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 16px;
+            margin-top: 50px;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+            margin-top: 50px;
+        }
+        
+        .title {
+            text-align: center;
+            color: #e0e0e0;
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Game Activity</h1>
+        <div id="gameList">
+            <div class="loading">Loading your game activity...</div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Function to format play time
+        function formatPlayTime(hours, minutes) {
+            if (hours === 0 && minutes === 0) {
+                return "No play time recorded";
+            }
+            
+            let timeStr = "You played this game for: ";
+            if (hours > 0) {
+                timeStr += `${hours} hour${hours !== 1 ? 's' : ''}`;
+                if (minutes > 0) {
+                    timeStr += ` ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                }
+            } else {
+                timeStr += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
+            
+            return timeStr;
+        }
+
+        // Function to create game item HTML
+        function createGameItem(gameData, activityData) {
+            const gameItem = document.createElement('div');
+            gameItem.className = 'game-item';
+            
+            const playTimeText = formatPlayTime(activityData.playTimeHours, activityData.playTimeMinutes);
+            
+            gameItem.innerHTML = `
+                <div class="game-cover">
+                    ${gameData.cover ? 
+                        `<img src="/covers/${gameData.cover}" alt="${gameData.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='game cover';">` : 
+                        'game cover'
+                    }
+                </div>
+                <div class="game-info">
+                    <div class="game-name">${gameData.name}</div>
+                    <div class="game-playtime">${playTimeText}</div>
+                </div>
+            `;
+            
+            return gameItem;
+        }
+
+        // Main function to load and display game activity
+        async function loadGameActivity() {
+            const gameListElement = document.getElementById('gameList');
+            
+            try {
+                // Get user activity from cookie
+                const userActivityCookie = getCookie('usractivity');
+                
+                if (!userActivityCookie) {
+                    gameListElement.innerHTML = '<div class="no-data">No game activity found. Play some games to see your activity here!</div>';
+                    return;
+                }
+                
+                let userActivity;
+                try {
+                    userActivity = JSON.parse(decodeURIComponent(userActivityCookie));
+                } catch (e) {
+                    throw new Error('Invalid cookie format');
+                }
+                
+                if (!Array.isArray(userActivity)) {
+                    userActivity = [userActivity];
+                }
+                
+                if (userActivity.length === 0) {
+                    gameListElement.innerHTML = '<div class="no-data">No games played yet. Start playing to track your activity!</div>';
+                    return;
+                }
+                
+                // Fetch games JSON data
+                const response = await fetch('games.json'); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const gamesData = await response.json();
+                
+                gameListElement.innerHTML = '';
+                
+                userActivity.forEach(activityItem => {
+                    const gameKey = activityItem.gameKey.toLowerCase();
+                    const gameData = gamesData[gameKey];
+                    
+                    if (gameData) {
+                        const gameItem = createGameItem(gameData, activityItem);
+                        gameListElement.appendChild(gameItem);
+                    } else {
+                        // Handle case where game data is not found
+                        const gameItem = document.createElement('div');
+                        gameItem.className = 'game-item';
+                        gameItem.innerHTML = `
+                            <div class="game-cover">game cover</div>
+                            <div class="game-info">
+                                <div class="game-name">Unknown Game (${gameKey})</div>
+                                <div class="game-playtime">${formatPlayTime(activityItem.playTimeHours, activityItem.playTimeMinutes)}</div>
+                            </div>
+                        `;
+                        gameListElement.appendChild(gameItem);
+                    }
+                });
+                
+                if (gameListElement.children.length === 0) {
+                    gameListElement.innerHTML = '<div class="no-data">No matching games found in the database.</div>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading game activity:', error);
+                gameListElement.innerHTML = `<div class="error">Error loading game activity: ${error.message}</div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadGameActivity);
+    </script>
+</body>
+</html>
