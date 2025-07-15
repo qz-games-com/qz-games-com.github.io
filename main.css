@@ -723,6 +723,7 @@ body {
     height: 185px !important;
     max-width: 185px !important;
     max-height: 185px !important;
+    border-radius: 0 !important;
   }
   
   .ad-item .adsbygoogle {
