@@ -719,6 +719,15 @@ body {
     visibility: visible;
 }
 .ad-item {
-    max-width: 185px;
-    max-height: 185px;
-}
+    width: 185px !important;
+    height: 185px !important;
+    max-width: 185px !important;
+    max-height: 185px !important;
+  }
+  
+  .ad-item .adsbygoogle {
+    width: 185px !important;
+    height: 185px !important;
+    max-width: 185px !important;
+    max-height: 185px !important;
+  }

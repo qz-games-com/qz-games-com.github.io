@@ -92,30 +92,47 @@ function fetchGames() {
       .catch(error => console.error('Error fetching games:', error));
   }
 }
-
 function createAdElement(adIndex) {
   const gameItem = document.createElement('div');
   gameItem.classList.add('gameitem');
   gameItem.classList.add('ad-item');
   gameItem.classList.add('hide');
   
-  const adElement = document.createElement('ins');
-  adElement.className = 'adsbygoogle ad-lazy';
-  adElement.style.cssText = 'display:block; width:100%; height:100%; max-width:185px; max-height:185px;';
-  adElement.setAttribute('data-ad-client', AD_CONFIG.client);
-  adElement.setAttribute('data-ad-slot', AD_CONFIG.slot);
-  adElement.setAttribute('data-ad-format', 'auto');
-  adElement.setAttribute('data-full-width-responsive', 'true');
-  
-  gameItem.innerHTML = `
-    <div style="position: relative; width: 100%; height: 100%; max-height: 185px; max-width: 185px; overflow: hidden;">
-    </div>
+  // Create the container with proper constraints
+  const adContainer = document.createElement('div');
+  adContainer.style.cssText = `
+    position: relative; 
+    width: 185px; 
+    height: 185px; 
+    max-width: 185px; 
+    max-height: 185px; 
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
   `;
   
-  gameItem.querySelector('div').appendChild(adElement);
+  const adElement = document.createElement('ins');
+  adElement.className = 'adsbygoogle ad-lazy';
+  adElement.style.cssText = `
+    display: block; 
+    width: 185px; 
+    height: 185px;
+    max-width: 185px !important;
+    max-height: 185px !important;
+  `;
+  adElement.setAttribute('data-ad-client', AD_CONFIG.client);
+  adElement.setAttribute('data-ad-slot', AD_CONFIG.slot);
+  adElement.setAttribute('data-ad-format', 'fixed');
+  adElement.setAttribute('data-full-width-responsive', 'false');
+  
+  adContainer.appendChild(adElement);
+  gameItem.appendChild(adContainer);
 
   return gameItem;
 }
+
 function renderGames(data) {
   const container = document.getElementById('games');
   container.innerHTML = '';
