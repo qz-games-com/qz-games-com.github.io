@@ -718,3 +718,7 @@ body {
     opacity: 1;
     visibility: visible;
 }
+.ad-item {
+    max-width: 185px;
+    max-height: 185px;
+}
