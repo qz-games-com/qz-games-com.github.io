@@ -72,7 +72,7 @@ fetchGames();
 let gamesData = null;
 
 const AD_CONFIG = {
-  frequency: 12, 
+  frequency: 9, 
   client: 'ca-pub-1654900800235927', 
   slot: '8647420788', 
   format: 'auto',
@@ -150,7 +150,7 @@ function renderGames(data) {
     } else if (game.type === 'unity') {
       gameLink = `./Games/unity.html?game=${game.link}`;
     } else if (game.type === 'flash') {
-      gameLink = `./Games/Flash.html?game=${game.link}`;
+      gameLink = `./Games/game.html?game=${game.link}`;
     }
 
     const gameItem = document.createElement('div');

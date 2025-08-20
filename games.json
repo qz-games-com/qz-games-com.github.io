@@ -382,5 +382,270 @@
         "catagory": "casual horror",
         "link": "../Games02/granny",
         "type": "html"   
+    },
+    "angry birds": {
+        "cover": "angrybirds.png",
+        "name": "Angry Birds",
+        "gradient": "red",
+        "catagory": "casual",
+        "link": "../Games02/AngryBirds",
+        "type": "html"   
+    },
+    "exo": {
+        "cover": "exo.png",
+        "name": "EXO",
+        "gradient": "grey",
+        "catagory": "casual",
+        "link": "../Games02/EXO",
+        "type": "html"   
+    },
+    "gobble": {
+        "cover": "gobble.avif",
+        "name": "Gobble",
+        "gradient": "purple",
+        "catagory": "casual",
+        "link": "../Games02/Gobble/Gobble.html",
+        "type": "html"   
+    },
+    "ultimate flash sonic": {
+        "cover": "sonic.png",
+        "name": "Ultimate Flash Sonic",
+        "gradient": "lightgreen",
+        "catagory": "casual",
+        "link": "../Games02/SONIC.swf",
+        "type": "flash"   
+    },
+    "super mario": {
+        "cover": "superm.png",
+        "name": "Super Mario",
+        "gradient": "black",
+        "catagory": "casual",
+        "link": "../Games02/SuperMario",
+        "type": "html"   
+    },
+    "polytrack": {
+        "cover": "polytrac.png",
+        "name": "Polytrack",
+        "gradient": "blue",
+        "catagory": "casual driver",
+        "link": "../Games02/polytrack",
+        "type": "html"   
+    },
+    "riddle school": {
+        "cover": "rid.png",
+        "name": "Riddle School",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd.swf",
+        "type": "flash"   
+    },
+    "riddle school 2": {
+        "cover": "rid2.png",
+        "name": "Riddle School 2",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd2.swf",
+        "type": "flash"   
+    },
+    "riddle school 3": {
+        "cover": "rid3.png",
+        "name": "Riddle School 3",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd3.swf",
+        "type": "flash"   
+    },
+    "riddle school 4": {
+        "cover": "rid4.png",
+        "name": "Riddle School 4",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd4.swf",
+        "type": "flash"   
+    },
+    "riddle school 5": {
+        "cover": "rid5.png",
+        "name": "Riddle School 5",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd5.swf",
+        "type": "flash"   
+    },
+    "riddle transfer": {
+        "cover": "rid6.png",
+        "name": "Riddle Transfer",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd6.swf",
+        "type": "flash"   
+    },
+    "riddle transfer 2": {
+        "cover": "rid7.png",
+        "name": "Riddle Transfer 2",
+        "gradient": "black",
+        "catagory": "casual story",
+        "link": "../Games02/riddd7.swf",
+        "type": "flash"   
+    },
+    "snow rider 3d": {
+        "cover": "snowrider.png",
+        "name": "Snow Rider 3D",
+        "gradient": "white",
+        "catagory": "casual",
+        "link": "../Games02/snow-rider3d",
+        "type": "html"   
+    },
+    "stick duel battle": {
+        "cover": "stickduel.png",
+        "name": "Stick Duel Battle",
+        "gradient": "dark-purple",
+        "catagory": "casual shooter",
+        "link": "../Games02/stick-duel-battle",
+        "type": "html"   
+    },
+    "pacman": {
+        "cover": "pacman.png",
+        "name": "Pacman",
+        "gradient": "yellow",
+        "catagory": "casual",
+        "link": "../Games02/pac-man",
+        "type": "html"   
+    },
+    "merge round racers": {
+        "cover": "mrr.png",
+        "name": "Merge Round Racers",
+        "gradient": "grey",
+        "catagory": "casual idle",
+        "link": "../Games02/marge-round-racers",
+        "type": "html"   
+    },
+    "breaking the bank": {
+        "cover": "btb.png",
+        "name": "Breaking the bank",
+        "gradient": "lightblue",
+        "catagory": "casual story",
+        "link": "../Games02/henrystickmin/Henry%20Stickmin%20-%20Breaking%20the%20Bank.swf",
+        "type": "flash"   
+    },
+    "escaping the prison": {
+        "cover": "estp.png",
+        "name": "Escaping The Prison",
+        "gradient": "yellow",
+        "catagory": "casual story",
+        "link": "../Games02/henrystickmin/escaping_the_prison.swf",
+        "type": "flash"   
+    },
+    "stealing the diamond": {
+        "cover": "stealingt.png",
+        "name": "Stealing The Diamond",
+        "gradient": "white",
+        "catagory": "casual story",
+        "link": "../Games02/henrystickmin/Henry Stickmin - Stealing the Diamond.swf",
+        "type": "flash"   
+    },
+    "infiltrating the airship": {
+        "cover": "ita.png",
+        "name": "Infiltrating The Airship",
+        "gradient": "red",
+        "catagory": "casual story",
+        "link": "../Games02/henrystickmin/infiltratingtheairshipgame.swf",
+        "type": "flash"   
+    },
+    "fleeing the complex": {
+        "cover": "ftc.png",
+        "name": "Fleeing The Complex",
+        "gradient": "grey",
+        "catagory": "casual story",
+        "link": "../Games02/henrystickmin/Henry Stickmin - Fleeing the Complex.swf",
+        "type": "flash"   
+    },
+    "drift hunters": {
+        "cover": "drifthunters.png",
+        "name": "Drift Hunters",
+        "gradient": "grey",
+        "catagory": "casual driver",
+        "link": "../Games02/drift-hunters",
+        "type": "html"   
+    },
+    "bloons tower defence": {
+        "cover": "btd.png",
+        "name": "Bloons Tower Defence",
+        "gradient": "green",
+        "catagory": "casual idle",
+        "link": "../Games02/btd1/game.swf",
+        "type": "flash"   
+    },
+    "bloons tower defence 2": {
+        "cover": "btd.png",
+        "name": "Bloons Tower Defence 2",
+        "gradient": "green",
+        "catagory": "casual idle",
+        "link": "../Games02/btd2/game.swf",
+        "type": "flash"   
+    },
+    "bloons tower defence 3": {
+        "cover": "btd.png",
+        "name": "Bloons Tower Defence 3",
+        "gradient": "green",
+        "catagory": "casual idle",
+        "link": "../Games02/btd3/game.swf",
+        "type": "flash"   
+    },
+    "bloons tower defence 4": {
+        "cover": "btd.png",
+        "name": "Bloons Tower Defence 4",
+        "gradient": "green",
+        "catagory": "casual idle",
+        "link": "../Games02/btd4/game.swf",
+        "type": "flash"   
+    },
+    "bloons tower defence 5": {
+        "cover": "btd.png",
+        "name": "Bloons Tower Defence 5",
+        "gradient": "green",
+        "catagory": "casual idle",
+        "link": "../Games02/btd5/game.swf",
+        "type": "flash"   
+    },
+    "duck life": {
+        "cover": "ducklife.avif",
+        "name": "Duck Life",
+        "gradient": "lightgreen",
+        "catagory": "casual",
+        "link": "../Games02/ducklife1/game.swf",
+        "type": "flash"   
+    },
+    "duck life 2": {
+        "cover": "ducklife.avif",
+        "name": "Duck Life 2",
+        "gradient": "lightgreen",
+        "catagory": "casual",
+        "link": "../Games02/ducklife2/game.swf",
+        "type": "flash"   
+    },
+    "duck life 3": {
+        "cover": "ducklife.avif",
+        "name": "Duck Life 3",
+        "gradient": "lightgreen",
+        "catagory": "casual",
+        "link": "../Games02/ducklife3/game.swf",
+        "type": "flash"   
+    },
+    "duck life 4": {
+        "cover": "ducklife.avif",
+        "name": "Duck Life 4",
+        "gradient": "lightgreen",
+        "catagory": "casual",
+        "link": "../Games02/ducklife4/game.swf",
+        "type": "flash"   
+    },
+    "gun spinn": {
+        "cover": "gunspin.png",
+        "name": "Gun Spinn",
+        "gradient": "yellow",
+        "catagory": "casual",
+        "link": "../Games02/gunspinn",
+        "type": "html"   
     }
+
 }
