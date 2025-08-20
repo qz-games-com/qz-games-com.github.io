@@ -149,8 +149,8 @@ async function loadRuffle(swfUrl) {
     const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
     player.id = 'rufflePlayer';
-    player.style.width = '100%';
-    player.style.height = '100%';
+    player.style.width = window.innerWidth + 'px';
+    player.style.height = window.innerHeight + 'px';
 
     container.appendChild(player);
 
