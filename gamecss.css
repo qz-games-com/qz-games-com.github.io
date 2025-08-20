@@ -143,3 +143,11 @@ button.error:hover {
     margin-top: 15px;
     border-left: 4px solid #28a745;
 }
+.rufflelol {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+body {
+    overflow: hidden;
+}

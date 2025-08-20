@@ -108,73 +108,81 @@ if (game) {
   console.warn('no param found');
   initGame('error.html');
 }
-
 async function initGame(name) {
-  if (name.toLowerCase().includes('.swf')) {
-      // Load Ruffle for SWF files
-      await loadRuffle(name);
+  const isSwf = /\.swf$/i.test(name);
+  if (isSwf) {
+    await loadRuffle(name);
   } else {
-      // Load regular games in iframe
-      document.getElementById('gameiframe').src = name;
+    // Hide/remove ruffle if present
+    const old = document.getElementById('rufflePlayer');
+    if (old) old.remove();
+
+    const iframe = document.getElementById('gameiframe');
+    if (iframe) {
+      iframe.style.display = 'block';
+      iframe.src = name;
+    }
   }
 }
 
 async function loadRuffle(swfUrl) {
   try {
-      if (!window.RufflePlayer) {
-          await loadRuffleScript();
-      }
-      
-      const container = document.getElementById('maingamestuff');
-      
-      container.innerHTML = '';
-      
-      container.style.width = '100%';
-      container.style.height = '100%';
-      container.style.display = 'block';
-      container.style.position = 'relative';
-      
-      const player = document.createElement('ruffle-player');
-      player.id = 'rufflePlayer';
-      player.style.width = '100%';
-      player.style.height = '100%';
-      player.style.display = 'block';
-      player.style.border = 'none';
-      player.setAttribute('src', swfUrl);
-      
-      if (container.offsetHeight < 100) {
-          container.style.minHeight = '600px';
-          player.style.minHeight = '600px';
-      }
-      
-      container.appendChild(player);
-      
-      setTimeout(() => {
-          console.log('Player dimensions:', player.offsetWidth, 'x', player.offsetHeight);
-          console.log('Container dimensions:', container.offsetWidth, 'x', container.offsetHeight);
-      }, 1000);
-      
-      console.log(`Ruffle loaded SWF: ${swfUrl}`);
-      
+    const iframe = document.getElementById('gameiframe');
+    if (iframe) {
+      iframe.src = 'about:blank';
+      iframe.style.display = 'none';
+    }
+
+    const container = document.getElementById('maingamestuff');
+    if (!container) throw new Error('#maingamestuff not found');
+
+    container.style.display = 'block';
+    container.style.position = 'relative';
+    if (container.offsetHeight < 100) container.style.minHeight = '600px';
+
+    if (!window.RufflePlayer) {
+      await loadRuffleScript();
+    }
+
+    container.innerHTML = '';
+
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+    player.id = 'rufflePlayer';
+    player.style.width = window.innerWidth - 15 + 'px';
+    player.style.height = window.innerHeight - 15 + 'px';
+    player.classList.add('rufflelol')
+
+    container.appendChild(player);
+
+    // Load the SWF
+    await player.load(swfUrl);
+
+    setTimeout(() => {
+      console.log('Player:', player.offsetWidth, 'x', player.offsetHeight);
+      console.log('Container:', container.offsetWidth, 'x', container.offsetHeight);
+    }, 500);
+    console.log(`Ruffle started: ${swfUrl}`);
   } catch (error) {
-      console.error('Failed to load Ruffle:', error);
+    console.error('Failed to load Ruffle:', error);
   }
 }
 
 function loadRuffleScript() {
   return new Promise((resolve, reject) => {
-      if (window.RufflePlayer) {
-          resolve();
-          return;
-      }
-      
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
-      script.onload = () => {
-          setTimeout(resolve, 100);
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
+    window.RufflePlayer = window.RufflePlayer || {};
+    window.RufflePlayer.config = {
+      publicPath: 'https://unpkg.com/@ruffle-rs/ruffle/',
+      autoplay: 'on',
+      unmuteOverlay: 'hidden',
+      letterbox: 'on'
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+    script.onload = () => resolve();
+    script.onerror = reject;
+    document.head.appendChild(script);
   });
 }
 
