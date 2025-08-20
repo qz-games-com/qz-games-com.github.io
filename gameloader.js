@@ -72,7 +72,7 @@ fetchGames();
 let gamesData = null;
 
 const AD_CONFIG = {
-  frequency: 12, 
+  frequency: 9, 
   client: 'ca-pub-1654900800235927', 
   slot: '8647420788', 
   format: 'auto',
