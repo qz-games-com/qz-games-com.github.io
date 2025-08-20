@@ -88,31 +88,94 @@ async function initGame(name) {
       document.getElementById('gameiframe').src = name;
   }
 }
+function Backhome() {
+  //var toolbar = document.getElementById('optiongamemain')
+  //toolbar.style.transition = '0.5s'
+  //toolbar.style.transform = 'translateX(-250%)'
+
+  //var gameANIMATE = document.getElementById('gameiframe')
+  //gameANIMATE.style.transition = '0.5s'
+  //gameANIMATE.style.transform = 'scale(2)'
+  //gameANIMATE.style.opacity = 0
+
+  window.location = '../index.html'
+}
+
+if (game) {
+  console.log(`Loaded game: ${game}`);
+  initGame(game);
+} else {
+  console.warn('no param found');
+  initGame('error.html');
+}
+
+async function initGame(name) {
+  if (name.toLowerCase().includes('.swf')) {
+      // Load Ruffle for SWF files
+      await loadRuffle(name);
+  } else {
+      // Load regular games in iframe
+      document.getElementById('gameiframe').src = name;
+  }
+}
 
 async function loadRuffle(swfUrl) {
   try {
-      const ruffle = await import('https://unpkg.com/@ruffle-rs/ruffle');
+      if (!window.RufflePlayer) {
+          await loadRuffleScript();
+      }
       
       const container = document.getElementById('maingamestuff');
       
       container.innerHTML = '';
       
-      const player = ruffle.createPlayer();
+      container.style.width = '100%';
+      container.style.height = '100%';
+      container.style.display = 'block';
+      container.style.position = 'relative';
+      
+      const player = document.createElement('ruffle-player');
       player.id = 'rufflePlayer';
       player.style.width = '100%';
       player.style.height = '100%';
+      player.style.display = 'block';
+      player.style.border = 'none';
+      player.setAttribute('src', swfUrl);
       
-      // Append to container
+      if (container.offsetHeight < 100) {
+          container.style.minHeight = '600px';
+          player.style.minHeight = '600px';
+      }
+      
       container.appendChild(player);
       
-      await player.load(swfUrl);
+      setTimeout(() => {
+          console.log('Player dimensions:', player.offsetWidth, 'x', player.offsetHeight);
+          console.log('Container dimensions:', container.offsetWidth, 'x', container.offsetHeight);
+      }, 1000);
       
       console.log(`Ruffle loaded SWF: ${swfUrl}`);
       
   } catch (error) {
       console.error('Failed to load Ruffle:', error);
-      document.getElementById('gameiframe').src = swfUrl;
   }
+}
+
+function loadRuffleScript() {
+  return new Promise((resolve, reject) => {
+      if (window.RufflePlayer) {
+          resolve();
+          return;
+      }
+      
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+      script.onload = () => {
+          setTimeout(resolve, 100);
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+  });
 }
 
 function ToggleFullscreen() {
