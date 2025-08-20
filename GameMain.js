@@ -91,11 +91,9 @@ async function initGame(name) {
 
 async function loadRuffle(swfUrl) {
   try {
-      const ruffleModule = await import('https://unpkg.com/@ruffle-rs/ruffle');
-      
-      window.RufflePlayer = ruffleModule.RufflePlayer;
-      window.RufflePlayer.config = {};
-      
+      if (!window.RufflePlayer) {
+          await loadRuffleScript();
+      }
       
       const container = document.getElementById('maingamestuff');
       
@@ -105,17 +103,32 @@ async function loadRuffle(swfUrl) {
       player.id = 'rufflePlayer';
       player.style.width = '100%';
       player.style.height = '100%';
+      player.setAttribute('src', swfUrl);
       
       container.appendChild(player);
-      
-      player.load(swfUrl);
       
       console.log(`Ruffle loaded SWF: ${swfUrl}`);
       
   } catch (error) {
       console.error('Failed to load Ruffle:', error);
-      document.getElementById('gameiframe').src = swfUrl;
   }
+}
+
+function loadRuffleScript() {
+  return new Promise((resolve, reject) => {
+      if (window.RufflePlayer) {
+          resolve();
+          return;
+      }
+      
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+      script.onload = () => {
+          setTimeout(resolve, 100);
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+  });
 }
 
 function ToggleFullscreen() {
