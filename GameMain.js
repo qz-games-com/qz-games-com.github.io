@@ -91,21 +91,24 @@ async function initGame(name) {
 
 async function loadRuffle(swfUrl) {
   try {
-      const ruffle = await import('https://unpkg.com/@ruffle-rs/ruffle');
+      const ruffleModule = await import('https://unpkg.com/@ruffle-rs/ruffle');
+      
+      window.RufflePlayer = ruffleModule.RufflePlayer;
+      window.RufflePlayer.config = {};
+      
       
       const container = document.getElementById('maingamestuff');
       
       container.innerHTML = '';
       
-      const player = ruffle.createPlayer();
+      const player = document.createElement('ruffle-player');
       player.id = 'rufflePlayer';
       player.style.width = '100%';
       player.style.height = '100%';
       
-      // Append to container
       container.appendChild(player);
       
-      await player.load(swfUrl);
+      player.load(swfUrl);
       
       console.log(`Ruffle loaded SWF: ${swfUrl}`);
       
