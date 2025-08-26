@@ -327,7 +327,7 @@ async function loadGameFromJSON(jsonUrl) {
       
       const gamesData = await response.json();
       
-      const gameName = getUrlParameter('name');
+      const gameName = getUrlParameter('name').toLowerCase();
       if (!gameName) {
           showError("No game parameter found in URL. Add ?name=your-game-name to the URL.");
           return;
