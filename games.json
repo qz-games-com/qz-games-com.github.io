@@ -23,7 +23,7 @@
         "link": "../Games01/crazyc",
         "type": "html"   
     },
-    "five nights at freddys": {
+    "fnaf": {
         "cover": "fnaf.png",
         "name": "FNAF",
         "gradient": "brown",
@@ -31,7 +31,7 @@
         "link": "../Games01/fnaf-1",
         "type": "html"   
     },
-    "five nights at freddys 2": {
+    "fnaf 2": {
         "cover": "fnaf2.png",
         "name": "FNAF 2",
         "gradient": "orange-red",
@@ -39,7 +39,7 @@
         "link": "../Games01/fnaf-2",
         "type": "html"   
     },
-    "five nights at freddys 3": {
+    "fnaf 3": {
         "cover": "fnaf3.png",
         "name": "FNAF 3",
         "gradient": "dark-green",
@@ -47,7 +47,7 @@
         "link": "../Games01/fnaf-3",
         "type": "html"   
     },
-    "five nights at freddys 4": {
+    "fnaf 4": {
         "cover": "fnaf4.png",
         "name": "FNAF 4",
         "gradient": "orange-red",
@@ -55,7 +55,7 @@
         "link": "../Games01/fnaf-4",
         "type": "html"   
     },  
-    "five nights at freddys sister location": {
+    "fnaf sister location (remake)": {
         "cover": "fnafs.png",
         "name": "FNAF Sister Location (Remake)",
         "gradient": "purple",
@@ -71,7 +71,7 @@
         "link": "../Games01/bitlife",
         "type": "html"   
     },
-    "uno": {
+    "uno (replica)": {
         "cover": "uno.avif",
         "name": "Uno (Replica)",
         "gradient": "lightblue",

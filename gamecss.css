@@ -178,8 +178,8 @@ button.error:hover {
 }
 
 .game-cover {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border-radius: 12px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     object-fit: cover;
@@ -345,6 +345,7 @@ button.error:hover {
     left: 50%;
     position: relative;
     transform: translateX(-50%);
+    margin-bottom: 25px;
 }
 .options-section button {
     
@@ -352,7 +353,7 @@ button.error:hover {
     align-items: center;            
     gap: 8px;                       
     background-color: rgb(70, 70, 70);
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 5px;
     border: 0;
     color: #fff;
@@ -366,7 +367,7 @@ button.error:hover {
   
 .options-section button p {
     margin: 0;    
-    font-size: 18px;  
+    font-size: 12px;  
     font-weight: 400;
 }
 
