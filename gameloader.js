@@ -146,11 +146,11 @@ function renderGames(data) {
     let gameLink = game.link;
 
     if (game.type === 'html') {
-      gameLink = `./Games/game.html?game=${game.link}&type=html&name=${game.name}`;
+      gameLink = `./Games/game.html?game=${game.link}&type=html&name=${game.name.toLowerCase()}`;
     } else if (game.type === 'unity') {
-      gameLink = `./Games/game.html?game=${game.link}&type=unity&name=${game.name}`;
+      gameLink = `./Games/game.html?game=${game.link}&type=unity&name=${game.name.toLowerCase()}`;
     } else if (game.type === 'flash') {
-      gameLink = `./Games/game.html?game=${game.link}&type=flash&name=${game.name}`;
+      gameLink = `./Games/game.html?game=${game.link}&type=flash&name=${game.name.toLowerCase()}`;
     }
 
     const gameItem = document.createElement('div');
