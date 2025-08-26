@@ -259,7 +259,7 @@ function childMouseMove(dx, dy) {
   // Create events with the CHILD'S constructors so they originate in that realm.
   const ev = new w.MouseEvent('mousemove', { bubbles: true, cancelable: true, clientX: 0, clientY: 0 });
   try {
-    // Unity’s WebGL glue reads movementX/Y under pointer lock.
+    // Unity's WebGL glue reads movementX/Y under pointer lock.
     Object.defineProperty(ev, 'movementX', { value: dx, configurable: true });
     Object.defineProperty(ev, 'movementY', { value: dy, configurable: true });
   } catch {}
@@ -279,8 +279,12 @@ function childMouseButton(down, button = 0) {
 
 // --- Map your right stick -> aim deltas (drop into your gamepad loop) ---
 const DEADZONE = 0.18;
-const curve = v => { const s=Math.sign(v), a=Math.abs(v); if (a<DEADZONE) return 0;
-                     const n=(a-DEADZONE)/(1-DEADZONE); return s*n*n; };
+const curve = v => { 
+  const s = Math.sign(v), a = Math.abs(v); 
+  if (a < DEADZONE) return 0;
+  const n = (a - DEADZONE) / (1 - DEADZONE); 
+  return s * n * n; 
+};
 const SENS = 900; // tune to taste
 
 function onRightStick(ax, ay, dt) {
@@ -293,3 +297,140 @@ function onRightStick(ax, ay, dt) {
 // Example fire/aim buttons:
 function onFire(down) { childMouseButton(down, 0); } // left mouse
 function onAim(down)  { childMouseButton(down, 2); } // right mouse
+
+// ===== GAMEPAD INPUT HANDLING =====
+let lastTime = performance.now();
+let prevButtonStates = new Map();
+
+function getGamepads() {
+  return navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(gp => gp) : [];
+}
+
+function handleGamepadInput() {
+  const currentTime = performance.now();
+  const dt = (currentTime - lastTime) / 1000; // Convert to seconds
+  lastTime = currentTime;
+  
+  const gamepads = getGamepads();
+  
+  gamepads.forEach((gamepad, index) => {
+    if (!gamepad) return;
+    
+    // Right stick (axes 2 and 3 on most controllers)
+    const rightStickX = gamepad.axes[2] || 0;
+    const rightStickY = gamepad.axes[3] || 0;
+    
+    // Call your right stick function
+    onRightStick(rightStickX, rightStickY, dt);
+    
+    // Handle buttons (example mapping)
+    const currentButtons = new Map();
+    
+    // Button mappings (adjust these based on your controller)
+    const buttonMap = {
+      0: 'fire',      // A button / X (PlayStation)
+      1: 'jump',      // B button / Circle
+      2: 'reload',    // X button / Square  
+      3: 'interact',  // Y button / Triangle
+      4: 'prevWeapon', // LB / L1
+      5: 'nextWeapon', // RB / R1
+      6: 'aim',       // LT / L2 (if digital)
+      7: 'fire',      // RT / R2 (if digital)
+      8: 'menu',      // Back/Select
+      9: 'pause',     // Start
+      10: 'leftStickClick',  // Left stick click
+      11: 'rightStickClick', // Right stick click
+      12: 'up',       // D-pad up
+      13: 'down',     // D-pad down
+      14: 'left',     // D-pad left
+      15: 'right'     // D-pad right
+    };
+    
+    gamepad.buttons.forEach((button, buttonIndex) => {
+      const isPressed = button.pressed;
+      const buttonKey = `${index}-${buttonIndex}`;
+      const wasPressed = prevButtonStates.get(buttonKey) || false;
+      
+      currentButtons.set(buttonKey, isPressed);
+      
+      // Button state changed
+      if (isPressed !== wasPressed) {
+        const action = buttonMap[buttonIndex];
+        
+        // Handle specific button actions
+        switch(action) {
+          case 'fire':
+            onFire(isPressed);
+            break;
+          case 'aim':
+            onAim(isPressed);
+            break;
+          case 'jump':
+            // Send spacebar or whatever jump key Unity expects
+            sendKeyToChild(' ', isPressed);
+            break;
+          case 'reload':
+            if (isPressed) sendKeyToChild('r', true);
+            break;
+          case 'interact':
+            if (isPressed) sendKeyToChild('e', true);
+            break;
+          // Add more actions as needed
+        }
+      }
+    });
+    
+    // Handle triggers as analog inputs if needed
+    // Some controllers have analog triggers on axes 6 and 7
+    if (gamepad.axes.length > 6) {
+      const leftTrigger = (gamepad.axes[6] + 1) / 2;  // Convert from [-1,1] to [0,1]
+      const rightTrigger = (gamepad.axes[7] + 1) / 2;
+      
+      // Use triggers for aim/fire if you prefer analog
+      // onAim(leftTrigger > 0.1);
+      // onFire(rightTrigger > 0.1);
+    }
+    
+    prevButtonStates = currentButtons;
+  });
+  
+  requestAnimationFrame(handleGamepadInput);
+}
+
+// Helper function to send keyboard events to child
+function sendKeyToChild(key, pressed) {
+  if (!w || !canvas) return;
+  
+  const type = pressed ? 'keydown' : 'keyup';
+  const keyCode = key.charCodeAt ? key.charCodeAt(0) : key;
+  
+  const ev = new w.KeyboardEvent(type, {
+    bubbles: true,
+    cancelable: true,
+    key: key,
+    code: `Key${key.toUpperCase()}`,
+    keyCode: keyCode,
+    which: keyCode
+  });
+  
+  canvas.dispatchEvent(ev);
+}
+
+// ===== INITIALIZATION =====
+// Start the gamepad polling loop
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait a bit for the iframe to load
+  setTimeout(() => {
+    console.log('Starting gamepad input handling...');
+    handleGamepadInput();
+  }, 1000);
+});
+
+// Optional: Add gamepad connect/disconnect events
+window.addEventListener('gamepadconnected', (e) => {
+  console.log('Gamepad connected:', e.gamepad.id);
+});
+
+window.addEventListener('gamepaddisconnected', (e) => {
+  console.log('Gamepad disconnected:', e.gamepad.id);
+});

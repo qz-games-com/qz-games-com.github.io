@@ -359,7 +359,7 @@
         "link": "../Games02/monkey-mart",
         "type": "html"   
     },
-    "sniper shot bullet time": {
+    "sniper shot: bullet time": {
         "cover": "sniper.png",
         "name": "Sniper Shot: Bullet Time",
         "gradient": "lightblue",
