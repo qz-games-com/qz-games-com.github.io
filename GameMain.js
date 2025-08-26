@@ -327,7 +327,7 @@ async function loadGameFromJSON(jsonUrl) {
       
       const gamesData = await response.json();
       
-      const gameName = getUrlParameter('name');
+      const gameName = getUrlParameter('name').toLowerCase();
       if (!gameName) {
           showError("No game parameter found in URL. Add ?name=your-game-name to the URL.");
           return;
@@ -392,7 +392,7 @@ document.getElementById('gameCover').addEventListener('load', function() {
       this.style.opacity = '1';
   }, 300);
 });
-
+var loadingcont = document.getElementById('loadingcont');
 const elements = {
   progbar: document.getElementById('progbar'),
   gameCover: document.getElementById('gameCover'),
@@ -400,7 +400,7 @@ const elements = {
   gradientBg: document.getElementById('gradientBg'),
   options: document.getElementById('options'),
   gameTitle: document.getElementById('gameTitle'),
-  loadingcont: document.getElementById('loadingcont')
+  loadingcont: document.getElementById('loadingcont') 
 };
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -471,8 +471,11 @@ function hideLoadingContainer() {
       return;
     }
 
+    let resolved = false; 
+
     const onTransitionEnd = (event) => {
-      if (event.propertyName === 'opacity') {
+      if (event.propertyName === 'opacity' && !resolved) {
+        resolved = true;
         console.log('Loading container transition completed');
         elements.loadingcont.style.display = 'none';
         resolve();
@@ -482,10 +485,13 @@ function hideLoadingContainer() {
     elements.loadingcont.addEventListener('transitionend', onTransitionEnd, { once: true });
     
     const fallbackTimeout = setTimeout(() => {
-      console.warn('Transition timeout, hiding container directly');
-      elements.loadingcont.removeEventListener('transitionend', onTransitionEnd);
-      elements.loadingcont.style.display = 'none';
-      resolve();
+      if (!resolved) {
+        resolved = true;
+        console.warn('Transition timeout, hiding container directly');
+        elements.loadingcont.removeEventListener('transitionend', onTransitionEnd);
+        elements.loadingcont.style.display = 'none';
+        resolve();
+      }
     }, 1000);
 
     elements.loadingcont.addEventListener('transitionend', () => {
@@ -519,11 +525,15 @@ async function doneloadingWithClasses() {
     await wait(200);
 
     elements.loadingcont.classList.add('fade-out');
-    
+
     await new Promise(resolve => {
+      let resolved = false;
+
       const onTransitionEnd = (event) => {
-        if (event.propertyName === 'opacity') {
+        if (event.propertyName === 'opacity' && !resolved) {
+          resolved = true;
           elements.loadingcont.style.display = 'none';
+          console.log('Loading container hidden via transition');
           resolve();
         }
       };
@@ -531,8 +541,12 @@ async function doneloadingWithClasses() {
       elements.loadingcont.addEventListener('transitionend', onTransitionEnd, { once: true });
       
       setTimeout(() => {
-        elements.loadingcont.style.display = 'none';
-        resolve();
+        if (!resolved) {
+          resolved = true;
+          elements.loadingcont.style.display = 'none';
+          console.log('Loading container hidden via timeout');
+          resolve();
+        }
       }, 1000);
     });
 
