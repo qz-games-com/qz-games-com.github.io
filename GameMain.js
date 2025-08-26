@@ -392,7 +392,7 @@ document.getElementById('gameCover').addEventListener('load', function() {
       this.style.opacity = '1';
   }, 300);
 });
-
+var loadingcont = document.getElementById('loadingcont');
 const elements = {
   progbar: document.getElementById('progbar'),
   gameCover: document.getElementById('gameCover'),
@@ -519,6 +519,10 @@ async function doneloadingWithClasses() {
     await wait(200);
 
     elements.loadingcont.classList.add('fade-out');
+
+    setTimeout(() => {
+      loadingcont.style.display = 'none';
+    }, 500);
     
     await new Promise(resolve => {
       const onTransitionEnd = (event) => {

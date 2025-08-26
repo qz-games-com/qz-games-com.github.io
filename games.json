@@ -26,7 +26,7 @@
     "fnaf": {
         "cover": "fnaf.png",
         "name": "FNAF",
-        "gradient": "brown",
+        "gradient": "black",
         "catagory": "casual horror",
         "link": "../Games01/fnaf-1",
         "type": "html"   
@@ -34,7 +34,7 @@
     "fnaf 2": {
         "cover": "fnaf2.png",
         "name": "FNAF 2",
-        "gradient": "orange-red",
+        "gradient": "black",
         "catagory": "casual horror",
         "link": "../Games01/fnaf-2",
         "type": "html"   
@@ -42,7 +42,7 @@
     "fnaf 3": {
         "cover": "fnaf3.png",
         "name": "FNAF 3",
-        "gradient": "dark-green",
+        "gradient": "darkgreen",
         "catagory": "casual horror",
         "link": "../Games01/fnaf-3",
         "type": "html"   
@@ -50,7 +50,7 @@
     "fnaf 4": {
         "cover": "fnaf4.png",
         "name": "FNAF 4",
-        "gradient": "orange-red",
+        "gradient": "darkred",
         "catagory": "casual horror",
         "link": "../Games01/fnaf-4",
         "type": "html"   
@@ -58,7 +58,7 @@
     "fnaf sister location (remake)": {
         "cover": "fnafs.png",
         "name": "FNAF Sister Location (Remake)",
-        "gradient": "purple",
+        "gradient": "blue",
         "catagory": "casual horror",
         "link": "../Games01/sisterlocation.html",
         "type": "html"   
@@ -74,7 +74,7 @@
     "uno (replica)": {
         "cover": "uno.avif",
         "name": "Uno (Replica)",
-        "gradient": "lightblue",
+        "gradient": "red",
         "catagory": "casual multiplayer",
         "link": "../Games01/uno",
         "type": "html"   
@@ -135,7 +135,7 @@
         "link": "../Games01/geodash",
         "type": "html"   
     },
-    "moto x3m": {
+    "motox3m": {
         "cover": "moto.png",
         "name": "MotoX3M",
         "gradient": "red",
@@ -143,7 +143,7 @@
         "link": "../Games01/motox3m",
         "type": "html"   
     },
-    "moto x3m 2": {
+    "motox3m 2": {
         "cover": "moto2.png",
         "name": "MotoX3M 2",
         "gradient": "red",
@@ -151,7 +151,7 @@
         "link": "../Games01/motox3m2",
         "type": "html"   
     },
-    "moto x3m pool": {
+    "motox3m pool": {
         "cover": "motop.png",
         "name": "MotoX3M Pool",
         "gradient": "red",
@@ -159,7 +159,7 @@
         "link": "../Games01/motox3m-pool",
         "type": "html"   
     },
-    "moto x3m spooky": {
+    "motox3m spooky": {
         "cover": "motospook.png",
         "name": "MotoX3M Spooky",
         "gradient": "red",
@@ -167,7 +167,7 @@
         "link": "../Games01/motox3m-spooky",
         "type": "html"   
     },
-    "moto x3m winter": {
+    "motox3m winter": {
         "cover": "motow.png",
         "name": "MotoX3M Winter",
         "gradient": "red",
