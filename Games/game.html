@@ -2,7 +2,6 @@
 <html>
     <head>
         <title>Qz Games | Game</title>
-        <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
         <link rel="icon" href="../Q.png">
         <meta charset="UTF-8">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -56,9 +55,61 @@
                 border: 2px solid rgb(66, 66, 66);
                 z-index: 5;
             }
+            #virtual-cursor {
+                position: absolute; width: 14px; height: 14px; pointer-events: none;
+                border: 2px solid white; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,.6);
+                transform: translate(-50%, -50%); z-index: 9999; display: none;
+            }
+            .hide-native-cursor { cursor: none; }
         </style>
     </head>
     <body>
+        <div id="virtual-cursor"></div>
+
+        <div class="loading-container" id="loadingcont">
+            <div class="gradient-bg" id="gradientBg" style="opacity: 0;"></div>
+            
+            <img class="game-cover" id="gameCover" src="" alt="Game Cover" style="opacity: 0; transition: 0.5s;">
+            
+            <div class="content-section">
+                <h1 class="game-title pulse" id="gameTitle"></h1>
+                
+                <div class="loading-section">
+                    <!--div class="spinner"></div-->
+                    <div aria-live="assertive" role="alert" id="loadan" class="loader"></div>
+                    <p style="opacity: 0;" class="loading-text">Loading your game</p>
+                </div>
+                <div id="options" class="options-section">
+                    <button onclick="doneloading()">
+                        <span class="material-icons">
+                            fast_forward
+                        </span>
+                        <p>Skip</p>
+                    </button>
+                    <a href="../index.html" style="text-decoration: none;">
+                    <button style="margin-left: 5px;" >
+                        
+                        <span class="material-icons">
+                            home
+                        </span>
+                        <p>Home</p>
+                       
+                    </button>
+                     </a>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progbar"></div>
+                </div>
+            </div>
+    
+            <div class="error-message" id="errorMessage">
+                Game not found. Please check the URL parameter.
+            </div>
+        </div>
+
         <div class="reminderclose" id="reminderclose">
             <div style="top: 50%; position: absolute; left: 50%; transform: translate(-50%, -50%);">
                 <span class="material-icons notranslate" style="font-size: 80px; text-shadow: 0px 8px 5px rgb(12, 12, 12); left: 50%; position: relative; transform: translateX(-50%); color: white;">
@@ -88,7 +139,10 @@
             <iframe src="" class="gameiframe" id="gameiframe" allowfullscreen></iframe>
         </div>
         <script src="../GameMain.js">
+            
         </script>
+        <script src="../GameInput.js"></script>
+
         
     </body>
 </html>

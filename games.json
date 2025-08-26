@@ -442,7 +442,7 @@
     "riddle school 2": {
         "cover": "rid2.png",
         "name": "Riddle School 2",
-        "gradient": "black",
+        "gradient": "green",
         "catagory": "casual story",
         "link": "../Games02/riddd2.swf",
         "type": "flash"   
