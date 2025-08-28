@@ -557,3 +557,37 @@ async function doneloadingWithClasses() {
     elements.loadingcont?.style.setProperty('display', 'none');
   }
 }
+var isopencontroller = false
+function toggleControllerSettings() {
+  if(isopencontroller===false) {
+    document.getElementById('settings-container').style.animation = ''
+
+    document.getElementById('settings-container').style.display = 'flex'
+    document.getElementById('settings-container').style.opacity = 1
+
+    document.getElementById('settings-container').style.animation = 'showcons 0.5s'
+
+    document.getElementById('bgcontroller').style.display = 'block'
+    document.getElementById('bgcontroller').style.opacity = 1
+
+    isopencontroller=true
+  } else if(isopencontroller===true) {
+    document.getElementById('settings-container').style.animation = ''
+
+    document.getElementById('settings-container').style.opacity = 0
+
+    document.getElementById('settings-container').style.animation = 'showconh 0.5s'
+
+    document.getElementById('bgcontroller').style.opacity = 0
+
+    document.getElementById('bgcontroller').style.display = 'none'
+    setTimeout(() => {
+      document.getElementById('settings-container').style.display = 'none'
+
+      document.getElementById('bgcontroller').style.display = 'none'
+
+    }, 450);
+
+    isopencontroller = false
+  }
+}
