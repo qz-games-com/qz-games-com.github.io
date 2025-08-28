@@ -736,3 +736,20 @@ body {
   .adtop {
     width: 85%; max-height: 75px; margin-top: 15px; left: 50%; transform: translateX(-50%); height: 75px; border: 3px rgb(22, 22, 22) solid; box-shadow: 0px 0px 9px black; border-radius: 10px; position: relative;
   }
+  .discordlogo {
+    position: fixed;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    bottom: 20px;
+    right: 20px;
+    z-index: 8;
+    background-color: #7289DA;
+    box-shadow: 0px 0px 8px 5px rgba(24, 24, 24, 0.705);
+    cursor: pointer;
+    transition: 0.5s;
+  }
+  .discordlogo:hover {
+    border-radius: 20px;
+
+  }
