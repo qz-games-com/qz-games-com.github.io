@@ -161,6 +161,8 @@ button.error:hover {
     z-index: 100;
     background-color: rgb(32, 32, 32);
     transition: 0.8s;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .gradient-bg {
@@ -374,4 +376,458 @@ button.error:hover {
 .options-section .material-icons {
     font-size: 20px;                
     line-height: 1;
+}
+.logoloadlol {
+    width: fit-content;
+    height: 80px;
+    position: fixed;
+    bottom: 70px;
+    left: 50px;
+    z-index: 120;
+    display: flex;
+}
+.logoloadlol img {
+    width: 60px;
+    height: 60px;
+    position: relative;
+}
+.logoloadlol h1 {
+    color: white;
+    font-size: 18px;
+    margin-top: 24px;
+    margin-left: 5px;
+}
+.optionsettings {
+    top: 10px;
+    left: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: fixed;
+    backdrop-filter: blur(5px);
+    background-color: rgba(26, 26, 26, 0.418);
+    z-index: 2;
+    box-shadow: 0px 0px 8px 0.5px black;
+    border: 2px solid rgba(54, 54, 54, 0.692);
+}
+.optionsettings span {
+    z-index: 2;
+    font-size: 20px;
+    color: white;
+    left: 50%;
+    top: 50%;
+    position: relative;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+@keyframes settings {
+    from {}
+}
+.tabscont {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.settings-container {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%);
+    width: 95%;
+    height: 90%;
+    backdrop-filter: blur(15px);
+    position: fixed;
+    color: white;
+    margin: 0 auto;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    z-index: 20;
+    opacity: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: 0.5s;
+}
+@keyframes showcons {
+    from {transform: translate(-50%, -50%) scale(0.8); opacity: 0;}
+    to {transform: translate(-50%, -50%) scale(1); opacity: 1;}
+
+}
+@keyframes showconh {
+    from {transform: translate(-50%, -50%) scale(1); opacity: 1;}
+    to {transform: translate(-50%, -50%) scale(0.8); opacity: 0;}
+
+}
+
+.settings-container button:hover {
+    background-color: gray;
+}
+
+.header {
+    padding: 25px 30px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.header .material-icons {
+    font-size: 28px;
+    color: #ffffff;
+}
+
+.header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+.header span {
+    font-size: 46px !important;
+}
+
+.tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tab-button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 18px 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    flex: 1;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-button.active {
+    color: white;
+    background: rgba(179, 179, 179, 0.1);
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #afafaf, #6d6d6d);
+}
+
+.tab-button:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.tabs-container {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    padding: 30px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.section::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.section::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.section::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.section h3 {
+    color: #ffffff;
+    margin-bottom: 25px;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section p {
+    color: #999;
+    margin-bottom: 25px;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.setting-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.setting-label {
+    font-weight: 500;
+    color: #e0e0e0;
+    font-size: 16px;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+input[type="range"] {
+    width: 180px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.4);
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 12px rgba(255, 255, 255, 0.6);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #ffffff;
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    color: #e0e0e0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.bind-button {
+    background: linear-gradient(135deg, hsl(0, 0%, 23%), #2e2e2e);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.bind-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(116, 116, 116, 0.3);
+}
+
+.bind-button.listening {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(0.8); }
+    50% { transform: scale(0.9); }
+}
+
+.bindings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.binding-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.binding-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.binding-label {
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+.binding-key {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-right: 10px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 25px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.action-button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #818181, #636363);
+    color: white;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #757575, #616161);
+    color: white;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.value-display {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.notificationn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notificationn.show {
+    transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+    .settings-container {
+        width: 95%;
+        height: 95vh;
+        border-radius: 15px;
+    }
+    
+    .section {
+        padding: 20px;
+    }
+    
+    .bindings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .setting-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .setting-control {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+.nonec {
+    color: rgb(255, 109, 109);
+}
+.conc {
+    color: rgb(114, 255, 109) !important;
 }

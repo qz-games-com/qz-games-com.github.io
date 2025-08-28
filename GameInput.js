@@ -230,7 +230,6 @@ const DEADZONE = 0.2;
   //   // e.detail.dx / e.detail.dy available here
   // });
 */
-
 // ===== PARENT PAGE (same-origin) =====
 const FRAME_ID = 'gameiframe'; // <iframe id="gameframe" src="/your-unity-page.html">
 const frame = document.getElementById(FRAME_ID);
@@ -252,6 +251,116 @@ frame.addEventListener('load', () => {
 document.addEventListener('click', () => {
   if (canvas?.requestPointerLock) canvas.requestPointerLock();
 }, { once: true });
+
+// ===== CONFIGURATION MANAGEMENT =====
+const DEFAULT_CONFIG = {
+  deadzone: 0.18,
+  sensitivity: 900,
+  invertY: false,
+  buttonMappings: {
+    0: 'fire',      // A button / X (PlayStation)
+    1: 'jump',      // B button / Circle
+    2: 'reload',    // X button / Square  
+    3: 'interact',  // Y button / Triangle
+    4: 'prevWeapon', // LB / L1
+    5: 'nextWeapon', // RB / R1
+    6: 'aim',       // LT / L2 (if digital)
+    7: 'fire',      // RT / R2 (if digital)
+    8: 'menu',      // Back/Select
+    9: 'pause',     // Start
+    10: 'leftStickClick',  // Left stick click
+    11: 'rightStickClick', // Right stick click
+    12: 'up',       // D-pad up
+    13: 'down',     // D-pad down
+    14: 'left',     // D-pad left
+    15: 'right'     // D-pad right
+  },
+  keyMappings: {
+    'jump': ' ',        // Spacebar
+    'reload': 'r',      // R key
+    'interact': 'e',    // E key
+    'menu': 'Escape',   // Escape key
+    'pause': 'Escape',  // Escape key
+    'up': 'w',          // W key
+    'down': 's',        // S key
+    'left': 'a',        // A key
+    'right': 'd'        // D key
+  }
+};
+
+let config = DEFAULT_CONFIG;
+
+// Cookie utility functions
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+function setCookie(name, value, days = 365) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+// Load configuration from cookie
+function loadConfig() {
+  try {
+    const cookieValue = getCookie('user_game_controller_config');
+    if (cookieValue) {
+      const savedConfig = JSON.parse(decodeURIComponent(cookieValue));
+      // Merge saved config with defaults to handle missing properties
+      config = {
+        ...DEFAULT_CONFIG,
+        ...savedConfig,
+        buttonMappings: { ...DEFAULT_CONFIG.buttonMappings, ...savedConfig.buttonMappings },
+        keyMappings: { ...DEFAULT_CONFIG.keyMappings, ...savedConfig.keyMappings }
+      };
+      console.log('Loaded controller config from cookie:', config);
+    } else {
+      console.log('No controller config found, using defaults');
+    }
+  } catch (error) {
+    console.warn('Failed to load controller config from cookie, using defaults:', error);
+    config = DEFAULT_CONFIG;
+  }
+}
+
+// Save configuration to cookie
+function saveConfig() {
+  try {
+    const configJson = JSON.stringify(config);
+    setCookie('user_game_controller_config', encodeURIComponent(configJson));
+    console.log('Saved controller config to cookie');
+  } catch (error) {
+    console.error('Failed to save controller config:', error);
+  }
+}
+
+// API to update config from external sources
+window.updateControllerConfig = function(newConfig) {
+  config = {
+    ...DEFAULT_CONFIG,
+    ...newConfig,
+    buttonMappings: { ...DEFAULT_CONFIG.buttonMappings, ...newConfig.buttonMappings },
+    keyMappings: { ...DEFAULT_CONFIG.keyMappings, ...newConfig.keyMappings }
+  };
+  saveConfig();
+  console.log('Controller config updated:', config);
+};
+
+// API to get current config
+window.getControllerConfig = function() {
+  return { ...config };
+};
+
+// API to reset to defaults
+window.resetControllerConfig = function() {
+  config = { ...DEFAULT_CONFIG };
+  saveConfig();
+  console.log('Controller config reset to defaults');
+};
 
 // --- Mouse emulation into the child (movementX/Y based) ---
 function childMouseMove(dx, dy) {
@@ -277,20 +386,18 @@ function childMouseButton(down, button = 0) {
   canvas.dispatchEvent(ev);
 }
 
-// --- Map your right stick -> aim deltas (drop into your gamepad loop) ---
-const DEADZONE = 0.18;
-const curve = v => { 
-  const s = Math.sign(v), a = Math.abs(v); 
-  if (a < DEADZONE) return 0;
-  const n = (a - DEADZONE) / (1 - DEADZONE); 
-  return s * n * n; 
-};
-const SENS = 900; // tune to taste
+// --- Map your right stick -> aim deltas (using config values) ---
+function applyCurve(v, deadzone) {
+  const s = Math.sign(v), a = Math.abs(v);
+  if (a < deadzone) return 0;
+  const n = (a - deadzone) / (1 - deadzone);
+  return s * n * n;
+}
 
 function onRightStick(ax, ay, dt) {
   // ax, ay in [-1..1], dt in seconds since last frame
-  const dx = curve(ax) * SENS * dt;
-  const dy = curve(ay) * SENS * dt;
+  const dx = applyCurve(ax, config.deadzone) * config.sensitivity * dt;
+  const dy = applyCurve(ay, config.deadzone) * config.sensitivity * dt * (config.invertY ? -1 : 1);
   childMouseMove(dx, dy);
 }
 
@@ -320,31 +427,11 @@ function handleGamepadInput() {
     const rightStickX = gamepad.axes[2] || 0;
     const rightStickY = gamepad.axes[3] || 0;
     
-    // Call your right stick function
+    // Call your right stick function with config values
     onRightStick(rightStickX, rightStickY, dt);
     
-    // Handle buttons (example mapping)
+    // Handle buttons using config mappings
     const currentButtons = new Map();
-    
-    // Button mappings (adjust these based on your controller)
-    const buttonMap = {
-      0: 'fire',      // A button / X (PlayStation)
-      1: 'jump',      // B button / Circle
-      2: 'reload',    // X button / Square  
-      3: 'interact',  // Y button / Triangle
-      4: 'prevWeapon', // LB / L1
-      5: 'nextWeapon', // RB / R1
-      6: 'aim',       // LT / L2 (if digital)
-      7: 'fire',      // RT / R2 (if digital)
-      8: 'menu',      // Back/Select
-      9: 'pause',     // Start
-      10: 'leftStickClick',  // Left stick click
-      11: 'rightStickClick', // Right stick click
-      12: 'up',       // D-pad up
-      13: 'down',     // D-pad down
-      14: 'left',     // D-pad left
-      15: 'right'     // D-pad right
-    };
     
     gamepad.buttons.forEach((button, buttonIndex) => {
       const isPressed = button.pressed;
@@ -355,27 +442,31 @@ function handleGamepadInput() {
       
       // Button state changed
       if (isPressed !== wasPressed) {
-        const action = buttonMap[buttonIndex];
+        const action = config.buttonMappings[buttonIndex];
         
-        // Handle specific button actions
-        switch(action) {
-          case 'fire':
-            onFire(isPressed);
-            break;
-          case 'aim':
-            onAim(isPressed);
-            break;
-          case 'jump':
-            // Send spacebar or whatever jump key Unity expects
-            sendKeyToChild(' ', isPressed);
-            break;
-          case 'reload':
-            if (isPressed) sendKeyToChild('r', true);
-            break;
-          case 'interact':
-            if (isPressed) sendKeyToChild('e', true);
-            break;
-          // Add more actions as needed
+        if (action) {
+          // Handle specific button actions
+          switch(action) {
+            case 'fire':
+              onFire(isPressed);
+              break;
+            case 'aim':
+              onAim(isPressed);
+              break;
+            default:
+              // Handle other actions that map to keyboard keys
+              const key = config.keyMappings[action];
+              if (key) {
+                if (action === 'reload' || action === 'interact' || action === 'menu' || action === 'pause') {
+                  // These actions only trigger on press, not release
+                  if (isPressed) sendKeyToChild(key, true);
+                } else {
+                  // Movement keys and others trigger on both press and release
+                  sendKeyToChild(key, isPressed);
+                }
+              }
+              break;
+          }
         }
       }
     });
@@ -387,6 +478,7 @@ function handleGamepadInput() {
       const rightTrigger = (gamepad.axes[7] + 1) / 2;
       
       // Use triggers for aim/fire if you prefer analog
+      // You could add trigger sensitivity to config too
       // onAim(leftTrigger > 0.1);
       // onFire(rightTrigger > 0.1);
     }
@@ -402,13 +494,29 @@ function sendKeyToChild(key, pressed) {
   if (!w || !canvas) return;
   
   const type = pressed ? 'keydown' : 'keyup';
-  const keyCode = key.charCodeAt ? key.charCodeAt(0) : key;
+  let keyCode, code;
+  
+  // Handle special keys
+  switch(key) {
+    case ' ':
+      keyCode = 32;
+      code = 'Space';
+      break;
+    case 'Escape':
+      keyCode = 27;
+      code = 'Escape';
+      break;
+    default:
+      keyCode = key.toUpperCase().charCodeAt(0);
+      code = `Key${key.toUpperCase()}`;
+      break;
+  }
   
   const ev = new w.KeyboardEvent(type, {
     bubbles: true,
     cancelable: true,
     key: key,
-    code: `Key${key.toUpperCase()}`,
+    code: code,
     keyCode: keyCode,
     which: keyCode
   });
@@ -417,11 +525,13 @@ function sendKeyToChild(key, pressed) {
 }
 
 // ===== INITIALIZATION =====
-// Start the gamepad polling loop
+// Load config first, then start gamepad handling
 document.addEventListener('DOMContentLoaded', () => {
+  loadConfig();
+  
   // Wait a bit for the iframe to load
   setTimeout(() => {
-    console.log('Starting gamepad input handling...');
+    console.log('Starting gamepad input handling with config:', config);
     handleGamepadInput();
   }, 1000);
 });
@@ -429,8 +539,343 @@ document.addEventListener('DOMContentLoaded', () => {
 // Optional: Add gamepad connect/disconnect events
 window.addEventListener('gamepadconnected', (e) => {
   console.log('Gamepad connected:', e.gamepad.id);
-});
+  document.getElementById('controllerstatus').classList.add('conc')
+  document.getElementById('controllerstatus').textContent = e.gamepad.id
+  if(e.gamepad.id === 'Xbox 360 Controller (XInput STANDARD GAMEPAD)') {
+    document.getElementById('controllerstatus').textContent = "Xbox Controller"
+  }
 
+});
 window.addEventListener('gamepaddisconnected', (e) => {
   console.log('Gamepad disconnected:', e.gamepad.id);
+    document.getElementById('controllerstatus').textContent = 'No Controller Connected'
+
+  document.getElementById('controllerstatus').classList.remove('conc')
 });
+
+// Save config when page unloads (in case of runtime changes)
+window.addEventListener('beforeunload', () => {
+  saveConfig();
+});
+
+//Binds
+const DEFAULT_CONFIGG = {
+    deadzone: 0.18,
+    sensitivity: 900,
+    invertY: false,
+    buttonMappings: {
+        0: ' ',         // A button -> Spacebar
+        1: 'w',         // B button -> W key
+        2: 'r',         // X button -> R key  
+        3: 'e',         // Y button -> E key
+        4: 'q',         // LB -> Q key
+        5: 'f',         // RB -> F key
+        6: 'Shift',     // LT -> Shift key
+        7: ' ',         // RT -> Spacebar
+        8: 'Escape',    // Back/Select -> Escape
+        9: 'Escape',    // Start -> Escape
+        10: 'c',        // Left stick click -> C
+        11: 'v',        // Right stick click -> V
+        12: 'w',        // D-pad up -> W
+        13: 's',        // D-pad down -> S
+        14: 'a',        // D-pad left -> A
+        15: 'd'         // D-pad right -> D
+    }
+};
+
+const BUTTON_NAMES = {
+    0: 'A Button / X (PS)',
+    1: 'B Button / Circle',
+    2: 'X Button / Square',
+    3: 'Y Button / Triangle',
+    4: 'Left Bumper / L1',
+    5: 'Right Bumper / R1',
+    6: 'Left Trigger / L2',
+    7: 'Right Trigger / R2',
+    8: 'Back / Select',
+    9: 'Start',
+    10: 'Left Stick Click',
+    11: 'Right Stick Click',
+    12: 'D-Pad Up',
+    13: 'D-Pad Down',
+    14: 'D-Pad Left',
+    15: 'D-Pad Right'
+};
+
+let currentConfig = { ...DEFAULT_CONFIGG };
+let isListening = false;
+let listeningElement = null;
+let listeningButtonId = null;
+
+// Load saved configuration
+function loadConfig() {
+    try {
+        const saved = getCookie('user_game_controller_config');
+        if (saved) {
+            // Try to decode if it's URL encoded
+            let decodedSaved = saved;
+            try {
+                decodedSaved = decodeURIComponent(saved);
+            } catch (e) {
+                // If decoding fails, use original
+                decodedSaved = saved;
+            }
+            
+            const parsedConfig = JSON.parse(decodedSaved);
+            currentConfig = { ...DEFAULT_CONFIGG, ...parsedConfig };
+            console.log('Config loaded successfully:', currentConfig);
+        } else {
+            console.log('No saved config found, using defaults');
+        }
+    } catch (error) {
+        console.error('Error loading config:', error);
+        console.log('Using default configuration');
+        currentConfig = { ...DEFAULT_CONFIGG };
+        // Clear the corrupted cookie
+        setCookie('user_game_controller_config', '', -1);
+    }
+    updateUI();
+}
+
+// Save configuration to cookie
+function setCookie(name, value, days = 30) {
+    try {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        const cookieValue = typeof value === 'object' ? JSON.stringify(value) : value;
+        document.cookie = `${name}=${cookieValue};expires=${expires.toUTCString()};path=/`;
+        console.log('Cookie saved successfully');
+    } catch (error) {
+        console.error('Error saving cookie:', error);
+        showNotificationn('Error saving settings');
+    }
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+// Update UI with current configuration
+function updateUI() {
+    document.getElementById('sensitivity').value = currentConfig.sensitivity;
+    document.getElementById('sensitivity-value').textContent = currentConfig.sensitivity;
+    
+    document.getElementById('deadzone').value = currentConfig.deadzone;
+    document.getElementById('deadzone-value').textContent = currentConfig.deadzone.toFixed(2);
+    
+    document.getElementById('invertY').checked = currentConfig.invertY;
+
+    populateBindings();
+}
+
+// Populate binding sections
+function populateBindings() {
+    populateControllerBindings();
+}
+
+function populateControllerBindings() {
+    const container = document.getElementById('controller-bindings');
+    container.innerHTML = '';
+
+    Object.keys(currentConfig.buttonMappings).forEach(buttonId => {
+        const keyBinding = currentConfig.buttonMappings[buttonId];
+        const buttonName = BUTTON_NAMES[buttonId];
+        
+        const bindingItem = document.createElement('div');
+        bindingItem.className = 'binding-item';
+        bindingItem.innerHTML = `
+            <div>
+                <strong>${buttonName}</strong>
+                <div style="color: #999; font-size: 14px;">Currently bound to: ${getKeyDisplayName(keyBinding)}</div>
+            </div>
+            <button class="bind-button" onclick="startListening('${buttonId}', this)">
+                Rebind
+            </button>
+        `;
+        container.appendChild(bindingItem);
+    });
+}
+
+function getKeyDisplayName(key) {
+    const keyNames = {
+        ' ': 'Spacebar',
+        'Escape': 'Escape',
+        'Enter': 'Enter',
+        'Shift': 'Shift',
+        'Control': 'Ctrl',
+        'Alt': 'Alt',
+        'Tab': 'Tab',
+        'CapsLock': 'Caps Lock',
+        'MouseLeft': 'Left Mouse',
+        'MouseRight': 'Right Mouse',
+        'MouseMiddle': 'Middle Mouse',
+        'MouseBack': 'Back Mouse',
+        'MouseForward': 'Forward Mouse'
+    };
+    return keyNames[key] || (key.length === 1 ? key.toUpperCase() : key);
+}
+
+// Start listening for input
+function startListening(buttonId, button) {
+    if (isListening) return;
+    
+    isListening = true;
+    listeningElement = button;
+    listeningButtonId = buttonId;
+    
+    button.textContent = 'Press key or mouse button...';
+    button.classList.add('listening');
+    
+    document.addEventListener('keydown', handleKeyboardInput);
+    document.addEventListener('mousedown', handleMouseInput);
+    document.addEventListener('contextmenu', preventContextMenu);
+}
+
+// Handle keyboard input
+function handleKeyboardInput(event) {
+    if (!isListening) return;
+    
+    event.preventDefault();
+    const key = event.key;
+    
+    currentConfig.buttonMappings[listeningButtonId] = key;
+    stopListening();
+    populateControllerBindings();
+    showNotificationn(`${BUTTON_NAMES[listeningButtonId]} bound to ${getKeyDisplayName(key)}`);
+}
+
+// Handle mouse input
+function handleMouseInput(event) {
+    if (!isListening) return;
+    
+    event.preventDefault();
+    event.stopPropagation();
+    
+    let mouseButton;
+    switch(event.button) {
+        case 0: mouseButton = 'MouseLeft'; break;
+        case 1: mouseButton = 'MouseMiddle'; break;
+        case 2: mouseButton = 'MouseRight'; break;
+        case 3: mouseButton = 'MouseBack'; break;
+        case 4: mouseButton = 'MouseForward'; break;
+        default: mouseButton = `Mouse${event.button}`; break;
+    }
+    
+    currentConfig.buttonMappings[listeningButtonId] = mouseButton;
+    stopListening();
+    populateControllerBindings();
+    showNotificationn(`${BUTTON_NAMES[listeningButtonId]} bound to ${getKeyDisplayName(mouseButton)}`);
+}
+
+// Prevent context menu during binding
+function preventContextMenu(event) {
+    if (isListening) {
+        event.preventDefault();
+    }
+}
+
+// Stop listening for input
+function stopListening() {
+    isListening = false;
+    if (listeningElement) {
+        listeningElement.textContent = 'Rebind';
+        listeningElement.classList.remove('listening');
+    }
+    listeningElement = null;
+    listeningButtonId = null;
+    document.removeEventListener('keydown', handleKeyboardInput);
+    document.removeEventListener('mousedown', handleMouseInput);
+    document.removeEventListener('contextmenu', preventContextMenu);
+}
+
+// Tab switching
+function switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+}
+
+// Settings handlers
+document.getElementById('sensitivity').addEventListener('input', (e) => {
+    currentConfig.sensitivity = parseInt(e.target.value);
+    document.getElementById('sensitivity-value').textContent = e.target.value;
+});
+
+document.getElementById('deadzone').addEventListener('input', (e) => {
+    currentConfig.deadzone = parseFloat(e.target.value);
+    document.getElementById('deadzone-value').textContent = parseFloat(e.target.value).toFixed(2);
+});
+
+document.getElementById('invertY').addEventListener('change', (e) => {
+    currentConfig.invertY = e.target.checked;
+});
+
+// Save settings
+function saveSettings() {
+    try {
+        setCookie('user_game_controller_config', currentConfig);
+        
+        // Call the window update function if available
+        if (typeof window.updateControllerConfig === 'function') {
+            window.updateControllerConfig(currentConfig);
+        }
+        
+        showNotificationn('Settings saved successfully!');
+        console.log('Settings saved:', currentConfig);
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        showNotificationn('Error saving settings');
+    }
+}
+
+// Reset to defaults
+function resetToDefaults() {
+    if (confirm('Are you sure you want to reset all settings to default?')) {
+        currentConfig = { ...DEFAULT_CONFIG };
+        updateUI();
+        
+        if (typeof window.resetControllerConfig === 'function') {
+            window.resetControllerConfig();
+        }
+        
+        showNotificationn('Settings reset to defaults');
+    }
+}
+
+// Show notification
+function showNotificationn(message) {
+    const notification = document.getElementById('notificationn');
+    notification.textContent = message;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
+// Handle clicks outside of listening elements (but not during binding)
+document.addEventListener('click', (e) => {
+    if (isListening && !e.target.classList.contains('bind-button')) {
+        // Don't stop listening on clicks during binding - let mouse handler deal with it
+        return;
+    }
+});
+
+// Add a manual cancel button behavior
+document.addEventListener('keydown', (e) => {
+    // Only cancel on Escape if we're listening AND it's a double-press or special combo
+    if (e.key === 'Escape' && isListening && e.ctrlKey) {
+        stopListening();
+        showNotificationn('Binding cancelled');
+    }
+});
+
+// Initialize
+loadConfig();
