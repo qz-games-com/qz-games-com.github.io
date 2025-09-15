@@ -646,6 +646,30 @@
         "catagory": "casual",
         "link": "../Games02/gunspinn",
         "type": "html"   
+    },
+    "uzg remastered": {
+        "cover": "uzg.png",
+        "name": "UZG Remastered",
+        "gradient": "grey",
+        "catagory": "shooter",
+        "link": "../Games02/uzgremaster",
+        "type": "html"   
+    },
+    "doge miner": {
+        "cover": "dogeminer.png",
+        "name": "Doge Miner",
+        "gradient": "yellow",
+        "catagory": "casual idle",
+        "link": "../Games02/DogeMiner",
+        "type": "html"   
+    },
+    "doge miner 2": {
+        "cover": "dogeminer2.png",
+        "name": "Doge Miner 2",
+        "gradient": "yellow",
+        "catagory": "casual idle",
+        "link": "../Games02/Dogeminer2",
+        "type": "html"   
     }
 
 }
