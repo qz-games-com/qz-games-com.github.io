@@ -179,7 +179,7 @@
         "cover": "pizzat.png",
         "name": "pizza tower",
         "gradient": "red",
-        "catagory": "casual driver",
+        "catagory": "casual",
         "link": "../Games01/pizza-tower",
         "type": "html"   
     },
