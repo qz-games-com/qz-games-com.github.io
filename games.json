@@ -371,7 +371,7 @@
         "cover": "speedstars.png",
         "name": "Speedstars",
         "gradient": "red",
-        "catagory": "casual sports",
+        "catagory": "casual sport",
         "link": "../Games02/speed-stars",
         "type": "html"   
     },
@@ -435,7 +435,7 @@
         "cover": "rid.png",
         "name": "Riddle School",
         "gradient": "black",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd.swf",
         "type": "flash"   
     },
@@ -443,7 +443,7 @@
         "cover": "rid2.png",
         "name": "Riddle School 2",
         "gradient": "green",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd2.swf",
         "type": "flash"   
     },
@@ -451,7 +451,7 @@
         "cover": "rid3.png",
         "name": "Riddle School 3",
         "gradient": "black",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd3.swf",
         "type": "flash"   
     },
@@ -459,7 +459,7 @@
         "cover": "rid4.png",
         "name": "Riddle School 4",
         "gradient": "black",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd4.swf",
         "type": "flash"   
     },
@@ -467,7 +467,7 @@
         "cover": "rid5.png",
         "name": "Riddle School 5",
         "gradient": "black",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd5.swf",
         "type": "flash"   
     },
@@ -475,7 +475,7 @@
         "cover": "rid6.png",
         "name": "Riddle Transfer",
         "gradient": "black",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd6.swf",
         "type": "flash"   
     },
@@ -483,7 +483,7 @@
         "cover": "rid7.png",
         "name": "Riddle Transfer 2",
         "gradient": "black",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/riddd7.swf",
         "type": "flash"   
     },
@@ -523,7 +523,7 @@
         "cover": "btb.png",
         "name": "Breaking the bank",
         "gradient": "lightblue",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/henrystickmin/Henry%20Stickmin%20-%20Breaking%20the%20Bank.swf",
         "type": "flash"   
     },
@@ -531,7 +531,7 @@
         "cover": "estp.png",
         "name": "Escaping The Prison",
         "gradient": "yellow",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/henrystickmin/escaping_the_prison.swf",
         "type": "flash"   
     },
@@ -539,7 +539,7 @@
         "cover": "stealingt.png",
         "name": "Stealing The Diamond",
         "gradient": "white",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/henrystickmin/Henry Stickmin - Stealing the Diamond.swf",
         "type": "flash"   
     },
@@ -547,7 +547,7 @@
         "cover": "ita.png",
         "name": "Infiltrating The Airship",
         "gradient": "red",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/henrystickmin/infiltratingtheairshipgame.swf",
         "type": "flash"   
     },
@@ -555,7 +555,7 @@
         "cover": "ftc.png",
         "name": "Fleeing The Complex",
         "gradient": "grey",
-        "catagory": "casual story",
+        "catagory": "casual story flash",
         "link": "../Games02/henrystickmin/Henry Stickmin - Fleeing the Complex.swf",
         "type": "flash"   
     },
@@ -571,7 +571,7 @@
         "cover": "btd.png",
         "name": "Bloons Tower Defence",
         "gradient": "green",
-        "catagory": "casual idle",
+        "catagory": "casual idle flash",
         "link": "../Games02/btd1/game.swf",
         "type": "flash"   
     },
@@ -579,7 +579,7 @@
         "cover": "btd.png",
         "name": "Bloons Tower Defence 2",
         "gradient": "green",
-        "catagory": "casual idle",
+        "catagory": "casual idle flash",
         "link": "../Games02/btd2/game.swf",
         "type": "flash"   
     },
@@ -587,7 +587,7 @@
         "cover": "btd.png",
         "name": "Bloons Tower Defence 3",
         "gradient": "green",
-        "catagory": "casual idle",
+        "catagory": "casual idle flash",
         "link": "../Games02/btd3/game.swf",
         "type": "flash"   
     },
@@ -595,7 +595,7 @@
         "cover": "btd.png",
         "name": "Bloons Tower Defence 4",
         "gradient": "green",
-        "catagory": "casual idle",
+        "catagory": "casual idle flash",
         "link": "../Games02/btd4/game.swf",
         "type": "flash"   
     },
@@ -603,7 +603,7 @@
         "cover": "btd.png",
         "name": "Bloons Tower Defence 5",
         "gradient": "green",
-        "catagory": "casual idle",
+        "catagory": "casual idle flash",
         "link": "../Games02/btd5/game.swf",
         "type": "flash"   
     },
@@ -611,7 +611,7 @@
         "cover": "ducklife.avif",
         "name": "Duck Life",
         "gradient": "lightgreen",
-        "catagory": "casual",
+        "catagory": "casual flash",
         "link": "../Games02/ducklife1/game.swf",
         "type": "flash"   
     },
@@ -619,7 +619,7 @@
         "cover": "ducklife.avif",
         "name": "Duck Life 2",
         "gradient": "lightgreen",
-        "catagory": "casual",
+        "catagory": "casual flash",
         "link": "../Games02/ducklife2/game.swf",
         "type": "flash"   
     },
@@ -627,7 +627,7 @@
         "cover": "ducklife.avif",
         "name": "Duck Life 3",
         "gradient": "lightgreen",
-        "catagory": "casual",
+        "catagory": "casual flash",
         "link": "../Games02/ducklife3/game.swf",
         "type": "flash"   
     },
@@ -635,7 +635,7 @@
         "cover": "ducklife.avif",
         "name": "Duck Life 4",
         "gradient": "lightgreen",
-        "catagory": "casual",
+        "catagory": "casual flash",
         "link": "../Games02/ducklife4/game.swf",
         "type": "flash"   
     },
@@ -670,6 +670,15 @@
         "catagory": "casual idle",
         "link": "../Games02/Dogeminer2",
         "type": "html"   
+    },
+    "buckshot roulette": {
+        "cover": "BuckshotRoulette.png",
+        "name": "Buckshot Roulette",
+        "gradient": "black",
+        "catagory": "casual shooter",
+        "link": "../buckshot/buckshot",
+        "type": "html"   
     }
+
 
 }
