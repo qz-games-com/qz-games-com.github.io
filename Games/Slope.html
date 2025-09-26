@@ -1,4 +1,252 @@
-class NotificationSystem {
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Slope</title>
+        <link rel="icon" href="../Q.png">
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="../gamecss.css">
+        <link rel="canonical" href="https://qz-games.github.io/Slope" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('../service-worker.js');
+            }
+        </script>
+        <scripts src="../GlobalSettings.js"></scripts>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J246XWP5WQ"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-J246XWP5WQ');
+        </script>
+        <style>
+            body {
+                background-color: rgb(44, 44, 44);
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                overflow: hidden;
+            }
+            .gameiframe {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                margin: 0;
+            }
+            .maingamesstuff {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                
+            }
+            iframe {
+                border: none;
+            }
+            .optiongamemain {
+                width: 80px;
+                height: 35px;
+                position: fixed;
+                bottom: 13px;
+                backdrop-filter: blur(5px);
+                left: 13px;
+                background-color: rgba(36, 36, 36, 0.658);
+                border-radius: 30px;
+                border: 2px solid rgb(66, 66, 66);
+                z-index: 5;
+            }
+            #virtual-cursor {
+                position: absolute; width: 14px; height: 14px; pointer-events: none;
+                border: 2px solid white; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,.6);
+                transform: translate(-50%, -50%); z-index: 9999; display: none;
+            }
+            .hide-native-cursor { cursor: none; }
+        </style>
+    </head>
+    <body>
+        <!--div id="virtual-cursor"></div-->
+
+        <div class="loading-container" id="loadingcont">
+            <div id="" class="logoloadlol">
+                <img src="../Q.png" alt="logo"/>
+                <h1>Qz Games</h1>
+            </div>
+            <div class="gradient-bg" id="gradientBg" style="opacity: 0;"></div>
+            
+            <img class="game-cover" id="gameCover" src="" alt="Game Cover" style="opacity: 0; transition: 0.5s;">
+            
+            <div class="content-section">
+                <h1 class="game-title pulse" id="gameTitle"></h1>
+                
+                <div class="loading-section">
+                    <!--div class="spinner"></div-->
+                    <div aria-live="assertive" role="alert" id="loadan" class="loader"></div>
+                    <p style="opacity: 0;" class="loading-text">Loading your game</p>
+                </div>
+                <div id="options" class="options-section">
+                    <button onclick="doneloading()">
+                        <span class="material-icons">
+                            fast_forward
+                        </span>
+                        <p>Skip</p>
+                    </button>
+                    <a href="../index.html" style="text-decoration: none;">
+                    <button style="margin-left: 5px;" >
+                        
+                        <span class="material-icons">
+                            home
+                        </span>
+                        <p>Home</p>
+                       
+                    </button>
+                     </a>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progbar"></div>
+                </div>
+            </div>
+    
+            <div class="error-message" id="errorMessage">
+                Game not found. Please check the URL parameter.
+            </div>
+        </div>
+
+        <div class="reminderclose" id="reminderclose">
+            <div style="top: 50%; position: absolute; left: 50%; transform: translate(-50%, -50%);">
+                <span class="material-icons notranslate" style="font-size: 80px; text-shadow: 0px 8px 5px rgb(12, 12, 12); left: 50%; position: relative; transform: translateX(-50%); color: white;">
+                    save
+                </span>
+                <h1 style="text-align: center; color: white; font-size: 25px;">Be Careful!</h1>
+                <h1 style="text-align: center; color: white; font-size: 18px;">Some games may not save when not closed properly.</h1>
+
+            </div>
+            
+        </div>
+        <div id="menusforgame">
+        <style>
+          
+        </style>
+         <div class="settings-container" id="settings-container">
+
+            <div class="header">
+                <span class="material-icons">sports_esports</span>
+                <div>
+                   <h1>Controller Settings</h1>
+                    <p id="controllerstatus" style="margin-top: -8px;" class="nonec">No Controller Connected</p> 
+                </div>
+                
+            </div>
+    
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('general')">
+                    <span class="material-icons" style="font-size: 18px;">settings</span>
+                    General
+                </button>
+                <button class="tab-button" onclick="switchTab('controller')">
+                    <span class="material-icons" style="font-size: 18px;">gamepad</span>
+                    Controller Bindings
+                </button>
+            </div>
+    
+            <div class="tabs-container">
+                <div class="tab-content active" id="general-tab">
+                    <div class="section">
+                        <h3>
+                            <span class="material-icons">videocam</span>
+                            Camera & Movement
+                        </h3>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label">Camera Sensitivity</div>
+                            <div class="setting-control">
+                                <input type="range" id="sensitivity" min="100" max="2000" step="50" value="900" oninput="window.updateControllerConfig({ sensitivity: document.getElementById('sensitivity').value });">
+                                <div class="value-display" id="sensitivity-value">900</div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label">Stick Deadzone</div>
+                            <div class="setting-control">
+                                <input type="range" id="deadzone" min="0.05" max="0.5" step="0.01" value="0.18" oninput="window.updateControllerConfig({ sensitivity: document.getElementById('deadzone').value });">
+                                <div class="value-display" id="deadzone-value">0.18</div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label">Invert Y-Axis</div>
+                            <div class="setting-control">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="invertY">
+                                    <label for="invertY">Enable</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="tab-content" id="controller-tab">
+                    <div class="section">
+                        <h3>
+                            <span class="material-icons">gamepad</span>
+                            Controller to Keyboard Bindings
+                        </h3>
+                        <p>Click "Rebind" next to any controller button, then press the keyboard key you want to bind it to.</p>
+                        
+                        <div class="bindings-grid" id="controller-bindings">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="action-buttons">
+                <button class="action-button save-btn" onclick="saveSettings()">
+                    <span class="material-icons" style="font-size: 18px;">save</span>
+                    Save Settings
+                </button>
+                <button class="action-button reset-btn" onclick="toggleControllerSettings()">
+                    <span class="material-icons" style="font-size: 18px;">close</span>
+                   Close
+                </button>
+                <button class="action-button reset-btn" onclick="resetToDefaults()">
+                    <span class="material-icons" style="font-size: 18px;">refresh</span>
+                    Reset to Defaults
+                </button>
+            </div>
+
+        </div>
+        <div id="bgcontroller" style="opacity: 0; display: none; width: 100%; height: 100%; backdrop-filter: blur(5px); background-color: rgba(27, 27, 27, 0.685); position: fixed; z-index: 9;"></div>
+
+        <div class="notificationn" id="notificationn"></div>
+    
+    
+        </div>
+        <div id="notification-container"></div>
+        <div id="optionsig">
+            <div class="optionsettings" id="btnsetings" onclick="toggleControllerSettings()">
+                <span class="material-icons notranslate">
+                    settings
+                </span>
+            </div>
+
+            <div class="optiongamemain" id="optiongamemain">
+                <span class="material-icons notranslate" onclick="Backhome()" style="float: left; color: white; transform: translateY(-50%); cursor: pointer; position: relative; top: 50%; left: 10px;">
+                    arrow_back
+                </span>
+                <span class="material-icons notranslate" onclick="ToggleFullscreen()" style="float: left; color: white; transform: translateY(-50%); cursor: pointer; position: relative; top: 50%; margin-left: 20px;">
+                    fullscreen
+                </span>
+            </div>
+        </div>
+        <div id="maingamestuff">
+            <iframe src="" class="gameiframe" id="gameiframe" allowfullscreen></iframe>
+        </div>
+        <script>
+            class NotificationSystem {
   constructor() {
       this.container = document.getElementById('notification-container');
       this.notifications = [];
@@ -97,7 +345,6 @@ function whenPageSettled({ networkIdleMs = 500, includeFonts = true } = {}) {
 }
 
 
-
 function Backhome() {
   //var toolbar = document.getElementById('optiongamemain')
   //toolbar.style.transition = '0.5s'
@@ -111,7 +358,7 @@ function Backhome() {
   window.location = '../index.html'
 }
 const params = new URLSearchParams(window.location.search);
-const game = params.get('game');
+const game = '../Games01/slope';
 
 var iframe = document.getElementById('gameiframe');
 var type = params.get('type');
@@ -251,7 +498,7 @@ function loadRuffleScript() {
 
 function ToggleFullscreen() {
   const params = new URLSearchParams(window.location.search);
-  const game = params.get('game');
+  const game = '../Games01/slope';
   
   let targetElement;
   
@@ -327,7 +574,7 @@ async function loadGameFromJSON(jsonUrl) {
       
       const gamesData = await response.json();
       
-      const gameName = getUrlParameter('name').toLowerCase();
+      const gameName = 'slope'
       if (!gameName) {
           showError("No game parameter found in URL. Add ?name=your-game-name to the URL.");
           return;
@@ -591,3 +838,9 @@ function toggleControllerSettings() {
     isopencontroller = false
   }
 }
+        </script>
+        <script src="../GameInput.js"></script>
+
+        
+    </body>
+</html>

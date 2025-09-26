@@ -133,9 +133,9 @@ function createAdElement(adIndex) {
   return gameItem;
 }
 
-function renderGames(data) {
+function renderGames(data, isSearch = false) {
   const container = document.getElementById('games');
-  container.innerHTML = '';
+  container.innerHTML = ''; // clear everything (removes ads too)
 
   const gameKeys = Object.keys(data);
   let gameCount = 0;
@@ -154,14 +154,14 @@ function renderGames(data) {
     }
 
     const gameItem = document.createElement('div');
-    gameItem.classList.add('gameitem');
-    gameItem.id = game.name
-    gameItem.addEventListener('click', trackActivity)
-    gameItem.classList.add('hide');
+    gameItem.classList.add('gameitem', 'hide');
+    gameItem.id = game.name;
+    gameItem.setAttribute('tags', game.catagory);
+    gameItem.addEventListener('click', trackActivity);
+
     gameItem.innerHTML = `
       <a href="${gameLink}">
         <div class="gametextover">${game.name}</div>
-        <!-- no src yet, only data-src, and add "loading" class -->
         <img 
           class="gamecover loading" 
           data-src="${coverLink}" 
@@ -172,17 +172,22 @@ function renderGames(data) {
     container.appendChild(gameItem);
     gameCount++;
 
-    if (gameCount % AD_CONFIG.frequency === 0 && index < gameKeys.length - 1) {
+    // 👉 Insert ads only if NOT in search mode
+    if (!isSearch && gameCount % AD_CONFIG.frequency === 0 && index < gameKeys.length - 1) {
       const adElement = createAdElement(Math.floor(gameCount / AD_CONFIG.frequency));
       container.appendChild(adElement);
     }
   });
 
+  if (typeof initializeGameSearch === 'function') {
+    initializeGameSearch();
+  }
+
+  // Lazy loading observer
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      
-      // Handle game images
+
       if (entry.target.classList.contains('gamecover')) {
         const img = entry.target;
         img.parentElement.parentElement.classList.remove('hide');
@@ -191,39 +196,34 @@ function renderGames(data) {
         img.src = img.getAttribute('data-src');
         obs.unobserve(img);
       }
-      
-      // Handle ads
+
       if (entry.target.classList.contains('ad-lazy')) {
         const adElement = entry.target;
         const gameItem = adElement.closest('.gameitem');
-        
         gameItem.classList.remove('hide');
         gameItem.style.animation = 'showGame 0.5s';
-        
+
         setTimeout(() => {
           try {
             (window.adsbygoogle = window.adsbygoogle || []).push({});
-            console.log('load')
+            console.log('AdSense ad loaded');
           } catch (error) {
             console.error('AdSense error:', error);
           }
         }, 100);
-        
+
         obs.unobserve(adElement);
       }
     });
-  }, {
-    threshold: 0.1
-  });
+  }, { threshold: 0.1 });
 
-  document.querySelectorAll('.gamecover').forEach(img => {
-    observer.observe(img);
-  });
-  
-  document.querySelectorAll('.ad-lazy').forEach(ad => {
-    observer.observe(ad);
-  });
+  // Attach observer to games and ads
+  document.querySelectorAll('.gamecover').forEach(img => observer.observe(img));
+  if (!isSearch) {
+    document.querySelectorAll('.ad-lazy').forEach(ad => observer.observe(ad));
+  }
 }
+
 
 function loadAdSenseScript() {
   if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
@@ -237,3 +237,10 @@ function loadAdSenseScript() {
 
 loadAdSenseScript();
 fetchGames();
+
+window.restoreAds = function() {
+  if (gamesData) {
+    renderGames(gamesData, false); // full render with ads
+  }
+}
+

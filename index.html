@@ -25,7 +25,9 @@
               "logo": "https://qz-games.github.io/logo-search.png"
             }
         </script>
-       
+        <link rel=”canonical” href=”https://qz-games.github.io />
+
+
         <meta name="description" property="og:description" content="Play high quality unblocked games anywhere!"/>
         <meta name="description" content="Play high quality unblocked games anywhere!" />
 
@@ -128,21 +130,66 @@
             </div>
 
             <div class="filter-radio-group">
-                <label class="filter-radio-container">
+                <label class="filter-radio-container" onclick="filterByTag('');">
                 <input type="radio" name="custom-radio" value="no filter" checked/>
                 <span class="filter-radio-checkmark">     
                 </span>
                     No Filter
                 </label>
-                <label class="filter-radio-container">
+                <label class="filter-radio-container" onclick="filterByTag('casual');">
                 <input type="radio" name="custom-radio" value="Casual" />
                 <span class="filter-radio-checkmark"></span>
                     Casual
                 </label>
-                <label class="filter-radio-container">
+                <label class="filter-radio-container" onclick="filterByTag('shooter');">
                 <input type="radio" name="custom-radio" value="Shooter" />
                 <span class="filter-radio-checkmark"></span>
                     Shooter
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('driver');">
+                    <input type="radio" name="custom-radio" value="Driver" />
+                    <span class="filter-radio-checkmark"></span>
+                        Driver
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('horror');">
+                    <input type="radio" name="custom-radio" value="Horror" />
+                    <span class="filter-radio-checkmark"></span>
+                        Horror
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('idle');">
+                    <input type="radio" name="custom-radio" value="Idle" />
+                    <span class="filter-radio-checkmark"></span>
+                        Idle
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('multiplayer');">
+                    <input type="radio" name="custom-radio" value="multiplayer" />
+                    <span class="filter-radio-checkmark"></span>
+                        Multiplayer
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('puzzle');">
+                    <input type="radio" name="custom-radio" value="Puzzle" />
+                    <span class="filter-radio-checkmark"></span>
+                        Puzzle
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('sandbox');">
+                    <input type="radio" name="custom-radio" value="Sandbox" />
+                    <span class="filter-radio-checkmark"></span>
+                        Sandbox
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('sport');">
+                    <input type="radio" name="custom-radio" value="Sports" />
+                    <span class="filter-radio-checkmark"></span>
+                        Sports
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('story');">
+                    <input type="radio" name="custom-radio" value="Story" />
+                    <span class="filter-radio-checkmark"></span>
+                        Story
+                </label>
+                <label class="filter-radio-container" onclick="filterByTag('flash');">
+                    <input type="radio" name="custom-radio" value="Flash" />
+                    <span class="filter-radio-checkmark"></span>
+                        Flash
                 </label>
             </div>
             
@@ -285,19 +332,15 @@
         <script>
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-
-        <div style=" align-items: flex-start; backdrop-filter: filter(5px); gap: 20px; padding: 10px; padding-top: 0; padding-bottom: 0; align-items: center; display: flex; width: max-content; position: relative; left: 50%; transform: translateX(-50%); margin-top: 20px; border-radius: 15px; box-shadow: 0px 0px 10px black; background-color: rgba(58, 58, 58, 0.507); height: 70px;">
-            <span  style=" color: rgb(216, 216, 216); text-shadow: 0px 0px 10px black; font-size: 40px; left: 5px; top: 0%; position: relative; " class="material-icons notranslate">error</span>
-
-            <div style="margin: 5px; margin-left: -5px; position: relative;">
-                <h1 style=" font-size: 17px; margin: 0;">Features not available</h1>
-                <p style="margin: 0;">Search and Filter options are currently not available.</p>
+        <br>
+        <div class="featured-section">
+            <div class="carousel-container" id="carouselContainer">
+                <div class="loading">Loading featured games...</div>
             </div>
-            <div style="position: absolute; z-index: -5; margin: 0; height: 50px; width: 50px; border-radius: 50%; filter: blur(5px); background-color: rgb(75, 75, 75);"></div>
         </div>
-
+<br>
         <div class="searchoptions" id="searchoptions" >
-            <input placeholder="Searth the site..." type="text" name="text" class="inputSEARCH" disabled>
+            <input id="gamesearch" placeholder="Searth the site..." type="text" name="text" class="inputSEARCH">
             <div onclick="ToggleFilter()" class="filterbutton">
                 <span  class="material-icons notranslate" style="font-size: 18.5px;">
                     tune
@@ -317,5 +360,7 @@
     <script src="./gameloader.js"></script>
     <script src="./note.js"></script>
     <script src="./GlobalSettings.js"></script>
+    <script src="./gameSearch.js"></script>
+    <script src="./ftgames.js"></script>
 
 </html>
