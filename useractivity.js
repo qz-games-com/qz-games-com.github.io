@@ -99,7 +99,10 @@ function stopPlaySession(gameKey) {
  */
 function updatePlayTime(gameKey, durationMs, incrementPlayCount = false) {
     const activityData = getActivityData();
-    let gameData = activityData.find(game => game.gameKey === gameKey);
+
+    // Normalize game key to lowercase for comparison to avoid duplicates
+    const normalizedKey = gameKey.toLowerCase();
+    let gameData = activityData.find(game => game.gameKey.toLowerCase() === normalizedKey);
 
     if (!gameData) {
         gameData = {
@@ -123,10 +126,6 @@ function updatePlayTime(gameKey, durationMs, incrementPlayCount = false) {
     gameData.lastPlayed = new Date().toISOString();
 
     saveActivityData(activityData);
-
-    if (DEBUG_MODE) {
-        console.log(`[Activity Tracker] Updated ${gameKey}:`, formatGameData(gameData));
-    }
 }
 
 /**
@@ -170,7 +169,6 @@ function trackActivity(event) {
 
     if (elementId) {
         startPlaySession(elementId);
-        console.log(`Started tracking activity for: ${elementId}`);
     }
 }
 
@@ -209,7 +207,40 @@ function getGamePlayTime(gameKey) {
 function clearActivityData() {
     document.cookie = `${COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     activeSessions.clear();
-    console.log('Activity data cleared');
+}
+
+/**
+ * Merge duplicate game entries (case-insensitive)
+ */
+function mergeDuplicates() {
+    const activityData = getActivityData();
+    const merged = {};
+
+    activityData.forEach(game => {
+        const key = game.gameKey.toLowerCase();
+
+        if (!merged[key]) {
+            merged[key] = game;
+        } else {
+            // Merge with existing entry
+            merged[key].totalPlayTimeMs = (merged[key].totalPlayTimeMs || 0) + (game.totalPlayTimeMs || 0);
+            merged[key].playCount = (merged[key].playCount || 0) + (game.playCount || 0);
+
+            // Keep earliest first played
+            if (game.firstPlayed && (!merged[key].firstPlayed || game.firstPlayed < merged[key].firstPlayed)) {
+                merged[key].firstPlayed = game.firstPlayed;
+            }
+
+            // Keep latest last played
+            if (game.lastPlayed && (!merged[key].lastPlayed || game.lastPlayed > merged[key].lastPlayed)) {
+                merged[key].lastPlayed = game.lastPlayed;
+            }
+        }
+    });
+
+    const cleanedData = Object.values(merged);
+    saveActivityData(cleanedData);
+    return cleanedData;
 }
 
 // Auto-save active sessions before page unload
@@ -228,20 +259,27 @@ window.addEventListener('beforeunload', () => {
         return;
     }
 
-    // Check if on game page (use ?name= parameter, fallback to ?game=)
+    // Clean up any duplicate entries on load
+    mergeDuplicates();
+
+    // Check if on game page (use ?name= parameter)
     const params = new URLSearchParams(window.location.search);
-    const gameKey = params.get('name') || params.get('game');
+    let gameKey = params.get('name');
+
+    // If name not found, fallback to extracting from ?game= path
+    if (!gameKey) {
+        const gamePath = params.get('game');
+        if (gamePath) {
+            // Extract just the game name from path like "../Games01/crazyc"
+            gameKey = gamePath.split('/').pop();
+        }
+    }
 
     if (gameKey) {
         startPlaySession(gameKey);
 
         // Increment play count on first session start only
         updatePlayTime(gameKey, 0, true);
-
-        if (DEBUG_MODE) {
-            console.log('[Activity Tracker] Auto-starting for:', gameKey);
-            console.log('[Activity Tracker] Active sessions:', activeSessions);
-        }
 
         // Auto-save every 2 seconds
         setInterval(() => {
