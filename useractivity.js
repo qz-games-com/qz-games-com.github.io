@@ -1,4 +1,4 @@
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const COOKIE_NAME = 'usractivity';
 const COOKIE_EXPIRY_DAYS = 3000;
 
@@ -98,10 +98,13 @@ function stopPlaySession(gameKey) {
  * Update play time for a game
  */
 function updatePlayTime(gameKey, durationMs) {
+    console.log(`[Activity Tracker] updatePlayTime called for ${gameKey}, duration: ${durationMs}ms (${Math.floor(durationMs/1000)}s)`);
+
     const activityData = getActivityData();
     let gameData = activityData.find(game => game.gameKey === gameKey);
 
     if (!gameData) {
+        console.log(`[Activity Tracker] Creating new game entry for ${gameKey}`);
         gameData = {
             gameKey: gameKey,
             totalPlayTimeMs: 0,
@@ -113,9 +116,12 @@ function updatePlayTime(gameKey, durationMs) {
     }
 
     // Update play time and metadata
-    gameData.totalPlayTimeMs = (gameData.totalPlayTimeMs || 0) + durationMs;
+    const oldTotal = gameData.totalPlayTimeMs || 0;
+    gameData.totalPlayTimeMs = oldTotal + durationMs;
     gameData.playCount = (gameData.playCount || 0) + 1;
     gameData.lastPlayed = new Date().toISOString();
+
+    console.log(`[Activity Tracker] Total play time for ${gameKey}: ${oldTotal}ms -> ${gameData.totalPlayTimeMs}ms`);
 
     saveActivityData(activityData);
 
@@ -218,7 +224,10 @@ window.addEventListener('beforeunload', () => {
 
 // Auto-start tracking on game page
 (function() {
+    console.log('[Activity Tracker] Initializing... readyState:', document.readyState);
+
     if (document.readyState === 'loading') {
+        console.log('[Activity Tracker] Waiting for DOM...');
         document.addEventListener('DOMContentLoaded', arguments.callee);
         return;
     }
@@ -227,9 +236,13 @@ window.addEventListener('beforeunload', () => {
     const params = new URLSearchParams(window.location.search);
     const gameKey = params.get('game');
 
+    console.log('[Activity Tracker] URL:', window.location.href);
+    console.log('[Activity Tracker] Game key from URL:', gameKey);
+
     if (gameKey) {
         console.log('[Activity Tracker] Auto-starting for:', gameKey);
         startPlaySession(gameKey);
+        console.log('[Activity Tracker] Active sessions:', activeSessions);
 
         // Auto-save every 2 seconds
         setInterval(() => {
