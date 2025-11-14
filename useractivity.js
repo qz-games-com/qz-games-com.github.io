@@ -123,10 +123,6 @@ function updatePlayTime(gameKey, durationMs, incrementPlayCount = false) {
     gameData.lastPlayed = new Date().toISOString();
 
     saveActivityData(activityData);
-
-    if (DEBUG_MODE) {
-        console.log(`[Activity Tracker] Updated ${gameKey}:`, formatGameData(gameData));
-    }
 }
 
 /**
@@ -170,7 +166,6 @@ function trackActivity(event) {
 
     if (elementId) {
         startPlaySession(elementId);
-        console.log(`Started tracking activity for: ${elementId}`);
     }
 }
 
@@ -228,20 +223,24 @@ window.addEventListener('beforeunload', () => {
         return;
     }
 
-    // Check if on game page (use ?name= parameter, fallback to ?game=)
+    // Check if on game page (use ?name= parameter)
     const params = new URLSearchParams(window.location.search);
-    const gameKey = params.get('name') || params.get('game');
+    let gameKey = params.get('name');
+
+    // If name not found, fallback to extracting from ?game= path
+    if (!gameKey) {
+        const gamePath = params.get('game');
+        if (gamePath) {
+            // Extract just the game name from path like "../Games01/crazyc"
+            gameKey = gamePath.split('/').pop();
+        }
+    }
 
     if (gameKey) {
         startPlaySession(gameKey);
 
         // Increment play count on first session start only
         updatePlayTime(gameKey, 0, true);
-
-        if (DEBUG_MODE) {
-            console.log('[Activity Tracker] Auto-starting for:', gameKey);
-            console.log('[Activity Tracker] Active sessions:', activeSessions);
-        }
 
         // Auto-save every 2 seconds
         setInterval(() => {
