@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.0.2/workbox-sw.js');
 
 // Update this version number whenever you want to force cache refresh
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.0.1';
 const CACHE_NAME = `qz-games-${CACHE_VERSION}`;
 
 // List of cache names to keep (only current version)
@@ -40,44 +40,24 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first, then cache strategy for HTML files
-  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Clone the response before caching
+  // Network first for everything to ensure fresh content
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Only cache successful responses
+        if (response && response.status === 200 && response.type !== 'error') {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
           });
-          return response;
-        })
-        .catch(() => {
-          // If network fails, try cache
-          return caches.match(event.request);
-        })
-    );
-  } else {
-    // Cache first, then network for other resources
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        if (response) {
-          return response;
         }
-        return fetch(event.request).then((response) => {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200 || response.type === 'error') {
-            return response;
-          }
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-          return response;
-        });
+        return response;
       })
-    );
-  }
+      .catch(() => {
+        // If network fails, try cache as fallback
+        return caches.match(event.request);
+      })
+  );
 });
 
 // Listen for messages from the client
