@@ -97,7 +97,7 @@ function stopPlaySession(gameKey) {
 /**
  * Update play time for a game
  */
-function updatePlayTime(gameKey, durationMs) {
+function updatePlayTime(gameKey, durationMs, incrementPlayCount = false) {
     const activityData = getActivityData();
     let gameData = activityData.find(game => game.gameKey === gameKey);
 
@@ -114,13 +114,18 @@ function updatePlayTime(gameKey, durationMs) {
 
     // Update play time and metadata
     gameData.totalPlayTimeMs = (gameData.totalPlayTimeMs || 0) + durationMs;
-    gameData.playCount = (gameData.playCount || 0) + 1;
+
+    // Only increment play count if explicitly told (on new session start)
+    if (incrementPlayCount) {
+        gameData.playCount = (gameData.playCount || 0) + 1;
+    }
+
     gameData.lastPlayed = new Date().toISOString();
 
     saveActivityData(activityData);
 
     if (DEBUG_MODE) {
-        console.log(`Updated ${gameKey}:`, formatGameData(gameData));
+        console.log(`[Activity Tracker] Updated ${gameKey}:`, formatGameData(gameData));
     }
 }
 
@@ -211,7 +216,56 @@ function clearActivityData() {
 window.addEventListener('beforeunload', () => {
     for (const [gameKey, session] of activeSessions.entries()) {
         const duration = Date.now() - session.startTime;
-        updatePlayTime(gameKey, duration);
+        updatePlayTime(gameKey, duration, false); // Don't increment play count on close
     }
     activeSessions.clear();
 });
+
+// Auto-start tracking on game page
+(function() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', arguments.callee);
+        return;
+    }
+
+    // Check if on game page (use ?name= parameter, fallback to ?game=)
+    const params = new URLSearchParams(window.location.search);
+    const gameKey = params.get('name') || params.get('game');
+
+    if (gameKey) {
+        startPlaySession(gameKey);
+
+        // Increment play count on first session start only
+        updatePlayTime(gameKey, 0, true);
+
+        if (DEBUG_MODE) {
+            console.log('[Activity Tracker] Auto-starting for:', gameKey);
+            console.log('[Activity Tracker] Active sessions:', activeSessions);
+        }
+
+        // Auto-save every 2 seconds
+        setInterval(() => {
+            const session = activeSessions.get(gameKey);
+            if (session) {
+                const duration = Date.now() - session.startTime;
+                updatePlayTime(gameKey, duration, false); // Don't increment play count
+                session.startTime = Date.now();
+            }
+        }, 2000);
+
+        // Pause when tab hidden
+        document.addEventListener('visibilitychange', () => {
+            const session = activeSessions.get(gameKey);
+            if (!session) return;
+
+            if (document.hidden) {
+                const duration = Date.now() - session.startTime;
+                updatePlayTime(gameKey, duration, false); // Don't increment play count
+                session.pausedAt = Date.now();
+            } else if (session.pausedAt) {
+                session.startTime = Date.now();
+                delete session.pausedAt;
+            }
+        });
+    }
+})();
