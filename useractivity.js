@@ -99,7 +99,10 @@ function stopPlaySession(gameKey) {
  */
 function updatePlayTime(gameKey, durationMs, incrementPlayCount = false) {
     const activityData = getActivityData();
-    let gameData = activityData.find(game => game.gameKey === gameKey);
+
+    // Normalize game key to lowercase for comparison to avoid duplicates
+    const normalizedKey = gameKey.toLowerCase();
+    let gameData = activityData.find(game => game.gameKey.toLowerCase() === normalizedKey);
 
     if (!gameData) {
         gameData = {
@@ -204,7 +207,40 @@ function getGamePlayTime(gameKey) {
 function clearActivityData() {
     document.cookie = `${COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     activeSessions.clear();
-    console.log('Activity data cleared');
+}
+
+/**
+ * Merge duplicate game entries (case-insensitive)
+ */
+function mergeDuplicates() {
+    const activityData = getActivityData();
+    const merged = {};
+
+    activityData.forEach(game => {
+        const key = game.gameKey.toLowerCase();
+
+        if (!merged[key]) {
+            merged[key] = game;
+        } else {
+            // Merge with existing entry
+            merged[key].totalPlayTimeMs = (merged[key].totalPlayTimeMs || 0) + (game.totalPlayTimeMs || 0);
+            merged[key].playCount = (merged[key].playCount || 0) + (game.playCount || 0);
+
+            // Keep earliest first played
+            if (game.firstPlayed && (!merged[key].firstPlayed || game.firstPlayed < merged[key].firstPlayed)) {
+                merged[key].firstPlayed = game.firstPlayed;
+            }
+
+            // Keep latest last played
+            if (game.lastPlayed && (!merged[key].lastPlayed || game.lastPlayed > merged[key].lastPlayed)) {
+                merged[key].lastPlayed = game.lastPlayed;
+            }
+        }
+    });
+
+    const cleanedData = Object.values(merged);
+    saveActivityData(cleanedData);
+    return cleanedData;
 }
 
 // Auto-save active sessions before page unload
@@ -222,6 +258,9 @@ window.addEventListener('beforeunload', () => {
         document.addEventListener('DOMContentLoaded', arguments.callee);
         return;
     }
+
+    // Clean up any duplicate entries on load
+    mergeDuplicates();
 
     // Check if on game page (use ?name= parameter)
     const params = new URLSearchParams(window.location.search);
