@@ -1,0 +1,26 @@
+{
+  "elements": [
+    {
+      "id": "city-building-1",
+      "asset": "./Q.png",
+      "x": 100,
+      "y": 700,
+      "z": 6,
+      "width": 80,
+      "height": 120,
+      "opacity": 0.18,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "city-building-2",
+      "asset": "./Q.png",
+      "x": 800,
+      "y": 650,
+      "z": 8,
+      "width": 100,
+      "height": 150,
+      "opacity": 0.2,
+      "scaleWithScreen": true
+    }
+  ]
+}

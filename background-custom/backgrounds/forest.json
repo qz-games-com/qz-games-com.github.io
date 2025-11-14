@@ -1,0 +1,27 @@
+{
+  "elements": [
+    {
+      "id": "forest-element",
+      "asset": "./Q.png",
+      "x": 50,
+      "y": 700,
+      "z": 8,
+      "width": 100,
+      "height": 100,
+      "opacity": 0.2,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "forest-element-2",
+      "asset": "./Q.png",
+      "x": 850,
+      "y": 650,
+      "z": 10,
+      "width": 120,
+      "height": 120,
+      "opacity": 0.25,
+      "scaleWithScreen": true,
+      "flipHorizontal": true
+    }
+  ]
+}

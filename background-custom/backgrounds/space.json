@@ -1,0 +1,56 @@
+{
+  "elements": [
+    {
+      "id": "space-sat",
+      "asset": "./background-custom/backgrounds/space/sat.png",
+      "positionMode": "percentage",
+      "x": 30,
+      "y": 40,
+      "z": 4,
+      "width": 80,
+      "height": 80,
+      "opacity": 1,
+      "anchor": "center",
+      "scaleWithScreen": true
+    },
+    {
+      "id": "space-purple",
+      "asset": "./background-custom/backgrounds/space/purp.png",
+      "positionMode": "percentage",
+      "x": 30,
+      "y": 30,
+      "z": 2,
+      "width": 40,
+      "height": 60,
+      "opacity": 1,
+      "anchor": "center",
+      "scaleWithScreen": true
+    },
+    {
+      "id": "space-dis",
+      "asset": "./background-custom/backgrounds/space/distant.png",
+      "positionMode": "percentage",
+      "x": 90,
+      "y":50,
+      "z": 5,
+      "width": 10,
+      "height": 15,
+      "opacity": 1,
+      "anchor": "center",
+      "scaleWithScreen": true
+    },
+    {
+      "id": "space-neb",
+      "asset": "./background-custom/backgrounds/space/neb.png",
+      "positionMode": "percentage",
+      "x": 0,
+      "y": 0,
+      "z": -10,
+      "width": 100,
+      "height": 100,
+      "opacity": 1,
+      "anchor": "center",
+      "scaleWithScreen": true
+    }
+  ]
+}

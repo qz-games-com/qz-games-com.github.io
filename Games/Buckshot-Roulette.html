@@ -243,7 +243,7 @@
             </div>
         </div>
         <div id="maingamestuff">
-            <iframe src="" class="gameiframe" id="gameiframe" allowfullscreen></iframe>
+            <iframe src="" class="gameiframe" id="gameiframe"   allow="cross-origin-isolated" sandbox="allow-scripts allow-same-origin"> allowfullscreen></iframe>
         </div>
         <script>
             class NotificationSystem {
@@ -398,7 +398,7 @@ async function initGame(url, type) {
         container.style.display = 'block';
         
         if (!document.getElementById('gameiframe')) {
-          container.innerHTML = '<iframe src="" class="gameiframe" id="gameiframe" allowfullscreen></iframe>';
+          container.innerHTML = '<iframe src=""   allow="cross-origin-isolated" sandbox="allow-scripts allow-same-origin"> class="gameiframe" id="gameiframe" allowfullscreen></iframe>';
         }
       }
       

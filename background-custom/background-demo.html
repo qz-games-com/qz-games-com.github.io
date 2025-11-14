@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Background Demo - Quartz Games</title>
+    <link rel="icon" href="./Q.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        #backgroundarea {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .demo-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-header p {
+            font-size: 1.1em;
+            color: #aaa;
+        }
+
+        .controls-panel {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .controls-panel h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .toggle-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            width: 50px;
+            height: 26px;
+            position: relative;
+            appearance: none;
+            background: #444;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked {
+            background: #667eea;
+        }
+
+        .toggle-switch input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked::before {
+            transform: translateX(24px);
+        }
+
+        .info-panel {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .info-panel code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #4facfe;
+        }
+
+        .info-panel pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls-panel, .info-panel {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script src="../cookieshandle.js"></script>
+</head>
+<body>
+    <!-- Background container -->
+    <div id="backgroundarea"></div>
+
+    <div class="demo-container">
+        <a href="../index.html" class="back-link">
+            <span class="material-icons">arrow_back</span>
+            Back to Home
+        </a>
+
+        <div class="demo-header">
+            <h1>🎨 Custom Background System Demo</h1>
+            <p>Test the dynamic layered background system with live controls</p>
+        </div>
+
+        <div class="controls-panel">
+            <h2>Background Controls</h2>
+
+            <div class="control-group">
+                <label class="toggle-switch">
+                    <span>Enable Custom Backgrounds</span>
+                    <input type="checkbox" id="toggleBackground" checked>
+                </label>
+            </div>
+
+            <div class="control-group">
+                <label>Load Background Themes:</label>
+                <div class="button-group">
+                    <button class="btn" onclick="loadBackground('mountain')">Mountain Scene</button>
+                    <button class="btn btn-secondary" onclick="loadBackground('space')">Space Theme</button>
+                    <button class="btn btn-success" onclick="loadCustom()">Custom Config</button>
+                    <button class="btn btn-danger" onclick="clearBackground()">Clear Background</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Dynamic Elements:</label>
+                <div class="button-group">
+                    <button class="btn" onclick="addRandomElement()">Add Random Element</button>
+                    <button class="btn btn-secondary" onclick="removeLastElement()">Remove Last Element</button>
+                    <button class="btn btn-success" onclick="animateElements()">Animate Elements</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Export/Debug:</label>
+                <div class="button-group">
+                    <button class="btn" onclick="exportConfig()">Export Configuration</button>
+                    <button class="btn btn-secondary" onclick="showInfo()">Show Info</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h3>📊 System Information</h3>
+            <p><strong>Background Enabled:</strong> <span id="statusEnabled">Yes</span></p>
+            <p><strong>Elements Loaded:</strong> <span id="statusElements">0</span></p>
+            <p><strong>Screen Size:</strong> <span id="statusScreen">-</span></p>
+            <p><strong>Current Theme:</strong> <span id="statusTheme">None</span></p>
+
+            <h3 style="margin-top: 20px;">📝 Quick Start</h3>
+            <p>1. Toggle backgrounds on/off using the switch above</p>
+            <p>2. Load a preset theme (Mountain or Space)</p>
+            <p>3. Try adding random elements dynamically</p>
+            <p>4. Export your configuration to save it</p>
+
+            <div id="exportOutput"></div>
+        </div>
+    </div>
+
+    <script src="./backgroundcustomhandle.js"></script>
+    <script>
+        // Initialize background handler
+        let bgHandler;
+        let lastElementId = null;
+
+        function init() {
+            bgHandler = initBackgroundHandler('#backgroundarea');
+
+            // Update status
+            updateStatus();
+
+            // Setup toggle
+            const toggle = document.getElementById('toggleBackground');
+            toggle.checked = getCookie('customBackgrounds') !== 'false';
+
+            toggle.addEventListener('change', () => {
+                bgHandler.setEnabled(toggle.checked);
+                setCookie('customBackgrounds', toggle.checked);
+                updateStatus();
+            });
+
+            // Update screen size
+            updateScreenSize();
+            window.addEventListener('resize', updateScreenSize);
+        }
+
+        function loadBackground(type) {
+            const files = {
+                'mountain': './backgrounds/example-mountain.json',
+                'space': './backgrounds/example-space.json'
+            };
+
+            const file = files[type];
+            if (file) {
+                loadBackgroundFromJSON(file)
+                    .then(() => {
+                        document.getElementById('statusTheme').textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                        updateStatus();
+                        alert(`${type.charAt(0).toUpperCase() + type.slice(1)} background loaded successfully!`);
+                    })
+                    .catch(err => {
+                        alert(`Failed to load background: ${err.message}`);
+                    });
+            }
+        }
+
+        function loadCustom() {
+            const customConfig = {
+                elements: [
+                    {
+                        id: 'custom-gradient',
+                        asset: './Q-BIG.png',
+                        x: 400,
+                        y: 400,
+                        z: 5,
+                        width: 200,
+                        height: 200,
+                        opacity: 0.3,
+                        rotation: 0
+                    }
+                ]
+            };
+
+            bgHandler.loadConfiguration(customConfig)
+                .then(() => {
+                    document.getElementById('statusTheme').textContent = 'Custom';
+                    updateStatus();
+                    alert('Custom configuration loaded!');
+                })
+                .catch(err => {
+                    alert(`Failed to load custom config: ${err.message}`);
+                });
+        }
+
+        function clearBackground() {
+            bgHandler.clear();
+            document.getElementById('statusTheme').textContent = 'None';
+            updateStatus();
+        }
+
+        async function addRandomElement() {
+            const randomElement = {
+                id: `random-${Date.now()}`,
+                asset: './Q.png',
+                x: Math.random() * 800 + 100,
+                y: Math.random() * 800 + 100,
+                z: Math.floor(Math.random() * 15) + 1,
+                width: Math.random() * 100 + 50,
+                height: Math.random() * 100 + 50,
+                opacity: Math.random() * 0.5 + 0.5,
+                rotation: Math.random() * 360
+            };
+
+            try {
+                lastElementId = await bgHandler.addElement(randomElement);
+                updateStatus();
+                alert(`Element added with ID: ${lastElementId}`);
+            } catch (err) {
+                alert(`Failed to add element: ${err.message}`);
+            }
+        }
+
+        function removeLastElement() {
+            if (lastElementId) {
+                const removed = bgHandler.removeElement(lastElementId);
+                if (removed) {
+                    alert(`Element ${lastElementId} removed`);
+                    lastElementId = null;
+                    updateStatus();
+                }
+            } else {
+                alert('No element to remove');
+            }
+        }
+
+        function animateElements() {
+            // Simple animation example
+            const elements = bgHandler.elements;
+            if (elements.length === 0) {
+                alert('No elements to animate');
+                return;
+            }
+
+            let frame = 0;
+            const animate = () => {
+                frame++;
+                elements.forEach((el, i) => {
+                    bgHandler.updateElement(el.id, {
+                        rotation: (el.rotation || 0) + 2
+                    });
+                });
+
+                if (frame < 180) {
+                    requestAnimationFrame(animate);
+                }
+            };
+
+            animate();
+        }
+
+        function exportConfig() {
+            const config = bgHandler.exportConfiguration();
+            const output = document.getElementById('exportOutput');
+            output.innerHTML = `
+                <h3 style="margin-top: 20px;">Exported Configuration:</h3>
+                <pre>${JSON.stringify(config, null, 2)}</pre>
+            `;
+            console.log('Exported configuration:', config);
+        }
+
+        function showInfo() {
+            const info = `
+Canvas Size: ${bgHandler.renderWidth}x${bgHandler.renderHeight}
+Normalized Space: ${bgHandler.normalizedWidth}x${bgHandler.normalizedHeight}
+Z-Index Range: 1-${bgHandler.maxZIndex}
+Enabled: ${bgHandler.enabled}
+Elements: ${bgHandler.elements.length}
+Loaded Images: ${bgHandler.loadedImages.size}
+            `.trim();
+
+            alert(info);
+        }
+
+        function updateStatus() {
+            document.getElementById('statusEnabled').textContent = bgHandler.enabled ? 'Yes' : 'No';
+            document.getElementById('statusElements').textContent = bgHandler.elements.length;
+        }
+
+        function updateScreenSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            document.getElementById('statusScreen').textContent = `${width}x${height}`;
+        }
+
+        // Initialize on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
