@@ -53,24 +53,28 @@ class GameRecommendationEngine {
     calculateGameScore(game, gameKey, categoryPrefs, userActivity) {
         let score = 0;
 
-        // Base score with randomization
-        score += Math.random() * 20 + 20;
+        // Base score - reduced randomization for more accuracy
+        score += Math.random() * 10 + 10;
 
-        // Category matching score
+        // Category matching score (heavily weighted - most important factor)
         const categoryScore = this.getCategoryScore(categoryPrefs, game);
-        score += Math.min(categoryScore * 10, 40);
+        score += Math.min(categoryScore * 50, 50);
 
-        // Series bonus
+        // Series bonus (very strong indicator)
         const seriesScore = this.getSeriesScore(userActivity, gameKey, game);
-        score += seriesScore * 15;
+        score += seriesScore * 25;
+
+        // Play time-based similarity
+        const playTimeScore = this.getPlayTimeBasedScore(userActivity, game);
+        score += playTimeScore * 10;
+
+        // Recency bonus - prefer games similar to recently played ones
+        const recencyScore = this.getRecencyScore(userActivity, game);
+        score += recencyScore * 5;
 
         // Gradient/visual preference score
         const gradientScore = this.getGradientScore(userActivity, game);
-        score += gradientScore * 2;
-
-        // Popularity bonus
-        const popularityBonus = Math.random() * 10;
-        score += popularityBonus;
+        score += Math.min(gradientScore * 3, 8);
 
         return Math.max(0, Math.min(100, score));
     }
@@ -90,34 +94,31 @@ class GameRecommendationEngine {
 
     getUserCategoryPreferences(userActivity) {
         const preferences = {};
-        
-        userActivity.forEach(activity => {
+
+        userActivity.forEach((activity, index) => {
             const game = this.games[activity.gameKey];
             if (game) {
                 const categories = this.parseCategories(game.catagory);
-                
-                // Use multiple weight factors for more accurate preferences
-                let weight = 1;
-                
-                // Time-based weight (prioritize both systems)
-                if (activity.playTimeHours !== undefined && activity.playTimeMinutes !== undefined) {
-                    weight = this.getTotalPlayTimeInMinutes(activity);
-                } else if (activity.playTime) {
-                    weight = activity.playTime;
+
+                // Calculate weight based on play time
+                let weight = this.getActivityWeight(activity);
+
+                // Recency multiplier (more recent plays get slightly higher weight)
+                const recencyMultiplier = 1 + (index / userActivity.length) * 0.3;
+                weight *= recencyMultiplier;
+
+                // Play count multiplier
+                if (activity.playCount && activity.playCount > 1) {
+                    weight *= Math.min(1 + (activity.playCount * 0.2), 2);
                 }
-                
-                // Rating-based weight
-                if (activity.rating) {
-                    weight *= activity.rating;
-                }
-                
+
                 categories.forEach(category => {
                     preferences[category] = (preferences[category] || 0) + weight;
                 });
             }
         });
 
-        // Normalize preferences
+        // Normalize preferences to 0-1 scale
         const maxWeight = Math.max(...Object.values(preferences));
         if (maxWeight > 0) {
             Object.keys(preferences).forEach(cat => {
@@ -126,6 +127,20 @@ class GameRecommendationEngine {
         }
 
         return preferences;
+    }
+
+    getActivityWeight(activity) {
+        // Support new format (totalPlayTimeMs) and old format
+        if (activity.totalPlayTimeMs !== undefined) {
+            const minutes = activity.totalPlayTimeMs / (1000 * 60);
+            return Math.max(1, Math.log(minutes + 1) * 10); // Logarithmic scaling
+        } else if (activity.playTimeHours !== undefined || activity.playTimeMinutes !== undefined) {
+            const minutes = this.getTotalPlayTimeInMinutes(activity);
+            return Math.max(1, Math.log(minutes + 1) * 10);
+        } else if (activity.playTime) {
+            return activity.playTime;
+        }
+        return 1;
     }
 
     getTotalPlayTimeInMinutes(activity) {
@@ -178,20 +193,69 @@ class GameRecommendationEngine {
 
     getGradientScore(userActivity, targetGame) {
         if (!targetGame.gradient) return 0;
-        
+
         const userGradients = {};
-        
+
         userActivity.forEach(activity => {
             const game = this.games[activity.gameKey];
             if (game && game.gradient) {
-                const playTime = activity.playTimeHours !== undefined ? 
-                    this.getTotalPlayTimeInMinutes(activity) : 
-                    (activity.playTime || 1);
-                userGradients[game.gradient] = (userGradients[game.gradient] || 0) + playTime;
+                const weight = this.getActivityWeight(activity);
+                userGradients[game.gradient] = (userGradients[game.gradient] || 0) + weight;
             }
         });
 
-        return userGradients[targetGame.gradient] || 0;
+        // Normalize
+        const maxGradientWeight = Math.max(...Object.values(userGradients), 1);
+        return (userGradients[targetGame.gradient] || 0) / maxGradientWeight;
+    }
+
+    getPlayTimeBasedScore(userActivity, targetGame) {
+        // Find games with similar play times and check if they share categories
+        const targetCategories = this.parseCategories(targetGame.catagory);
+        const avgPlayTimes = {};
+
+        userActivity.forEach(activity => {
+            const game = this.games[activity.gameKey];
+            if (game) {
+                const categories = this.parseCategories(game.catagory);
+                const weight = this.getActivityWeight(activity);
+
+                categories.forEach(cat => {
+                    if (targetCategories.includes(cat)) {
+                        avgPlayTimes[cat] = (avgPlayTimes[cat] || 0) + weight;
+                    }
+                });
+            }
+        });
+
+        const totalScore = Object.values(avgPlayTimes).reduce((a, b) => a + b, 0);
+        const maxScore = Math.max(...Object.values(avgPlayTimes), 1);
+
+        return maxScore > 0 ? (totalScore / maxScore) : 0;
+    }
+
+    getRecencyScore(userActivity, targetGame) {
+        if (userActivity.length === 0) return 0;
+
+        const targetCategories = this.parseCategories(targetGame.catagory);
+        let recencyScore = 0;
+
+        // Check last 3 games played
+        const recentGames = userActivity.slice(-3);
+
+        recentGames.forEach((activity, index) => {
+            const game = this.games[activity.gameKey];
+            if (game) {
+                const categories = this.parseCategories(game.catagory);
+                const overlap = categories.filter(cat => targetCategories.includes(cat)).length;
+
+                // Weight more recent games higher
+                const recencyWeight = (index + 1) / recentGames.length;
+                recencyScore += overlap * recencyWeight;
+            }
+        });
+
+        return Math.min(recencyScore / targetCategories.length, 1);
     }
 
     getPopularGames(count = 6) {
@@ -470,9 +534,13 @@ function loadMoreRecommendations() {
 
 function playGame(game) {
     if (game.link) {
+        // Redirect to the game page instead of loading in iframe
         window.location.href = game.link;
+    } else if (game.key) {
+        // Fallback: construct link from game key
+        window.location.href = `Games/${game.key}.html`;
     } else {
-        alert(`No link available for ${game.name}`);
+        console.error(`No link available for ${game.name}`);
     }
 }
 

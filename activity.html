@@ -112,22 +112,37 @@
             return null;
         }
 
-        // Function to format play time
-        function formatPlayTime(hours, minutes) {
-            if (hours === 0 && minutes === 0) {
+        // Function to format play time from milliseconds
+        function formatPlayTime(totalPlayTimeMs) {
+            // Handle old format (playTimeHours and playTimeMinutes)
+            if (totalPlayTimeMs === undefined && arguments.length === 2) {
+                const hours = arguments[0] || 0;
+                const minutes = arguments[1] || 0;
+                totalPlayTimeMs = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
+            }
+
+            if (!totalPlayTimeMs || totalPlayTimeMs === 0) {
                 return "No play time recorded";
             }
-            
+
+            const seconds = Math.floor(totalPlayTimeMs / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
             let timeStr = "You played this game for: ";
+
             if (hours > 0) {
                 timeStr += `${hours} hour${hours !== 1 ? 's' : ''}`;
-                if (minutes > 0) {
-                    timeStr += ` ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                const remainingMinutes = minutes % 60;
+                if (remainingMinutes > 0) {
+                    timeStr += ` ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`;
                 }
-            } else {
+            } else if (minutes > 0) {
                 timeStr += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            } else {
+                timeStr += `${seconds} second${seconds !== 1 ? 's' : ''}`;
             }
-            
+
             return timeStr;
         }
 
@@ -135,22 +150,35 @@
         function createGameItem(gameData, activityData) {
             const gameItem = document.createElement('div');
             gameItem.className = 'game-item';
-            
-            const playTimeText = formatPlayTime(activityData.playTimeHours, activityData.playTimeMinutes);
-            
+
+            // Support both new format (totalPlayTimeMs) and old format (playTimeHours/playTimeMinutes)
+            let playTimeText;
+            if (activityData.totalPlayTimeMs !== undefined) {
+                playTimeText = formatPlayTime(activityData.totalPlayTimeMs);
+            } else {
+                playTimeText = formatPlayTime(activityData.playTimeHours, activityData.playTimeMinutes);
+            }
+
+            // Add play count if available
+            let additionalInfo = '';
+            if (activityData.playCount) {
+                additionalInfo = `<div style="font-size: 12px; color: #888; margin-top: 5px;">Played ${activityData.playCount} time${activityData.playCount !== 1 ? 's' : ''}</div>`;
+            }
+
             gameItem.innerHTML = `
                 <div class="game-cover">
-                    ${gameData.cover ? 
-                        `<img src="/covers/${gameData.cover}" alt="${gameData.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='game cover';">` : 
+                    ${gameData.cover ?
+                        `<img src="/covers/${gameData.cover}" alt="${gameData.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='game cover';">` :
                         'game cover'
                     }
                 </div>
                 <div class="game-info">
                     <div class="game-name">${gameData.name}</div>
                     <div class="game-playtime">${playTimeText}</div>
+                    ${additionalInfo}
                 </div>
             `;
-            
+
             return gameItem;
         }
 
@@ -204,11 +232,20 @@
                         // Handle case where game data is not found
                         const gameItem = document.createElement('div');
                         gameItem.className = 'game-item';
+
+                        // Support both new and old format
+                        let playTimeText;
+                        if (activityItem.totalPlayTimeMs !== undefined) {
+                            playTimeText = formatPlayTime(activityItem.totalPlayTimeMs);
+                        } else {
+                            playTimeText = formatPlayTime(activityItem.playTimeHours, activityItem.playTimeMinutes);
+                        }
+
                         gameItem.innerHTML = `
                             <div class="game-cover">game cover</div>
                             <div class="game-info">
                                 <div class="game-name">Unknown Game (${gameKey})</div>
-                                <div class="game-playtime">${formatPlayTime(activityItem.playTimeHours, activityItem.playTimeMinutes)}</div>
+                                <div class="game-playtime">${playTimeText}</div>
                             </div>
                         `;
                         gameListElement.appendChild(gameItem);
