@@ -215,3 +215,45 @@ window.addEventListener('beforeunload', () => {
     }
     activeSessions.clear();
 });
+
+// Auto-start tracking on game page
+(function() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', arguments.callee);
+        return;
+    }
+
+    // Check if on game page (has ?game= parameter)
+    const params = new URLSearchParams(window.location.search);
+    const gameKey = params.get('game');
+
+    if (gameKey) {
+        console.log('[Activity Tracker] Auto-starting for:', gameKey);
+        startPlaySession(gameKey);
+
+        // Auto-save every 2 seconds
+        setInterval(() => {
+            const session = activeSessions.get(gameKey);
+            if (session) {
+                const duration = Date.now() - session.startTime;
+                updatePlayTime(gameKey, duration);
+                session.startTime = Date.now();
+            }
+        }, 2000);
+
+        // Pause when tab hidden
+        document.addEventListener('visibilitychange', () => {
+            const session = activeSessions.get(gameKey);
+            if (!session) return;
+
+            if (document.hidden) {
+                const duration = Date.now() - session.startTime;
+                updatePlayTime(gameKey, duration);
+                session.pausedAt = Date.now();
+            } else if (session.pausedAt) {
+                session.startTime = Date.now();
+                delete session.pausedAt;
+            }
+        });
+    }
+})();
