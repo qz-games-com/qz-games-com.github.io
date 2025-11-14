@@ -1,0 +1,30 @@
+{
+  "elements": [
+    {
+      "id": "abstract-shape-1",
+      "asset": "./Q-BIG.png",
+      "x": 200,
+      "y": 200,
+      "z": 3,
+      "width": 300,
+      "height": 300,
+      "opacity": 0.1,
+      "rotation": 45,
+      "blendMode": "screen",
+      "scaleWithScreen": true
+    },
+    {
+      "id": "abstract-shape-2",
+      "asset": "./Q-BIG.png",
+      "x": 600,
+      "y": 600,
+      "z": 5,
+      "width": 250,
+      "height": 250,
+      "opacity": 0.08,
+      "rotation": -30,
+      "blendMode": "overlay",
+      "scaleWithScreen": true
+    }
+  ]
+}

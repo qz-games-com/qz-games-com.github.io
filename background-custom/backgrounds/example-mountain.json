@@ -1,0 +1,82 @@
+{
+  "elements": [
+    {
+      "id": "sky-gradient",
+      "asset": "./assets/backgrounds/sky.png",
+      "x": 0,
+      "y": 0,
+      "z": 1,
+      "width": 1000,
+      "height": 600,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "far-mountains",
+      "asset": "./assets/backgrounds/mountains-far.png",
+      "x": 0,
+      "y": 400,
+      "z": 2,
+      "width": 1000,
+      "height": 400,
+      "opacity": 0.7,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "middle-mountains",
+      "asset": "./assets/backgrounds/mountains-mid.png",
+      "x": 100,
+      "y": 500,
+      "z": 5,
+      "width": 800,
+      "height": 350,
+      "opacity": 0.85,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "tree-left",
+      "asset": "./assets/backgrounds/tree.png",
+      "x": 50,
+      "y": 600,
+      "z": 8,
+      "width": 150,
+      "height": 250,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "close-mountains",
+      "asset": "./assets/backgrounds/mountains-close.png",
+      "x": 0,
+      "y": 600,
+      "z": 10,
+      "width": 1000,
+      "height": 400,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "tree-right",
+      "asset": "./assets/backgrounds/tree.png",
+      "x": 850,
+      "y": 650,
+      "z": 12,
+      "width": 120,
+      "height": 200,
+      "opacity": 1.0,
+      "scaleWithScreen": true,
+      "flipHorizontal": true
+    },
+    {
+      "id": "foreground-grass",
+      "asset": "./assets/backgrounds/grass.png",
+      "x": 0,
+      "y": 850,
+      "z": 15,
+      "width": 1000,
+      "height": 150,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    }
+  ]
+}

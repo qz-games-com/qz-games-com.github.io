@@ -1,0 +1,15 @@
+{
+  "elements": [
+    {
+      "id": "desert-dunes",
+      "asset": "./Q.png",
+      "x": 400,
+      "y": 600,
+      "z": 4,
+      "width": 180,
+      "height": 180,
+      "opacity": 0.12,
+      "scaleWithScreen": true
+    }
+  ]
+}

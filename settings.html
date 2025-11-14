@@ -47,6 +47,7 @@
           <li><button class="tab-btn active" data-target="main">General</button></li>
           <li><button class="tab-btn" data-target="custom">Performance</button></li>
           <li><button class="tab-btn" data-target="theme">Themes</button></li>
+          <!--li><button class="tab-btn" data-target="backgrounds">Backgrounds</button></li-->
         </ul>
       </nav>
       
@@ -109,7 +110,7 @@
             <h2>Themes</h2>
             <p class="section-description">Choose your preferred theme</p>
           </div>
-          
+
           <div class="themes-grid">
             <div class="theme-option active" id="classic" data-theme="default">
               <div class="theme-preview">
@@ -173,6 +174,121 @@
               </div>
               <div class="theme-info">
                 <h3>Light</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="backgrounds" class="section">
+          <div class="section-header">
+            <h2>Custom Backgrounds</h2>
+            <p class="section-description">Choose dynamic layered backgrounds with parallax effects</p>
+          </div>
+
+          <div class="settings-group">
+            <div class="toggle-container">
+              <div class="toggle-info">
+                <span class="toggle-label">Enable Custom Backgrounds</span>
+                <span class="toggle-description">Turn on/off the custom background system. When enabled, you can choose from various dynamic layered backgrounds below.</span>
+              </div>
+              <label class="toggle-switch">
+                <input id="customBackgrounds" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="section-header" style="margin-top: 30px;">
+            <h3 style="font-size: 1.3em;">Background Themes</h3>
+            <p class="section-description">Select a background (independent from color themes)</p>
+          </div>
+
+          <div class="themes-grid">
+            <div class="theme-option active" id="bg-none" data-background="none">
+              <div class="theme-preview">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2em; opacity: 0.3;">∅</div>
+              </div>
+              <div class="theme-info">
+                <h3>None</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-mountain" data-background="mountain">
+              <div class="theme-preview" style="background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #90EE90 100%);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); width: 80%; height: 30%; background: linear-gradient(to top, #8B7355, #A0826D); clip-path: polygon(0% 100%, 50% 20%, 100% 100%); opacity: 0.7;"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Mountain Scene</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-space" data-background="space">
+              <div class="theme-preview" style="background: radial-gradient(circle at 30% 30%, #1a1a2e, #0f0f1e);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; top: 30%; left: 30%; width: 30px; height: 30px; background: radial-gradient(circle, #4a69bd, #0c2461); border-radius: 50%;"></div>
+                <div style="position: absolute; top: 20%; left: 60%; width: 3px; height: 3px; background: white; border-radius: 50%; box-shadow: 0 0 5px white;"></div>
+                <div style="position: absolute; top: 70%; left: 20%; width: 2px; height: 2px; background: white; border-radius: 50%;"></div>
+                <div style="position: absolute; top: 50%; left: 80%; width: 2px; height: 2px; background: white; border-radius: 50%;"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Space</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-forest" data-background="forest">
+              <div class="theme-preview" style="background: linear-gradient(to bottom, #4A90E2 0%, #7EC8E3 30%, #228B22 100%);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; bottom: 10%; left: 20%; width: 15%; height: 40%; background: linear-gradient(to top, #2d5016, #4a7c2f); clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+                <div style="position: absolute; bottom: 10%; right: 20%; width: 15%; height: 35%; background: linear-gradient(to top, #2d5016, #4a7c2f); clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Forest</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-ocean" data-background="ocean">
+              <div class="theme-preview" style="background: linear-gradient(to bottom, #87CEEB 0%, #4A90E2 50%, #1E3A8A 100%);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; top: 60%; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.3);"></div>
+                <div style="position: absolute; top: 75%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.2);"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Ocean</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-desert" data-background="desert">
+              <div class="theme-preview" style="background: linear-gradient(to bottom, #FFB347 0%, #FFCC80 50%, #DEB887 100%);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; bottom: 20%; left: 30%; width: 40%; height: 25%; background: linear-gradient(to top, #C19A6B, #D2B48C); clip-path: polygon(0% 100%, 20% 50%, 40% 70%, 60% 40%, 80% 60%, 100% 100%);"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Desert</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-city" data-background="city">
+              <div class="theme-preview" style="background: linear-gradient(to bottom, #2C3E50 0%, #34495E 50%, #1C2833 100%);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; bottom: 30%; left: 20%; width: 10%; height: 30%; background: #34495E; border: 1px solid #5D6D7E;"></div>
+                <div style="position: absolute; bottom: 30%; left: 35%; width: 8%; height: 40%; background: #34495E; border: 1px solid #5D6D7E;"></div>
+                <div style="position: absolute; bottom: 30%; right: 25%; width: 12%; height: 35%; background: #34495E; border: 1px solid #5D6D7E;"></div>
+              </div>
+              <div class="theme-info">
+                <h3>City</h3>
+              </div>
+            </div>
+
+            <div class="theme-option" id="bg-abstract" data-background="abstract">
+              <div class="theme-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);">
+                <div class="preview-nav"></div>
+                <div style="position: absolute; top: 30%; left: 20%; width: 30%; height: 30%; background: radial-gradient(circle, rgba(255,255,255,0.2), transparent); border-radius: 50%;"></div>
+                <div style="position: absolute; bottom: 20%; right: 20%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(0,0,0,0.2), transparent); border-radius: 50%;"></div>
+              </div>
+              <div class="theme-info">
+                <h3>Abstract</h3>
               </div>
             </div>
           </div>
@@ -282,6 +398,13 @@ function applyTheme(theme) {
   // document.body.setAttribute('data-theme', theme);
 }
 
+// Apply selected background (independent from theme)
+function applyBackground(background) {
+  console.log(`Background applied: ${background}`);
+  // This message is shown in settings page
+  // The actual background loading happens in index.html via loadSelectedBackground()
+}
+
 // Prevent page close functionality
 function enablePreventPageClose() {
   window.addEventListener('beforeunload', handleBeforeUnload);
@@ -348,7 +471,54 @@ function loadSavedPreferences() {
 
   }
 
- 
+  // Load custom backgrounds preference
+  const customBackgrounds = document.getElementById('customBackgrounds');
+
+  if (customBackgrounds) {
+    // Load saved preference
+    customBackgrounds.checked = getCookie('customBackgrounds') !== 'false'; // default to true
+
+    customBackgrounds.addEventListener('change', () => {
+      setCookie('customBackgrounds', customBackgrounds.checked);
+      console.log('Custom Backgrounds:', customBackgrounds.checked);
+    });
+  }
+
+  // Background selection functionality (separate from themes)
+  const backgroundOptions = document.querySelectorAll('[data-background]');
+
+  // Load saved background preference
+  const savedBackground = getCookie('selectedBackground') || 'none';
+  backgroundOptions.forEach(option => {
+    if (option.getAttribute('data-background') === savedBackground) {
+      option.classList.add('active');
+    } else {
+      option.classList.remove('active');
+    }
+  });
+
+  backgroundOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      // Remove active class from all background options
+      backgroundOptions.forEach(opt => opt.classList.remove('active'));
+
+      // Add active class to clicked option
+      option.classList.add('active');
+
+      // Get selected background type
+      const selectedBackground = option.getAttribute('data-background');
+
+      // Save background preference to cookie
+      setCookie('selectedBackground', selectedBackground);
+
+      console.log('Background selected:', selectedBackground);
+
+      // Apply background if enabled
+      if (customBackgrounds && customBackgrounds.checked) {
+        applyBackground(selectedBackground);
+      }
+    });
+  });
 
   // Load sound effects preference
   const soundEffectsToggle = document.getElementById('soundeffects');

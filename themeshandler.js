@@ -54,7 +54,7 @@ function loadThemeCSS() {
     const link = document.getElementById('themecss');
     link.setAttribute('href', cssFile);
     if(cssFile==='./styles/space.css') {
-        loadScript('./scripts/blackhole.js')
+        //loadScript('./scripts/blackhole.js')
     } else if(cssFile==='./styles/mlg.css') {
         loadScript('./scripts/mlgscript.js')
     } else if(cssFile==='./styles/minecraft.css') {
@@ -83,4 +83,67 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadThemeCSS);
 } else {
     loadThemeCSS();
+}
+
+/**
+ * Load selected background (independent from theme)
+ * Backgrounds are now separate from themes - user selects them independently
+ */
+function loadSelectedBackground() {
+    // Check if background system is available
+    if (typeof backgroundHandler === 'undefined' || !backgroundHandler) {
+        console.log('Background handler not initialized');
+        return;
+    }
+
+    // Check if custom backgrounds are enabled
+    const customBackgroundsEnabled = getCookie('customBackgrounds') !== 'false';
+    if (!customBackgroundsEnabled) {
+        console.log('Custom backgrounds disabled in settings');
+        backgroundHandler.setEnabled(false);
+        backgroundHandler.clear();
+        return;
+    }
+
+    // Enable background handler
+    backgroundHandler.setEnabled(true);
+
+    // Get selected background (independent from theme)
+    const selectedBackground = getCookie('selectedBackground') || 'none';
+
+    if (selectedBackground === 'none') {
+        console.log('No background selected');
+        backgroundHandler.clear();
+        return;
+    }
+
+    // Map background names to their JSON files
+    const backgroundMap = {
+        'mountain': './background-custom/backgrounds/mountain.json',
+        'space': './background-custom/backgrounds/space.json',
+        'forest': './background-custom/backgrounds/forest.json',
+        'ocean': './background-custom/backgrounds/ocean.json',
+        'desert': './background-custom/backgrounds/desert.json',
+        'city': './background-custom/backgrounds/city.json',
+        'abstract': './background-custom/backgrounds/abstract.json'
+    };
+
+    const bgPath = backgroundMap[selectedBackground];
+
+    if (bgPath) {
+        loadBackgroundFromJSON(bgPath)
+            .then(() => {
+                console.log(`Background loaded: ${selectedBackground}`);
+            })
+            .catch(err => {
+                console.log(`Failed to load background: ${selectedBackground}`, err);
+                // Clear any existing background on error
+                if (backgroundHandler) {
+                    backgroundHandler.clear();
+                }
+            });
+    } else {
+        console.log('Background not found:', selectedBackground);
+        backgroundHandler.clear();
+    }
 }

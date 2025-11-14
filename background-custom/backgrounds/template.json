@@ -1,0 +1,156 @@
+{
+  "_comment": "Background Configuration Template - Copy and modify for your own themes",
+  "_instructions": "1. Duplicate this file and rename it (e.g., 'my-theme.json')",
+  "_instructions2": "2. Replace asset paths with your own images",
+  "_instructions3": "3. Choose positionMode: 'normalized' (0-1000) or 'percentage' (0-100)",
+  "_instructions4": "4. Test using background-demo.html",
+
+  "elements": [
+    {
+      "_comment": "NORMALIZED MODE (default) - Values 0-1000, maintains exact layout",
+      "id": "background-normalized",
+      "asset": "./assets/backgrounds/your-background.png",
+      "positionMode": "normalized",
+      "x": 0,
+      "y": 0,
+      "z": 1,
+      "width": 1000,
+      "height": 1000,
+      "opacity": 1.0,
+      "anchor": "top-left",
+      "scaleWithScreen": true
+    },
+    {
+      "_comment": "PERCENTAGE MODE - Values 0-100, stays visible on all screen sizes",
+      "_example": "This element will always be at 50% width, 50% height (center)",
+      "id": "element-percentage",
+      "asset": "./assets/backgrounds/your-element.png",
+      "positionMode": "percentage",
+      "x": 50,
+      "y": 50,
+      "z": 5,
+      "width": 20,
+      "height": 20,
+      "opacity": 0.8,
+      "anchor": "center",
+      "scaleWithScreen": true
+    },
+    {
+      "_comment": "Percentage - Bottom Right Corner (always visible)",
+      "id": "corner-element",
+      "asset": "./assets/backgrounds/corner-decoration.png",
+      "positionMode": "percentage",
+      "x": 90,
+      "y": 90,
+      "z": 12,
+      "width": 10,
+      "height": 10,
+      "opacity": 1.0,
+      "anchor": "bottom-right",
+      "scaleWithScreen": true
+    },
+    {
+      "_comment": "Percentage - Top Center (title/logo area)",
+      "id": "top-decoration",
+      "asset": "./assets/backgrounds/top-element.png",
+      "positionMode": "percentage",
+      "x": 50,
+      "y": 10,
+      "z": 10,
+      "width": 30,
+      "height": 15,
+      "opacity": 0.9,
+      "anchor": "top-center",
+      "scaleWithScreen": true
+    }
+  ],
+
+  "_positioning_modes": {
+    "normalized": {
+      "description": "Values are 0-1000. Maintains exact layout but elements may go off-screen on different aspect ratios.",
+      "x_range": "0-1000",
+      "y_range": "0-1000",
+      "use_case": "When you want precise, consistent positioning"
+    },
+    "percentage": {
+      "description": "Values are 0-100 (percentages). Elements stay visible on all screen sizes/aspect ratios.",
+      "x_range": "0-100",
+      "y_range": "0-100",
+      "use_case": "When you want elements to always be visible, recommended for most cases"
+    }
+  },
+
+  "_anchor_points": {
+    "description": "Anchor point determines which part of the element is positioned at x,y",
+    "options": [
+      "top-left - Position top-left corner at x,y (default)",
+      "top-center - Position top-center at x,y",
+      "top-right - Position top-right corner at x,y",
+      "center-left - Position center-left at x,y",
+      "center - Position center at x,y",
+      "center-right - Position center-right at x,y",
+      "bottom-left - Position bottom-left corner at x,y",
+      "bottom-center - Position bottom-center at x,y",
+      "bottom-right - Position bottom-right corner at x,y"
+    ],
+    "examples": {
+      "center_screen": {
+        "positionMode": "percentage",
+        "x": 50,
+        "y": 50,
+        "anchor": "center",
+        "description": "Element centered on screen"
+      },
+      "bottom_right": {
+        "positionMode": "percentage",
+        "x": 100,
+        "y": 100,
+        "anchor": "bottom-right",
+        "description": "Element in bottom-right corner"
+      }
+    }
+  },
+
+  "_all_properties": {
+    "id": "Unique identifier (string)",
+    "asset": "Path to image file (string, REQUIRED)",
+    "positionMode": "'normalized' or 'percentage' (string, default: 'normalized')",
+    "x": "Horizontal position, 0-1000 (normalized) or 0-100 (percentage)",
+    "y": "Vertical position, 0-1000 (normalized) or 0-100 (percentage)",
+    "z": "Layer depth 1-15, lower=back (number)",
+    "width": "Width in same units as x",
+    "height": "Height in same units as y",
+    "opacity": "Transparency 0.0-1.0 (number)",
+    "anchor": "Anchor point (string, default: 'top-left')",
+    "scaleWithScreen": "Scale proportionally (boolean, default: true)",
+    "rotation": "Rotation in degrees (number, default: 0)",
+    "flipHorizontal": "Mirror horizontally (boolean, default: false)",
+    "flipVertical": "Mirror vertically (boolean, default: false)",
+    "blendMode": "Canvas blend mode (string, default: 'source-over')"
+  },
+
+  "_recommended_setup": {
+    "description": "Use percentage mode for responsive designs",
+    "example": {
+      "id": "responsive-element",
+      "asset": "./image.png",
+      "positionMode": "percentage",
+      "x": 50,
+      "y": 50,
+      "z": 5,
+      "width": 25,
+      "height": 25,
+      "anchor": "center"
+    }
+  },
+
+  "_tips": [
+    "Use 'percentage' mode to keep elements visible on all screens",
+    "Use 'anchor' to control which part of element is at x,y",
+    "Center an element: positionMode='percentage', x=50, y=50, anchor='center'",
+    "Bottom-right corner: positionMode='percentage', x=100, y=100, anchor='bottom-right'",
+    "Keep Z values 1-15: lower values render first (furthest back)",
+    "Use opacity 0.5-0.7 for distant elements, 0.9-1.0 for close elements",
+    "Test with background-demo.html before deploying"
+  ]
+}

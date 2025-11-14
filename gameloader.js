@@ -147,6 +147,8 @@ function renderGames(data, isSearch = false) {
 
     if (game.type === 'html') {
       gameLink = `./Games/game.html?game=${game.link}&type=html&name=${game.name.toLowerCase()}`;
+    } else if (game.type === 'buckshot') {
+      gameLink = `./Games/Buckshot-Roulette.html`;
     } else if (game.type === 'unity') {
       gameLink = `./Games/game.html?game=${game.link}&type=unity&name=${game.name.toLowerCase()}`;
     } else if (game.type === 'flash') {

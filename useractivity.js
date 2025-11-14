@@ -1,83 +1,217 @@
 const DEBUG_MODE = false;
+const COOKIE_NAME = 'usractivity';
+const COOKIE_EXPIRY_DAYS = 3000;
 
-function setCookieactiv(name, value, days = 3000) {
+// Store active game sessions for time tracking
+const activeSessions = new Map();
+
+/**
+ * Set a cookie with name, value, and expiration
+ */
+function setCookieActivity(name, value, days = COOKIE_EXPIRY_DAYS) {
     const date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";path=/";
+    document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/`;
 }
 
-function getCookieactiv(name) {
+/**
+ * Get a cookie value by name
+ */
+function getCookieActivity(name) {
     const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) {
-            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    const cookies = document.cookie.split(';');
+
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.indexOf(nameEQ) === 0) {
+            return decodeURIComponent(cookie.substring(nameEQ.length));
         }
     }
     return null;
 }
 
-function trackActivity(event) {
-    const elementId = event.currentTarget.id;
-    
-    if (DEBUG_MODE) {
-        alert(`Element ID: ${elementId}`);
-    } else {
-        if (elementId) {
-            let activity = getCookieactiv('usractivity');
-            let activityData;
-            
-            try {
-                if (activity) {
-                    activityData = JSON.parse(activity);
-                } else {
-                    activityData = [];
-                }
-                
-                const existingGame = activityData.find(game => game.gameKey === elementId);
-                
-                if (!existingGame) {
-                    activityData.push({
-                        gameKey: elementId,
-                        playTimeHours: 0,
-                        playTimeMinutes: 0
-                    });
-                    
-                    console.log('Adding new game to array:', elementId);
-                    console.log('Updated activity array:', activityData);
-                }
-                
-                setCookieactiv('usractivity', JSON.stringify(activityData));
-                
-                // Debug: Check if cookie was saved
-                const savedCookie = getCookie('usractivity');
-                console.log('Saved cookie value:', savedCookie);
-                console.log('Parsed saved data:', JSON.parse(savedCookie));
-                
-            } catch (error) {
-                console.error('Error saving activity to cookie:', error);
-            }
-        }
-    }
-}
-
-// Helper function to view current activity data
-function viewActivityData() {
-    const activity = getCookie('usractivity');
-    if (activity) {
-        console.log('Current activity data:', JSON.parse(activity));
-        return JSON.parse(activity);
-    } else {
-        console.log('No activity data found');
+/**
+ * Get all activity data from cookie
+ */
+function getActivityData() {
+    const activity = getCookieActivity(COOKIE_NAME);
+    try {
+        return activity ? JSON.parse(activity) : [];
+    } catch (error) {
+        console.error('Error parsing activity data:', error);
         return [];
     }
 }
 
-// Helper function to clear activity data (for testing)
+/**
+ * Save activity data to cookie
+ */
+function saveActivityData(activityData) {
+    try {
+        setCookieActivity(COOKIE_NAME, JSON.stringify(activityData));
+        return true;
+    } catch (error) {
+        console.error('Error saving activity to cookie:', error);
+        return false;
+    }
+}
+
+/**
+ * Start tracking play time for a game
+ */
+function startPlaySession(gameKey) {
+    if (!gameKey) return;
+
+    // Store start time for this session
+    activeSessions.set(gameKey, {
+        startTime: Date.now(),
+        lastUpdate: Date.now()
+    });
+
+    if (DEBUG_MODE) {
+        console.log(`Started play session for ${gameKey}`);
+    }
+}
+
+/**
+ * Stop tracking play time and save duration
+ */
+function stopPlaySession(gameKey) {
+    if (!gameKey || !activeSessions.has(gameKey)) return 0;
+
+    const session = activeSessions.get(gameKey);
+    const duration = Date.now() - session.startTime;
+    activeSessions.delete(gameKey);
+
+    // Update total play time
+    updatePlayTime(gameKey, duration);
+
+    if (DEBUG_MODE) {
+        console.log(`Stopped play session for ${gameKey}, duration: ${formatDuration(duration)}`);
+    }
+
+    return duration;
+}
+
+/**
+ * Update play time for a game
+ */
+function updatePlayTime(gameKey, durationMs) {
+    const activityData = getActivityData();
+    let gameData = activityData.find(game => game.gameKey === gameKey);
+
+    if (!gameData) {
+        gameData = {
+            gameKey: gameKey,
+            totalPlayTimeMs: 0,
+            playCount: 0,
+            firstPlayed: new Date().toISOString(),
+            lastPlayed: new Date().toISOString()
+        };
+        activityData.push(gameData);
+    }
+
+    // Update play time and metadata
+    gameData.totalPlayTimeMs = (gameData.totalPlayTimeMs || 0) + durationMs;
+    gameData.playCount = (gameData.playCount || 0) + 1;
+    gameData.lastPlayed = new Date().toISOString();
+
+    saveActivityData(activityData);
+
+    if (DEBUG_MODE) {
+        console.log(`Updated ${gameKey}:`, formatGameData(gameData));
+    }
+}
+
+/**
+ * Format duration in milliseconds to readable string
+ */
+function formatDuration(ms) {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    if (hours > 0) {
+        return `${hours}h ${minutes % 60}m`;
+    } else if (minutes > 0) {
+        return `${minutes}m ${seconds % 60}s`;
+    } else {
+        return `${seconds}s`;
+    }
+}
+
+/**
+ * Format game data for display
+ */
+function formatGameData(gameData) {
+    return {
+        gameKey: gameData.gameKey,
+        totalPlayTime: formatDuration(gameData.totalPlayTimeMs || 0),
+        playCount: gameData.playCount || 0,
+        lastPlayed: gameData.lastPlayed
+    };
+}
+
+/**
+ * Track activity when element is clicked
+ */
+function trackActivity(event) {
+    const elementId = event.currentTarget.id;
+
+    if (DEBUG_MODE) {
+        alert(`Element ID: ${elementId}`);
+    }
+
+    if (elementId) {
+        startPlaySession(elementId);
+        console.log(`Started tracking activity for: ${elementId}`);
+    }
+}
+
+/**
+ * View current activity data (formatted)
+ */
+function viewActivityData() {
+    const activityData = getActivityData();
+
+    if (activityData.length === 0) {
+        console.log('No activity data found');
+        return [];
+    }
+
+    const formatted = activityData.map(formatGameData);
+    console.table(formatted);
+    return activityData;
+}
+
+/**
+ * Get play time for a specific game
+ */
+function getGamePlayTime(gameKey) {
+    const activityData = getActivityData();
+    const gameData = activityData.find(game => game.gameKey === gameKey);
+
+    if (gameData) {
+        return formatGameData(gameData);
+    }
+    return null;
+}
+
+/**
+ * Clear all activity data (for testing)
+ */
 function clearActivityData() {
-    document.cookie = "usractivity=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = `${COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    activeSessions.clear();
     console.log('Activity data cleared');
 }
+
+// Auto-save active sessions before page unload
+window.addEventListener('beforeunload', () => {
+    for (const [gameKey, session] of activeSessions.entries()) {
+        const duration = Date.now() - session.startTime;
+        updatePlayTime(gameKey, duration);
+    }
+    activeSessions.clear();
+});

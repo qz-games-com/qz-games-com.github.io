@@ -193,7 +193,7 @@
     },
     "rocket league": {
         "cover": "rocketl.png",
-        "name": "Rocket Luague",
+        "name": "Rocket League",
         "gradient": "blue",
         "catagory": "casual driver",
         "link": "../Games01/Rocket-League",
@@ -677,7 +677,7 @@
         "gradient": "black",
         "catagory": "casual shooter",
         "link": "../buckshot/buckshot",
-        "type": "html"   
+        "type": "buckshot"   
     }
 
 

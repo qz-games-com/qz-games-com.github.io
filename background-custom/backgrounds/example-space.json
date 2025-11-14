@@ -1,0 +1,94 @@
+{
+  "elements": [
+    {
+      "id": "space-background",
+      "asset": "./assets/backgrounds/space-deep.png",
+      "x": 0,
+      "y": 0,
+      "z": 1,
+      "width": 1000,
+      "height": 1000,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "stars-far",
+      "asset": "./assets/backgrounds/stars-small.png",
+      "x": 0,
+      "y": 0,
+      "z": 2,
+      "width": 1000,
+      "height": 1000,
+      "opacity": 0.6,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "nebula-1",
+      "asset": "./assets/backgrounds/nebula-purple.png",
+      "x": 100,
+      "y": 100,
+      "z": 3,
+      "width": 400,
+      "height": 400,
+      "opacity": 0.4,
+      "scaleWithScreen": true,
+      "blendMode": "screen"
+    },
+    {
+      "id": "planet-distant",
+      "asset": "./assets/backgrounds/planet-small.png",
+      "x": 700,
+      "y": 150,
+      "z": 4,
+      "width": 100,
+      "height": 100,
+      "opacity": 0.7,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "stars-mid",
+      "asset": "./assets/backgrounds/stars-medium.png",
+      "x": 0,
+      "y": 0,
+      "z": 6,
+      "width": 1000,
+      "height": 1000,
+      "opacity": 0.8,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "asteroid-1",
+      "asset": "./assets/backgrounds/asteroid.png",
+      "x": 200,
+      "y": 600,
+      "z": 8,
+      "width": 80,
+      "height": 80,
+      "opacity": 1.0,
+      "scaleWithScreen": true,
+      "rotation": 45
+    },
+    {
+      "id": "planet-close",
+      "asset": "./assets/backgrounds/planet-large.png",
+      "x": 50,
+      "y": 700,
+      "z": 10,
+      "width": 300,
+      "height": 300,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    },
+    {
+      "id": "stars-close",
+      "asset": "./assets/backgrounds/stars-large.png",
+      "x": 0,
+      "y": 0,
+      "z": 12,
+      "width": 1000,
+      "height": 1000,
+      "opacity": 1.0,
+      "scaleWithScreen": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "elements": [
+    {
+      "id": "ocean-waves",
+      "asset": "./Q.png",
+      "x": 200,
+      "y": 800,
+      "z": 5,
+      "width": 150,
+      "height": 150,
+      "opacity": 0.15,
+      "scaleWithScreen": true
+    }
+  ]
+}

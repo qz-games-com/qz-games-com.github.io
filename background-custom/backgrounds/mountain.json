@@ -1,0 +1,15 @@
+{
+  "elements": [
+    {
+      "id": "sky-background",
+      "asset": "./Q-BIG.png",
+      "x": 0,
+      "y": 0,
+      "z": 1,
+      "width": 1000,
+      "height": 600,
+      "opacity": 0.1,
+      "scaleWithScreen": true
+    }
+  ]
+}
