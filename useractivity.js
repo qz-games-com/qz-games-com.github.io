@@ -1,4 +1,4 @@
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 const COOKIE_NAME = 'usractivity';
 const COOKIE_EXPIRY_DAYS = 3000;
 
@@ -97,14 +97,11 @@ function stopPlaySession(gameKey) {
 /**
  * Update play time for a game
  */
-function updatePlayTime(gameKey, durationMs) {
-    console.log(`[Activity Tracker] updatePlayTime called for ${gameKey}, duration: ${durationMs}ms (${Math.floor(durationMs/1000)}s)`);
-
+function updatePlayTime(gameKey, durationMs, incrementPlayCount = false) {
     const activityData = getActivityData();
     let gameData = activityData.find(game => game.gameKey === gameKey);
 
     if (!gameData) {
-        console.log(`[Activity Tracker] Creating new game entry for ${gameKey}`);
         gameData = {
             gameKey: gameKey,
             totalPlayTimeMs: 0,
@@ -116,17 +113,19 @@ function updatePlayTime(gameKey, durationMs) {
     }
 
     // Update play time and metadata
-    const oldTotal = gameData.totalPlayTimeMs || 0;
-    gameData.totalPlayTimeMs = oldTotal + durationMs;
-    gameData.playCount = (gameData.playCount || 0) + 1;
-    gameData.lastPlayed = new Date().toISOString();
+    gameData.totalPlayTimeMs = (gameData.totalPlayTimeMs || 0) + durationMs;
 
-    console.log(`[Activity Tracker] Total play time for ${gameKey}: ${oldTotal}ms -> ${gameData.totalPlayTimeMs}ms`);
+    // Only increment play count if explicitly told (on new session start)
+    if (incrementPlayCount) {
+        gameData.playCount = (gameData.playCount || 0) + 1;
+    }
+
+    gameData.lastPlayed = new Date().toISOString();
 
     saveActivityData(activityData);
 
     if (DEBUG_MODE) {
-        console.log(`Updated ${gameKey}:`, formatGameData(gameData));
+        console.log(`[Activity Tracker] Updated ${gameKey}:`, formatGameData(gameData));
     }
 }
 
@@ -217,39 +216,39 @@ function clearActivityData() {
 window.addEventListener('beforeunload', () => {
     for (const [gameKey, session] of activeSessions.entries()) {
         const duration = Date.now() - session.startTime;
-        updatePlayTime(gameKey, duration);
+        updatePlayTime(gameKey, duration, false); // Don't increment play count on close
     }
     activeSessions.clear();
 });
 
 // Auto-start tracking on game page
 (function() {
-    console.log('[Activity Tracker] Initializing... readyState:', document.readyState);
-
     if (document.readyState === 'loading') {
-        console.log('[Activity Tracker] Waiting for DOM...');
         document.addEventListener('DOMContentLoaded', arguments.callee);
         return;
     }
 
-    // Check if on game page (has ?game= parameter)
+    // Check if on game page (use ?name= parameter, fallback to ?game=)
     const params = new URLSearchParams(window.location.search);
-    const gameKey = params.get('game');
-
-    console.log('[Activity Tracker] URL:', window.location.href);
-    console.log('[Activity Tracker] Game key from URL:', gameKey);
+    const gameKey = params.get('name') || params.get('game');
 
     if (gameKey) {
-        console.log('[Activity Tracker] Auto-starting for:', gameKey);
         startPlaySession(gameKey);
-        console.log('[Activity Tracker] Active sessions:', activeSessions);
+
+        // Increment play count on first session start only
+        updatePlayTime(gameKey, 0, true);
+
+        if (DEBUG_MODE) {
+            console.log('[Activity Tracker] Auto-starting for:', gameKey);
+            console.log('[Activity Tracker] Active sessions:', activeSessions);
+        }
 
         // Auto-save every 2 seconds
         setInterval(() => {
             const session = activeSessions.get(gameKey);
             if (session) {
                 const duration = Date.now() - session.startTime;
-                updatePlayTime(gameKey, duration);
+                updatePlayTime(gameKey, duration, false); // Don't increment play count
                 session.startTime = Date.now();
             }
         }, 2000);
@@ -261,7 +260,7 @@ window.addEventListener('beforeunload', () => {
 
             if (document.hidden) {
                 const duration = Date.now() - session.startTime;
-                updatePlayTime(gameKey, duration);
+                updatePlayTime(gameKey, duration, false); // Don't increment play count
                 session.pausedAt = Date.now();
             } else if (session.pausedAt) {
                 session.startTime = Date.now();
