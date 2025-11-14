@@ -278,15 +278,19 @@ window.addEventListener('beforeunload', () => {
     if (gameKey) {
         startPlaySession(gameKey);
 
-        // Increment play count on first session start only
-        updatePlayTime(gameKey, 0, true);
+        // Mark that this is a new session (we'll increment play count on first save)
+        let isNewSession = true;
 
         // Auto-save every 2 seconds
         setInterval(() => {
             const session = activeSessions.get(gameKey);
             if (session) {
                 const duration = Date.now() - session.startTime;
-                updatePlayTime(gameKey, duration, false); // Don't increment play count
+                // Only increment play count on the very first save of a new session
+                updatePlayTime(gameKey, duration, isNewSession);
+                if (isNewSession) {
+                    isNewSession = false; // Only count once per session
+                }
                 session.startTime = Date.now();
             }
         }, 2000);
