@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyodide Browser Engine</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #2d2d2d;
+            padding: 15px;
+            border-bottom: 2px solid #404040;
+        }
+        
+        .header h1 {
+            color: #4CAF50;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            color: #888;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        .status.ready { color: #4CAF50; }
+        .status.loading { color: #FFC107; }
+        .status.error { color: #f44336; }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .code-panel {
+            width: 40%;
+            background: #252526;
+            border-right: 2px solid #404040;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .code-header {
+            background: #2d2d30;
+            padding: 10px 15px;
+            border-bottom: 1px solid #404040;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-title {
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .run-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .run-btn:hover {
+            background: #45a049;
+        }
+        
+        .run-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        
+        .code-editor {
+            flex: 1;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border: none;
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+        }
+        
+        .console {
+            background: #1e1e1e;
+            border-top: 1px solid #404040;
+            padding: 10px 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        .console-line {
+            margin: 2px 0;
+            white-space: pre-wrap;
+        }
+        
+        .console-line.output { color: #4ec9b0; }
+        .console-line.error { color: #f48771; }
+        .console-line.info { color: #9cdcfe; }
+        
+        .browser-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #2d2d2d;
+        }
+        
+        .browser-chrome {
+            background: #3d3d3d;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #404040;
+        }
+        
+        .browser-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .control-btn {
+            background: #555;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .control-btn:hover {
+            background: #666;
+        }
+        
+        .url-bar {
+            flex: 1;
+            background: #2d2d2d;
+            border: 1px solid #555;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .url-bar:focus {
+            border-color: #4CAF50;
+            background: #1e1e1e;
+        }
+        
+        .go-btn {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .go-btn:hover {
+            background: #45a049;
+        }
+        
+        .go-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .js-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 8px;
+            padding: 6px 12px;
+            background: #555;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .js-toggle input[type="checkbox"] {
+            cursor: pointer;
+        }
+        
+        .js-toggle label {
+            cursor: pointer;
+            font-size: 12px;
+            color: #fff;
+        }
+        
+        .js-toggle.enabled {
+            background: #4CAF50;
+        }
+        
+        .browser-viewport {
+            flex: 1;
+            background: white;
+            overflow: auto;
+            position: relative;
+            /* Create a containing block for absolute/fixed positioning */
+        }
+        
+        .browser-content {
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+            /* Critical containment properties */
+            position: relative;
+            width: 100%;
+            min-height: 100%;
+            overflow: auto;
+            background: white;
+            /* Isolation */
+            contain: layout style paint;
+            isolation: isolate;
+        }
+        
+        /* Force all fixed elements to be absolute within container */
+        .browser-content [style*="position: fixed"],
+        .browser-content [style*="position:fixed"] {
+            position: absolute !important;
+        }
+        
+        /* Reset basic styles for content */
+        .browser-content * {
+            /* Allow elements to inherit from browser-content context */
+            box-sizing: border-box;
+        }
+        
+        .browser-content h1, .browser-content h2, .browser-content h3 {
+            margin: 20px 0 10px 0;
+            color: #222;
+        }
+        
+        .browser-content p {
+            margin: 10px 0;
+        }
+        
+        .browser-content a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .browser-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .browser-content img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐍 Pyodide Browser Engine</h1>
+        <div class="status" id="status">Initializing Python...</div>
+    </div>
+    
+    <div class="main-container">
+        <div class="code-panel">
+            <div class="code-header">
+                <span class="code-title">Python Script</span>
+                <button class="run-btn" id="runBtn" disabled>▶ Run</button>
+            </div>
+            <textarea class="code-editor" id="codeEditor"># Pyodide Browser Engine
+# Enable JavaScript toggle in top-right for dynamic sites
+
+import time
+
+# Test 1: Simple static site (works without JS)
+print("=== Test 1: Static HTML ===")
+browser.navigate("https://example.com")
+time.sleep(1)
+print(f"Title: {browser.get_title()}")
+
+# Test 2: Site that needs JS (enable JS toggle for full experience)
+print("\n=== Test 2: Dynamic Site ===")
+browser.navigate("https://httpbin.org/html")
+time.sleep(1)
+print(f"URL: {browser.get_current_url()}")
+
+# Extract content
+headings = browser.find_elements("h1")
+print(f"\nFound {len(headings)} h1 elements")
+if headings:
+    print(f"Heading: {headings[0]}")
+
+# Extract links
+links = browser.find_elements("a")
+print(f"Found {len(links)} links")
+
+print("\n✓ Tests complete!")
+print("💡 Tip: Enable JS toggle for interactive sites")</textarea>
+            
+            <div class="console" id="console">
+                <div class="console-line info">Console output will appear here...</div>
+                <div class="console-line info">💡 Toggle "Enable JS" in top-right for interactive sites</div>
+            </div>
+        </div>
+        
+        <div class="browser-panel">
+            <div class="browser-chrome">
+                <div class="browser-controls">
+                    <button class="control-btn" id="backBtn" title="Back">←</button>
+                    <button class="control-btn" id="forwardBtn" title="Forward">→</button>
+                    <button class="control-btn" id="refreshBtn" title="Refresh">↻</button>
+                </div>
+                <input type="text" class="url-bar" id="urlBar" value="about:blank" placeholder="Enter URL or search...">
+                <button class="go-btn" id="goBtn">Go</button>
+                <div class="js-toggle" id="jsToggle">
+                    <input type="checkbox" id="enableJs" />
+                    <label for="enableJs">Enable JS (⚠️ Risk)</label>
+                </div>
+            </div>
+            
+            <div class="browser-viewport" id="viewport">
+                <div class="loading-indicator">Browser ready. Run Python script to navigate.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pyodide;
+        let currentUrl = 'about:blank';
+        let history = [];
+        let historyIndex = -1;
+        let jsEnabled = false;
+        
+        const status = document.getElementById('status');
+        const runBtn = document.getElementById('runBtn');
+        const codeEditor = document.getElementById('codeEditor');
+        const consoleDiv = document.getElementById('console');
+        const viewport = document.getElementById('viewport');
+        const urlBar = document.getElementById('urlBar');
+        const jsToggle = document.getElementById('jsToggle');
+        const enableJsCheckbox = document.getElementById('enableJs');
+        
+        // JS toggle handler
+        enableJsCheckbox.addEventListener('change', (e) => {
+            jsEnabled = e.target.checked;
+            jsToggle.classList.toggle('enabled', jsEnabled);
+            addConsole(jsEnabled ? '⚠️ JavaScript enabled (use caution)' : '✓ JavaScript disabled (safe mode)', jsEnabled ? 'info' : 'output');
+        });
+        
+        // Browser API
+        const browserAPI = {
+            navigate: async function(url, addToHistory = true) {
+                // Show full URL in console
+                console.group('Navigation Details');
+                console.log('Target URL:', url);
+                console.log('Has www:', url.includes('www.'));
+                console.log('Query string:', url.split('?')[1] || 'none');
+                console.groupEnd();
+                
+                addConsole(`Navigating to: ${url}`, 'info');
+                urlBar.value = url;
+                currentUrl = url;
+                
+                if (addToHistory) {
+                    history = history.slice(0, historyIndex + 1);
+                    history.push(url);
+                    historyIndex = history.length - 1;
+                }
+                
+                try {
+                    viewport.innerHTML = '<div class="loading-indicator">Loading...</div>';
+                    
+                    // Log the actual URL being fetched
+                    addConsole(`Navigating to: ${url}`, 'info');
+                    
+                    // Use CORS proxy - encode the FULL URL including params
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                    console.log('Proxy URL:', proxyUrl);
+                    console.log('Target URL (encoded):', encodeURIComponent(url));
+                    
+                    const response = await fetch(proxyUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const html = await response.text();
+                    
+                    addConsole(`✓ Received ${html.length} bytes`, 'info');
+                    
+                    // Parse and sanitize HTML
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Helper function to resolve URLs correctly
+                    const baseUrl = new URL(url);
+                    
+                    // Log base URL to verify www and params are preserved
+                    console.log('Base URL:', baseUrl.href);
+                    
+                    function resolveUrl(assetUrl) {
+                        if (!assetUrl) return null;
+                        
+                        // Trim whitespace
+                        assetUrl = assetUrl.trim();
+                        
+                        // If already absolute with protocol, return as-is (preserves www and params)
+                        if (assetUrl.startsWith('http://') || assetUrl.startsWith('https://')) {
+                            return assetUrl;
+                        }
+                        
+                        // If starts with //, add protocol (preserves www and params)
+                        if (assetUrl.startsWith('//')) {
+                            return baseUrl.protocol + assetUrl;
+                        }
+                        
+                        // For relative URLs, use URL constructor which preserves params
+                        try {
+                            const resolved = new URL(assetUrl, baseUrl.href);
+                            return resolved.href; // Full URL with www, params, hash, etc
+                        } catch(e) {
+                            console.error('Error resolving URL:', assetUrl, e);
+                            return null;
+                        }
+                    }
+                    
+                    // Function to scope CSS to .browser-content
+                    function scopeCSS(cssText) {
+                        try {
+                            // First, convert position: fixed to absolute (so it stays in container)
+                            cssText = cssText.replace(/position\s*:\s*fixed/gi, 'position: absolute');
+                            
+                            // Scope selectors to .browser-content
+                            cssText = cssText.replace(/([^\r\n,{}]+)(,(?=[^}]*{)|\s*{)/g, (match, selector, separator) => {
+                                // Skip @rules, :root, and already scoped selectors
+                                if (selector.trim().startsWith('@') || 
+                                    selector.trim().startsWith(':root') ||
+                                    selector.includes('.browser-content')) {
+                                    return match;
+                                }
+                                
+                                // Skip keyframes content
+                                if (selector.trim().match(/^\d+%$|^from$|^to$/)) {
+                                    return match;
+                                }
+                                
+                                // Prefix the selector
+                                const trimmedSelector = selector.trim();
+                                if (trimmedSelector) {
+                                    return `.browser-content ${trimmedSelector}${separator}`;
+                                }
+                                return match;
+                            });
+                            
+                            return cssText;
+                        } catch(e) {
+                            console.error('Error scoping CSS:', e);
+                            return cssText; // Return original if scoping fails
+                        }
+                    }
+                    
+                    // Create safe content container
+                    const content = document.createElement('div');
+                    content.className = 'browser-content';
+                    
+                    // FIRST: Extract and inject ALL styles from <head> with scoping
+                    const headStyles = doc.head.querySelectorAll('style');
+                    if (headStyles.length > 0) {
+                        addConsole(`Scoping ${headStyles.length} inline stylesheets...`, 'info');
+                    }
+                    for (const style of headStyles) {
+                        const newStyle = document.createElement('style');
+                        // Scope CSS to prevent it from affecting parent page
+                        newStyle.textContent = scopeCSS(style.textContent);
+                        content.appendChild(newStyle);
+                    }
+                    
+                    // Load external stylesheets from <head>
+                    const headLinks = doc.head.querySelectorAll('link[rel="stylesheet"]');
+                    if (headLinks.length > 0) {
+                        addConsole(`Loading ${headLinks.length} external stylesheets...`, 'info');
+                    }
+                    for (const link of headLinks) {
+                        const href = link.getAttribute('href');
+                        if (href) {
+                            const absoluteHref = resolveUrl(href);
+                            if (absoluteHref) {
+                                try {
+                                    console.log('Loading CSS:', absoluteHref);
+                                    const cssResponse = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(absoluteHref)}`);
+                                    const cssText = await cssResponse.text();
+                                    const style = document.createElement('style');
+                                    // Scope CSS to prevent leakage
+                                    style.textContent = scopeCSS(cssText);
+                                    content.appendChild(style);
+                                    console.log('✓ CSS loaded and scoped:', absoluteHref);
+                                } catch(e) {
+                                    console.error('Error loading CSS:', absoluteHref, e);
+                                }
+                            }
+                        }
+                    }
+                    
+                    // NOW add body content
+                    content.innerHTML += doc.body.innerHTML;
+                    
+                    // Fix links
+                    content.querySelectorAll('a').forEach(a => {
+                        const href = a.getAttribute('href');
+                        if (href) {
+                            const absoluteUrl = resolveUrl(href);
+                            if (absoluteUrl && !absoluteUrl.startsWith('javascript:') && !absoluteUrl.startsWith('mailto:') && !absoluteUrl.startsWith('#')) {
+                                a.setAttribute('data-original-href', absoluteUrl);
+                                // Keep href for hover preview
+                                a.href = absoluteUrl;
+                                
+                                // Intercept clicks
+                                a.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const targetUrl = a.getAttribute('data-original-href');
+                                    if (targetUrl) {
+                                        console.log('Link clicked, navigating to:', targetUrl);
+                                        addConsole(`Clicking link: ${targetUrl}`, 'info');
+                                        browserAPI.navigate(targetUrl);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    
+                    // Fix images
+                    content.querySelectorAll('img').forEach(img => {
+                        const src = img.getAttribute('src');
+                        if (src) {
+                            const absoluteSrc = resolveUrl(src);
+                            if (absoluteSrc) {
+                                img.src = absoluteSrc;
+                            }
+                        }
+                        
+                        // Fix srcset
+                        const srcset = img.getAttribute('srcset');
+                        if (srcset) {
+                            const fixedSrcset = srcset.split(',').map(item => {
+                                const parts = item.trim().split(/\s+/);
+                                const srcUrl = parts[0];
+                                const descriptor = parts[1] || '';
+                                const absoluteSrc = resolveUrl(srcUrl);
+                                return absoluteSrc ? `${absoluteSrc} ${descriptor}`.trim() : item;
+                            }).join(', ');
+                            img.setAttribute('srcset', fixedSrcset);
+                        }
+                    });
+                    
+                    // Handle any remaining stylesheets in body (shouldn't be many)
+                    const bodyLinks = content.querySelectorAll('link[rel="stylesheet"]');
+                    for (const link of bodyLinks) {
+                        const href = link.getAttribute('href');
+                        if (href) {
+                            const absoluteHref = resolveUrl(href);
+                            if (absoluteHref) {
+                                try {
+                                    const cssResponse = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(absoluteHref)}`);
+                                    const cssText = await cssResponse.text();
+                                    const style = document.createElement('style');
+                                    // Scope CSS to prevent leakage
+                                    style.textContent = scopeCSS(cssText);
+                                    link.replaceWith(style);
+                                } catch(e) {
+                                    console.error('Error loading CSS:', e);
+                                    link.remove();
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Also scope any inline style tags in body
+                    const bodyStyles = content.querySelectorAll('style');
+                    bodyStyles.forEach(style => {
+                        // Skip if we already added it (from head)
+                        if (!style.textContent.includes('.browser-content')) {
+                            style.textContent = scopeCSS(style.textContent);
+                        }
+                    });
+                    
+                    // Fix script sources
+                    const externalScripts = content.querySelectorAll('script[src]');
+                    if (jsEnabled && externalScripts.length > 0) {
+                        addConsole(`Loading ${externalScripts.length} external scripts...`, 'info');
+                    }
+                    
+                    externalScripts.forEach((script, index) => {
+                        const src = script.getAttribute('src');
+                        if (src) {
+                            const absoluteSrc = resolveUrl(src);
+                            if (absoluteSrc && jsEnabled) {
+                                // Load and execute external script if JS enabled
+                                const newScript = document.createElement('script');
+                                newScript.src = absoluteSrc;
+                                newScript.async = false;
+                                newScript.onload = () => {
+                                    console.log(`✓ External script ${index + 1} loaded:`, absoluteSrc);
+                                };
+                                newScript.onerror = (e) => {
+                                    console.error('Script load error:', absoluteSrc, e);
+                                    addConsole(`✗ Failed to load script: ${absoluteSrc.substring(0, 50)}...`, 'error');
+                                };
+                                script.replaceWith(newScript);
+                            } else {
+                                // Remove script if JS disabled
+                                script.remove();
+                            }
+                        }
+                    });
+                    
+                    // Handle inline scripts
+                    const inlineScripts = content.querySelectorAll('script:not([src])');
+                    if (jsEnabled && inlineScripts.length > 0) {
+                        addConsole(`Executing ${inlineScripts.length} inline scripts...`, 'info');
+                    }
+                    
+                    inlineScripts.forEach((script, index) => {
+                        if (jsEnabled) {
+                            try {
+                                // Create sandboxed context
+                                const scriptContent = script.textContent;
+                                
+                                // Skip empty scripts
+                                if (!scriptContent.trim()) {
+                                    script.remove();
+                                    return;
+                                }
+                                
+                                // Create a new script element to execute in page context
+                                const newScript = document.createElement('script');
+                                
+                                // Wrap script to prevent access to parent
+                                const wrappedScript = `
+                                    (function() {
+                                        try {
+                                            // Block dangerous globals (attempts to override)
+                                            const top = window;
+                                            const parent = window;
+                                            
+                                            // Block storage APIs that could leak data
+                                            const localStorage = undefined;
+                                            const sessionStorage = undefined;
+                                            
+                                            // Execute original script
+                                            ${scriptContent}
+                                        } catch(e) {
+                                            console.error('Script ${index} execution error:', e);
+                                        }
+                                    })();
+                                `;
+                                
+                                newScript.textContent = wrappedScript;
+                                script.replaceWith(newScript);
+                            } catch(e) {
+                                console.error('Script processing error:', e);
+                                script.remove();
+                            }
+                        } else {
+                            // Remove if JS disabled
+                            script.remove();
+                        }
+                    });
+                    
+                    if (jsEnabled) {
+                        addConsole('⚠️ Scripts executed - monitor console for errors', 'info');
+                    }
+                    
+                    // Fix background images in inline styles
+                    content.querySelectorAll('[style*="url"]').forEach(el => {
+                        const style = el.getAttribute('style');
+                        if (style) {
+                            const fixedStyle = style.replace(/url\(['"]?([^'")]+)['"]?\)/g, (match, urlPath) => {
+                                const absoluteUrl = resolveUrl(urlPath);
+                                return absoluteUrl ? `url('${absoluteUrl}')` : match;
+                            });
+                            el.setAttribute('style', fixedStyle);
+                        }
+                    });
+                    
+                    // Convert all position: fixed to absolute in inline styles
+                    content.querySelectorAll('[style*="position"]').forEach(el => {
+                        const style = el.getAttribute('style');
+                        if (style && style.includes('fixed')) {
+                            const fixedStyle = style.replace(/position\s*:\s*fixed/gi, 'position: absolute');
+                            el.setAttribute('style', fixedStyle);
+                            console.log('Converted fixed position to absolute for element:', el.tagName);
+                        }
+                    });
+                    
+                    // Fix video/audio sources
+                    content.querySelectorAll('video, audio').forEach(media => {
+                        const src = media.getAttribute('src');
+                        if (src) {
+                            const absoluteSrc = resolveUrl(src);
+                            if (absoluteSrc) media.src = absoluteSrc;
+                        }
+                        
+                        media.querySelectorAll('source').forEach(source => {
+                            const srcAttr = source.getAttribute('src');
+                            if (srcAttr) {
+                                const absoluteSrc = resolveUrl(srcAttr);
+                                if (absoluteSrc) source.src = absoluteSrc;
+                            }
+                        });
+                    });
+                    
+                    // Fix iframes
+                    content.querySelectorAll('iframe').forEach(iframe => {
+                        const src = iframe.getAttribute('src');
+                        if (src) {
+                            const absoluteSrc = resolveUrl(src);
+                            if (absoluteSrc) iframe.src = absoluteSrc;
+                        }
+                    });
+                    
+                    // Intercept form submissions
+                    content.querySelectorAll('form').forEach(form => {
+                        form.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            const action = form.getAttribute('action');
+                            const targetUrl = resolveUrl(action || url); // Use current URL if no action
+                            if (targetUrl) {
+                                addConsole(`Form submitted to: ${targetUrl}`, 'info');
+                                browserAPI.navigate(targetUrl);
+                            }
+                        });
+                    });
+                    
+                    viewport.innerHTML = '';
+                    viewport.appendChild(content);
+                    
+                    // After insertion, do a final check for escapees
+                    setTimeout(() => {
+                        const escapees = [];
+                        content.querySelectorAll('*').forEach(el => {
+                            const rect = el.getBoundingClientRect();
+                            const containerRect = viewport.getBoundingClientRect();
+                            
+                            // Check if element extends beyond container
+                            if (rect.right > containerRect.right + 50 || 
+                                rect.left < containerRect.left - 50) {
+                                escapees.push({
+                                    tag: el.tagName,
+                                    class: el.className,
+                                    position: window.getComputedStyle(el).position
+                                });
+                            }
+                        });
+                        
+                        if (escapees.length > 0) {
+                            console.warn('Found elements outside container:', escapees);
+                            addConsole(`⚠ ${escapees.length} elements may be outside container`, 'info');
+                        }
+                    }, 100);
+                    
+                    addConsole(`✓ Page loaded successfully with scoped CSS`, 'output');
+                    return true;
+                } catch (error) {
+                    console.error('Navigation error:', error);
+                    viewport.innerHTML = `<div class="loading-indicator" style="color: #f44336;">
+                        <strong>Error loading page</strong><br>
+                        ${error.message}<br><br>
+                        <small>URL: ${url}</small><br>
+                        <small>If this is a search, try the direct URL instead</small>
+                    </div>`;
+                    addConsole(`✗ Error: ${error.message}`, 'error');
+                    return false;
+                }
+            },
+            
+            get_html: function() {
+                const content = viewport.querySelector('.browser-content');
+                return content ? content.innerHTML : '';
+            },
+            
+            get_title: function() {
+                const h1 = viewport.querySelector('h1');
+                return h1 ? h1.textContent : 'Untitled';
+            },
+            
+            find_elements: function(selector) {
+                const content = viewport.querySelector('.browser-content');
+                if (!content) return [];
+                const elements = content.querySelectorAll(selector);
+                return Array.from(elements).map(el => {
+                    if (selector === 'a') {
+                        const text = el.textContent.trim();
+                        const href = el.getAttribute('data-original-href') || el.href;
+                        return text ? `${text} → ${href}` : href;
+                    }
+                    return el.textContent.trim();
+                });
+            },
+            
+            get_current_url: function() {
+                return currentUrl;
+            }
+        };
+        
+        function addConsole(text, type = 'output') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.textContent = text;
+            consoleDiv.appendChild(line);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        function clearConsole() {
+            consoleDiv.innerHTML = '';
+        }
+        
+        async function initPyodide() {
+            try {
+                status.textContent = 'Loading Pyodide...';
+                status.className = 'status loading';
+                
+                pyodide = await loadPyodide();
+                
+                // Install required packages
+                status.textContent = 'Installing packages...';
+                await pyodide.loadPackage(['micropip']);
+                
+                // Expose browser API to Python
+                pyodide.globals.set('browser', browserAPI);
+                
+                // Redirect print to console
+                pyodide.runPython(`
+import sys
+from io import StringIO
+
+class ConsoleOutput:
+    def write(self, text):
+        if text.strip():
+            from js import addConsole
+            addConsole(text.strip(), 'output')
+    def flush(self):
+        pass
+
+sys.stdout = ConsoleOutput()
+sys.stderr = ConsoleOutput()
+                `);
+                
+                status.textContent = '✓ Python ready! Click Run to execute script.';
+                status.className = 'status ready';
+                runBtn.disabled = false;
+                
+            } catch (error) {
+                status.textContent = `✗ Error: ${error.message}`;
+                status.className = 'status error';
+                addConsole(`Initialization error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runPythonCode() {
+            if (!pyodide) return;
+            
+            runBtn.disabled = true;
+            clearConsole();
+            addConsole('>>> Running Python script...', 'info');
+            
+            try {
+                const code = codeEditor.value;
+                await pyodide.runPythonAsync(code);
+                addConsole('>>> Script completed', 'info');
+            } catch (error) {
+                addConsole(`Error: ${error.message}`, 'error');
+            } finally {
+                runBtn.disabled = false;
+            }
+        }
+        
+        // Event listeners
+        runBtn.addEventListener('click', runPythonCode);
+        
+        // URL bar functionality
+        function normalizeUrl(input) {
+            input = input.trim();
+            
+            // If empty, do nothing
+            if (!input) return null;
+            
+            // Check if it already has a protocol
+            if (input.startsWith('http://') || input.startsWith('https://')) {
+                return input; // Return as-is with www and params intact
+            }
+            
+            // If it looks like a URL (has . and no spaces)
+            if (input.includes('.') && !input.includes(' ')) {
+                // Add https:// prefix, preserving everything else (www, params, etc)
+                return 'https://' + input;
+            }
+            
+            // Otherwise, treat as Google search (with params)
+            return `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+        }
+        
+        function handleUrlSubmit() {
+            const input = urlBar.value;
+            const url = normalizeUrl(input);
+            
+            if (url) {
+                browserAPI.navigate(url);
+            }
+        }
+        
+        document.getElementById('goBtn').addEventListener('click', handleUrlSubmit);
+        
+        urlBar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleUrlSubmit();
+            }
+        });
+        
+        urlBar.addEventListener('focus', function() {
+            this.select(); // Select all text when focused
+        });
+        
+        document.getElementById('backBtn').addEventListener('click', () => {
+            if (historyIndex > 0) {
+                historyIndex--;
+                browserAPI.navigate(history[historyIndex], false);
+            }
+        });
+        
+        document.getElementById('forwardBtn').addEventListener('click', () => {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                browserAPI.navigate(history[historyIndex], false);
+            }
+        });
+        
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            if (currentUrl !== 'about:blank') {
+                browserAPI.navigate(currentUrl, false);
+            }
+        });
+        
+        // Initialize
+        window.addConsole = addConsole; // Expose to Pyodide
+        initPyodide();
+    </script>
+</body>
+</html>

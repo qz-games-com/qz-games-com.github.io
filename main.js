@@ -48,17 +48,8 @@ function ToggleSideNav() {
 
 
 function ToggleTranslate() {
-    if(translatemenustatus===false) {    
-        if(document.getElementById('translatescript')) {
-          console.log('already loaded translate')
-        } else {
-          var translatesc = document.createElement('script')
-          translatesc.setAttribute('src', 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit')
-          translatesc.type = 'text/javascript'
-          translatesc.id = "translatescript"
-          document.body.appendChild(translatesc)
-          console.log('appended translate')
-        }
+    if(translatemenustatus===false) {
+        loadGoogleTranslate();
 
         translatemenustatus = true
 
@@ -80,6 +71,23 @@ function ToggleTranslate() {
         }, 450);
 
     }
+}
+
+// Load Google Translate script (used by both manual and auto-translate)
+function loadGoogleTranslate() {
+    if(document.getElementById('translatescript')) {
+        return;
+    }
+    var translatesc = document.createElement('script')
+    translatesc.setAttribute('src', 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit')
+    translatesc.type = 'text/javascript'
+    translatesc.id = "translatescript"
+    document.body.appendChild(translatesc)
+}
+
+// Auto-load translate script if auto-translate is enabled
+if (window.autoTranslate && window.autoTranslate.isAutoTranslateEnabled()) {
+    loadGoogleTranslate();
 }
 
 function ToggleFilter() {

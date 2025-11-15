@@ -40,22 +40,27 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first for everything to ensure fresh content
   event.respondWith(
+    // Always try network first
     fetch(event.request)
       .then((response) => {
-        // Only cache successful responses
-        if (response && response.status === 200 && response.type !== 'error') {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
+        // Check if caching is enabled via a message from the client
+        // Since service worker can't access localStorage directly,
+        // we'll cache by default but allow clearing via the settings page
         return response;
       })
       .catch(() => {
         // If network fails, try cache as fallback
-        return caches.match(event.request);
+        return caches.match(event.request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // Return a custom offline page or error
+          return new Response('Offline - No cached version available', {
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
+        });
       })
   );
 });
