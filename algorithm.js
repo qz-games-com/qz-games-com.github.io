@@ -533,12 +533,29 @@ function loadMoreRecommendations() {
 }
 
 function playGame(game) {
-    if (game.link) {
-        // Redirect to the game page instead of loading in iframe
-        window.location.href = game.link;
-    } else if (game.key) {
-        // Fallback: construct link from game key
-        window.location.href = `Games/${game.key}.html`;
+    let gameLink = game.link;
+
+    // Construct proper game link based on type
+    if (game.type === 'html') {
+        gameLink = `Games/game.html?game=${game.link}&type=html&name=${game.name.toLowerCase()}`;
+    } else if (game.type === 'buckshot') {
+        gameLink = `Games/Buckshot-Roulette.html`;
+    } else if (game.type === 'unity') {
+        gameLink = `Games/game.html?game=${game.link}&type=unity&name=${game.name.toLowerCase()}`;
+    } else if (game.type === 'flash') {
+        gameLink = `Games/game.html?game=${game.link}&type=flash&name=${game.name.toLowerCase()}`;
+    } else if (game.key && !game.link) {
+        // Fallback: if no link but has key, assume html type
+        gameLink = `Games/game.html?game=${game.key}&type=html&name=${game.name.toLowerCase()}`;
+    }
+
+    if (gameLink) {
+        // Redirect the parent page (or current page if not in iframe)
+        if (window.parent && window.parent !== window) {
+            window.parent.location.href = gameLink;
+        } else {
+            window.location.href = gameLink;
+        }
     } else {
         console.error(`No link available for ${game.name}`);
     }

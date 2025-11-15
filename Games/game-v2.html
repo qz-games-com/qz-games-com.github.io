@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Qz Games | Game</title>
+        <link rel="icon" href="../Q.png">
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="../gamecss.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('../service-worker.js');
+            }
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+        <scripts src="../GlobalSettings.js"></scripts>
+        <script src="../useractivity.js"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J246XWP5WQ"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-J246XWP5WQ');
+        </script>
+        <style>
+            body {
+                background-color: rgb(44, 44, 44);
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                overflow: hidden;
+            }
+            .gameiframe {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                margin: 0;
+            }
+            .maingamesstuff {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                
+            }
+            iframe {
+                border: none;
+            }
+            .optiongamemain {
+                width: 80px;
+                height: 35px;
+                position: fixed;
+                bottom: 13px;
+                backdrop-filter: blur(5px);
+                left: 13px;
+                background-color: rgba(36, 36, 36, 0.658);
+                border-radius: 30px;
+                border: 2px solid rgb(66, 66, 66);
+                z-index: 5;
+            }
+            #virtual-cursor {
+                position: absolute; width: 14px; height: 14px; pointer-events: none;
+                border: 2px solid white; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,.6);
+                transform: translate(-50%, -50%); z-index: 9999; display: none;
+            }
+            .hide-native-cursor { cursor: none; }
+
+            /* ===== V2 Loading Screen Styles ===== */
+            .loading-container-v2 {
+                position: fixed;
+                inset: 0;
+                background-color: rgb(32, 32, 32);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                padding: 40px;
+                transition: opacity 0.8s ease;
+            }
+
+            /* Subtle particles background */
+            .particles-bg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                opacity: 0.3;
+            }
+
+            .particle {
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                animation: float-particle 20s infinite ease-in-out;
+            }
+
+            .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+            .particle:nth-child(2) { left: 30%; animation-delay: 3s; }
+            .particle:nth-child(3) { left: 50%; animation-delay: 6s; }
+            .particle:nth-child(4) { left: 70%; animation-delay: 2s; }
+            .particle:nth-child(5) { left: 85%; animation-delay: 8s; }
+
+            @keyframes float-particle {
+                0%, 100% { transform: translateY(100vh); opacity: 0; }
+                50% { transform: translateY(-10vh); opacity: 1; }
+            }
+
+            /* Gradient Background */
+            .gradient-bg-v2 {
+                position: absolute;
+                top: 10%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.2), transparent);
+                filter: blur(40px);
+                z-index: 1;
+                transition: opacity 0.5s ease;
+            }
+
+            /* Main Content */
+            .loading-content-v2 {
+                position: relative;
+                z-index: 10;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Hide elements initially */
+            .logo-container-v2,
+            .game-cover-container-v2 {
+                position: relative;
+                z-index: 2;
+            }
+
+            .logo-glow {
+                display: none;
+            }
+
+            .logo-img-v2 {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 30px;
+            }
+
+            /* Game Cover */
+            .game-cover-container-v2 {
+                margin-bottom: 30px;
+            }
+
+            .cover-shine {
+                display: none;
+            }
+
+            .game-cover-v2 {
+                width: 150px;
+                height: 150px;
+                border-radius: 12px;
+                border: 3px solid #404040;
+                object-fit: cover;
+                background-color: #2a2a2a;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+                transition: opacity 0.5s ease;
+            }
+
+            /* Game Title */
+            .game-title-v2 {
+                font-size: 32px;
+                color: #e0e0e0;
+                font-family: Arial, Helvetica, sans-serif;
+                text-align: center;
+                margin-bottom: 40px;
+                text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
+                z-index: 2;
+                position: relative;
+                transition: opacity 0.5s ease;
+            }
+
+            .title-text::after {
+                content: attr(data-text);
+            }
+
+            .title-glitch {
+                display: none;
+            }
+
+            /* Loading Section */
+            .loading-section-v2 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 40px;
+                z-index: 2;
+            }
+
+            /* Simple Spinner */
+            .loader-v2 {
+                width: 50px;
+                height: 50px;
+                border: 4px solid #404040;
+                border-top: 4px solid #e0e0e0;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-bottom: 20px;
+            }
+
+            .orbit, .orbit-2, .orbit-3, .core {
+                display: none;
+            }
+
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
+            /* Loading Text */
+            .loading-text-v2 {
+                color: #b0b0b0;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .loading-percentage {
+                color: #e0e0e0;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            /* Progress Bar */
+            .progress-container-v2 {
+                width: 100%;
+                max-width: 500px;
+                position: relative;
+                z-index: 2;
+                margin-bottom: 30px;
+            }
+
+            .progress-track {
+                width: 100%;
+                height: 8px;
+                background-color: #404040;
+                border-radius: 0px;
+                overflow: hidden;
+            }
+
+            .progress-fill-v2 {
+                width: 0%;
+                height: 100%;
+                background-color: #e0e0e0;
+                transition: width 0.3s ease;
+            }
+
+            .progress-glow {
+                display: none;
+            }
+
+            /* Action Buttons */
+            .action-buttons-v2 {
+                display: flex;
+                gap: 10px;
+                z-index: 2;
+            }
+
+            .action-btn-v2 {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 10px 20px;
+                background-color: #3a3a3a;
+                border: 2px solid #505050;
+                border-radius: 8px;
+                color: #e0e0e0;
+                font-size: 14px;
+                font-family: Arial, Helvetica, sans-serif;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .action-btn-v2::before {
+                display: none;
+            }
+
+            .action-btn-v2:hover {
+                background-color: #444;
+                border-color: #606060;
+                transform: translateY(-1px);
+            }
+
+            .action-btn-v2 .material-icons {
+                font-size: 18px;
+            }
+
+            .skip-btn, .home-btn {
+                background-color: #3a3a3a;
+                border: 2px solid #505050;
+                color: #e0e0e0;
+            }
+
+            /* Error Message */
+            .error-message-v2 {
+                position: fixed;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: none;
+                padding: 15px 30px;
+                background-color: #3a3a3a;
+                border: 2px solid #606060;
+                border-radius: 8px;
+                color: #ff6b6b;
+                font-size: 14px;
+                z-index: 3;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .game-title-v2 {
+                    font-size: 24px;
+                }
+
+                .game-cover-v2 {
+                    width: 120px;
+                    height: 120px;
+                }
+
+                .action-buttons-v2 {
+                    flex-direction: column;
+                    width: 100%;
+                    max-width: 200px;
+                }
+
+                .action-btn-v2 {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!--div id="virtual-cursor"></div-->
+
+        <div class="loading-container-v2" id="loadingcont">
+            <!-- Subtle Background Particles -->
+            <div class="particles-bg">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+
+            <!-- Gradient Background -->
+            <div class="gradient-bg-v2" id="gradientBg"></div>
+
+            <!-- Main Content -->
+            <div class="loading-content-v2">
+                <!-- Logo -->
+                <div class="logo-container-v2">
+                    <img src="../Q.png" alt="logo" class="logo-img-v2"/>
+                </div>
+
+                <!-- Game Cover -->
+                <div class="game-cover-container-v2">
+                    <img class="game-cover-v2" id="gameCover" src="" alt="Game Cover">
+                </div>
+
+                <!-- Game Title -->
+                <h1 class="game-title-v2" id="gameTitle"></h1>
+
+                <!-- Loading Animation -->
+                <div class="loading-section-v2">
+                    <div class="loader-v2"></div>
+                    <p class="loading-text-v2">Loading your game</p>
+                    <p class="loading-percentage" id="loadingPercentage">0%</p>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container-v2">
+                    <div class="progress-track">
+                        <div class="progress-fill-v2" id="progbar"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons-v2">
+                    <button class="action-btn-v2 skip-btn" onclick="doneloading()">
+                        <span class="material-icons">fast_forward</span>
+                        <span>Skip</span>
+                    </button>
+                    <a href="../index.html" style="text-decoration: none;">
+                        <button class="action-btn-v2 home-btn">
+                            <span class="material-icons">home</span>
+                            <span>Home</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message-v2" id="errorMessage">
+                Game not found. Please check the URL parameter.
+            </div>
+        </div>
+
+        <div class="reminderclose" id="reminderclose">
+            <div style="top: 50%; position: absolute; left: 50%; transform: translate(-50%, -50%);">
+                <span class="material-icons notranslate" style="font-size: 80px; text-shadow: 0px 8px 5px rgb(12, 12, 12); left: 50%; position: relative; transform: translateX(-50%); color: white;">
+                    save
+                </span>
+                <h1 style="text-align: center; color: white; font-size: 25px;">Be Careful!</h1>
+                <h1 style="text-align: center; color: white; font-size: 18px;">Some games may not save when not closed properly.</h1>
+
+            </div>
+            
+        </div>
+        <div id="menusforgame">
+        <style>
+          
+        </style>
+         <div class="settings-container" id="settings-container">
+
+            <div class="header">
+                <span class="material-icons">sports_esports</span>
+                <div>
+                   <h1>Controller Settings</h1>
+                    <p id="controllerstatus" style="margin-top: -8px;" class="nonec">No Controller Connected</p> 
+                </div>
+                
+            </div>
+    
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('general')">
+                    <span class="material-icons" style="font-size: 18px;">settings</span>
+                    General
+                </button>
+                <button class="tab-button" onclick="switchTab('controller')">
+                    <span class="material-icons" style="font-size: 18px;">gamepad</span>
+                    Controller Bindings
+                </button>
+            </div>
+    
+            <div class="tabs-container">
+                <div class="tab-content active" id="general-tab">
+                    <div class="section">
+                        <h3>
+                            <span class="material-icons">videocam</span>
+                            Camera & Movement
+                        </h3>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label">Camera Sensitivity</div>
+                            <div class="setting-control">
+                                <input type="range" id="sensitivity" min="100" max="2000" step="50" value="900" oninput="window.updateControllerConfig({ sensitivity: document.getElementById('sensitivity').value });">
+                                <div class="value-display" id="sensitivity-value">900</div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label">Stick Deadzone</div>
+                            <div class="setting-control">
+                                <input type="range" id="deadzone" min="0.05" max="0.5" step="0.01" value="0.18" oninput="window.updateControllerConfig({ sensitivity: document.getElementById('deadzone').value });">
+                                <div class="value-display" id="deadzone-value">0.18</div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-row">
+                            <div class="setting-label">Invert Y-Axis</div>
+                            <div class="setting-control">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="invertY">
+                                    <label for="invertY">Enable</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="tab-content" id="controller-tab">
+                    <div class="section">
+                        <h3>
+                            <span class="material-icons">gamepad</span>
+                            Controller to Keyboard Bindings
+                        </h3>
+                        <p>Click "Rebind" next to any controller button, then press the keyboard key you want to bind it to.</p>
+                        
+                        <div class="bindings-grid" id="controller-bindings">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="action-buttons">
+                <button class="action-button save-btn" onclick="saveSettings()">
+                    <span class="material-icons" style="font-size: 18px;">save</span>
+                    Save Settings
+                </button>
+                <button class="action-button reset-btn" onclick="toggleControllerSettings()">
+                    <span class="material-icons" style="font-size: 18px;">close</span>
+                   Close
+                </button>
+                <button class="action-button reset-btn" onclick="resetToDefaults()">
+                    <span class="material-icons" style="font-size: 18px;">refresh</span>
+                    Reset to Defaults
+                </button>
+            </div>
+
+        </div>
+        <div id="bgcontroller" style="opacity: 0; display: none; width: 100%; height: 100%; backdrop-filter: blur(5px); background-color: rgba(27, 27, 27, 0.685); position: fixed; z-index: 9;"></div>
+
+        <div class="notificationn" id="notificationn"></div>
+    
+    
+        </div>
+        <div id="notification-container"></div>
+        <div id="optionsig">
+            <div class="optionsettings" id="btnsetings" onclick="toggleControllerSettings()">
+                <span class="material-icons notranslate">
+                    settings
+                </span>
+            </div>
+
+            <div class="optiongamemain" id="optiongamemain">
+                <span class="material-icons notranslate" onclick="Backhome()" style="float: left; color: white; transform: translateY(-50%); cursor: pointer; position: relative; top: 50%; left: 10px;">
+                    arrow_back
+                </span>
+                <span class="material-icons notranslate" onclick="ToggleFullscreen()" style="float: left; color: white; transform: translateY(-50%); cursor: pointer; position: relative; top: 50%; margin-left: 20px;">
+                    fullscreen
+                </span>
+            </div>
+        </div>
+        <div id="maingamestuff">
+            <iframe src="" class="gameiframe" id="gameiframe" allowfullscreen></iframe>
+        </div>
+        <script src="../GameMain.js">
+            
+        </script>
+        <script src="../GameInput.js"></script>
+        <script src="../GlobalSettings.js"></script>
+
+        <script src="../errorgen.js"></script>
+        
+    </body>
+</html>
