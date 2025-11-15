@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.0.2/workbox-sw.js');
 
 // Update this version number whenever you want to force cache refresh
-const CACHE_VERSION = 'v1.0.1';
+const CACHE_VERSION = 'v1.0.2';
 const CACHE_NAME = `qz-games-${CACHE_VERSION}`;
 
 // List of cache names to keep (only current version)
