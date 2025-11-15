@@ -31,6 +31,13 @@
   </url>
 
   <url>
+    <loc>https://qz-games.github.io/terms-of-service.html</loc>
+    <lastmod>2025-01-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
     <loc>https://qz-games.github.io/Games01/lol</loc>
     <lastmod>2025-01-14</lastmod>
     <changefreq>monthly</changefreq>
