@@ -873,12 +873,16 @@
         const gameUrl = urlParams.get('game');
         const gameType = urlParams.get('type');
 
-        // Fetch game data from games.json
+        if(gameType==="flash") {
+            document.getElementById('maingamestuff').style.display = "block"
+        } else {
+            document.getElementById('maingamestuff').style.display = "none"
+        }
+
         if (gameName && gameName.trim() !== '') {
             fetch('../games.json')
                 .then(response => response.json())
                 .then(gamesData => {
-                    // Search for the game by name (case-insensitive)
                     const gameKey = Object.keys(gamesData).find(key =>
                         key.toLowerCase() === gameName.toLowerCase()
                     );
@@ -888,13 +892,11 @@
                         const displayName = gameData.name;
                         const coverPath = `../covers/${gameData.cover}`;
 
-                        // Update HUD elements
                         const gameNameEl = document.getElementById('game-name');
                         const hudCoverEl = document.getElementById('hud-cover');
                         if (gameNameEl) gameNameEl.textContent = displayName;
                         if (hudCoverEl) hudCoverEl.src = coverPath;
 
-                        // Update loading screen elements
                         const loadingGameNameEl = document.getElementById('loading-game-name');
                         const loadingCoverEl = document.getElementById('loading-cover');
                         const gameCoverEl = document.getElementById('gameCover');
@@ -902,10 +904,8 @@
                         if (loadingCoverEl) loadingCoverEl.src = coverPath;
                         if (gameCoverEl) gameCoverEl.src = coverPath;
 
-                        // Update page title
                         document.title = 'Qz Games | ' + displayName;
                     } else {
-                        // Fallback: use the raw name from URL if not found in JSON
                         const gameNameEl = document.getElementById('game-name');
                         const loadingGameNameEl = document.getElementById('loading-game-name');
                         if (gameNameEl) gameNameEl.textContent = gameName;
@@ -915,7 +915,6 @@
                 })
                 .catch(error => {
                     console.error('Error loading game data:', error);
-                    // Fallback: use the raw name from URL
                     const gameNameEl = document.getElementById('game-name');
                     const loadingGameNameEl = document.getElementById('loading-game-name');
                     if (gameNameEl) gameNameEl.textContent = gameName;
@@ -924,11 +923,8 @@
                 });
         }
 
-        // Don't set iframe.src directly - let GameMain.js handle it
-        // This prevents Flash games from being downloaded instead of played
-        // GameMain.js initGame() will properly load Flash games with Ruffle
+       
     </script>
-       <!-- Scripts from original game.html -->
     <script src="../GameMain.js"></script>
     <script src="../GameInput.js"></script>
     <script src="../GlobalSettings.js"></script>
