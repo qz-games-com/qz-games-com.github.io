@@ -873,11 +873,7 @@
         const gameUrl = urlParams.get('game');
         const gameType = urlParams.get('type');
 
-        if(gameType==="flash") {
-            document.getElementById('maingamestuff').style.display = "block"
-        } else {
-            document.getElementById('maingamestuff').style.display = "none"
-        }
+      
 
         if (gameName && gameName.trim() !== '') {
             fetch('../games.json')
