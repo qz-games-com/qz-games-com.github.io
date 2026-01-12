@@ -752,12 +752,16 @@
             document.body.appendChild(overlay);
         }
 
-        // Hide loading overlay
-        function doneloading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-                overlay.classList.add('hidden');
-            }
+        // Hide loading overlay - will be overridden by GameMain.js
+        // This is just a fallback in case GameMain.js doesn't load
+        if (typeof window.doneloading === 'undefined') {
+            window.doneloading = function() {
+                const overlay = document.getElementById('loading-overlay') || document.getElementById('loadingcont');
+                if (overlay) {
+                    overlay.classList.add('hidden');
+                    overlay.style.display = 'none';
+                }
+            };
         }
 
         // Toggle fullscreen
@@ -787,16 +791,7 @@
             }
         }
 
-        // Update game name and cover when iframe loads
-        const gameIframe = document.getElementById('gameiframe');
-        if (gameIframe) {
-            gameIframe.addEventListener('load', function() {
-                // Auto-hide loading screen after iframe loads
-                setTimeout(doneloading, 800);
-            });
-        }
-
-        // Simulate loading progress
+        // Simulate loading progress (visual feedback only)
         let progress = 0;
         const progressInterval = setInterval(() => {
             progress += Math.random() * 15;
@@ -809,6 +804,9 @@
                 progressFill.style.width = progress + '%';
             }
         }, 200);
+
+        // Don't call doneloading() from here - let GameMain.js handle it
+        // GameMain.js has the proper elements setup and will call doneloading() when ready
 
         // Get game info from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
