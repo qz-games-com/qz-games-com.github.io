@@ -114,9 +114,10 @@
         .player-info {
             flex: 1;
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 2px;
             min-width: 0;
         }
 
@@ -846,14 +847,53 @@
         const gameUrl = urlParams.get('game');
         const gameType = urlParams.get('type');
 
-        // Only update elements if parameters are provided
+        // Fetch game data from games.json
         if (gameName && gameName.trim() !== '') {
-            const gameNameEl = document.getElementById('game-name');
-            const loadingGameNameEl = document.getElementById('loading-game-name');
+            fetch('../games.json')
+                .then(response => response.json())
+                .then(gamesData => {
+                    // Search for the game by name (case-insensitive)
+                    const gameKey = Object.keys(gamesData).find(key =>
+                        key.toLowerCase() === gameName.toLowerCase()
+                    );
 
-            if (gameNameEl) gameNameEl.textContent = gameName;
-            if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
-            document.title = 'Qz Games | ' + gameName;
+                    if (gameKey && gamesData[gameKey]) {
+                        const gameData = gamesData[gameKey];
+                        const displayName = gameData.name;
+                        const coverPath = `../covers/${gameData.cover}`;
+
+                        // Update HUD elements
+                        const gameNameEl = document.getElementById('game-name');
+                        const hudCoverEl = document.getElementById('hud-cover');
+                        if (gameNameEl) gameNameEl.textContent = displayName;
+                        if (hudCoverEl) hudCoverEl.src = coverPath;
+
+                        // Update loading screen elements
+                        const loadingGameNameEl = document.getElementById('loading-game-name');
+                        const gameCoverEl = document.getElementById('gameCover');
+                        if (loadingGameNameEl) loadingGameNameEl.textContent = displayName;
+                        if (gameCoverEl) gameCoverEl.src = coverPath;
+
+                        // Update page title
+                        document.title = 'Qz Games | ' + displayName;
+                    } else {
+                        // Fallback: use the raw name from URL if not found in JSON
+                        const gameNameEl = document.getElementById('game-name');
+                        const loadingGameNameEl = document.getElementById('loading-game-name');
+                        if (gameNameEl) gameNameEl.textContent = gameName;
+                        if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
+                        document.title = 'Qz Games | ' + gameName;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading game data:', error);
+                    // Fallback: use the raw name from URL
+                    const gameNameEl = document.getElementById('game-name');
+                    const loadingGameNameEl = document.getElementById('loading-game-name');
+                    if (gameNameEl) gameNameEl.textContent = gameName;
+                    if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
+                    document.title = 'Qz Games | ' + gameName;
+                });
         }
 
         // Don't set iframe.src directly - let GameMain.js handle it
