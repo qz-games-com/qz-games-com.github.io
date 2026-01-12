@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Qz Games | Unreleased</title>
+    <meta name="theme-color" content="#0d0d0d">
+    <link rel="icon" href="./Q.png">
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --text: #e9ecf5;
+            --muted: rgba(233, 236, 245, 0.7);
+            --sidenav-bg-start: rgba(26, 26, 26, 0.66);
+            --sidenav-bg-end: #0d0d0d;
+            --sidenav-border: rgba(255, 255, 255, 0.1);
+            --sidenav-icon-btn-bg: rgba(255, 255, 255, 0.05);
+            --sidenav-icon-btn-bg-hover: rgba(255, 255, 255, 0.1);
+            --sidenav-icon-btn-border: rgba(255, 255, 255, 0.1);
+            --sidenav-icon-btn-border-hover: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 45%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unlock-card {
+            width: min(520px, 92vw);
+            padding: 28px;
+            border-radius: 18px;
+            border: 1px solid var(--sidenav-border);
+            background: linear-gradient(180deg, var(--sidenav-bg-start) 0%, var(--sidenav-bg-end) 100%);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            text-align: center;
+        }
+
+        .unlock-title {
+            font-size: 1.4rem;
+            margin: 0 0 8px;
+            letter-spacing: 0.4px;
+        }
+
+        .unlock-subtitle {
+            margin: 0 0 22px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--sidenav-icon-btn-border);
+            background: var(--sidenav-icon-btn-bg);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .code-input:focus {
+            border-color: var(--sidenav-icon-btn-border-hover);
+            background: var(--sidenav-icon-btn-bg-hover);
+        }
+
+        .enter-button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--sidenav-icon-btn-border);
+            background: var(--sidenav-icon-btn-bg);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .enter-button:hover {
+            border-color: var(--sidenav-icon-btn-border-hover);
+            background: var(--sidenav-icon-btn-bg-hover);
+            transform: translateY(-1px);
+        }
+
+        .note {
+            margin-top: 18px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            min-height: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="unlock-card">
+        <h1 class="unlock-title">Unreleased Games</h1>
+        <p class="unlock-subtitle">Enter your access code to unlock upcoming titles.</p>
+        <input class="code-input" id="code-input" type="text" placeholder="Enter code" aria-label="Access code">
+        <button class="enter-button" id="enter-button" type="button">Enter</button>
+        <div class="status" id="status"></div>
+        <div class="note">Access codes are provided to early testers.</div>
+    </div>
+    <script>
+        const codeInput = document.getElementById('code-input');
+        const enterButton = document.getElementById('enter-button');
+        const status = document.getElementById('status');
+
+        function setStatus(message) {
+            status.textContent = message;
+        }
+
+        async function handleEnter() {
+            const key = codeInput.value.trim();
+            if (!key) {
+                setStatus('Enter a code to continue.');
+                return;
+            }
+
+            try {
+                const response = await fetch('./gkeys.json', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error('Unable to load keys.');
+                }
+                const data = await response.json();
+                const encodedUrl = data[key];
+                if (!encodedUrl) {
+                    setStatus('Invalid code. Try again.');
+                    return;
+                }
+                const decodedUrl = atob(encodedUrl);
+                window.location.href = decodedUrl;
+            } catch (error) {
+                setStatus('Unable to verify code right now.');
+            }
+        }
+
+        enterButton.addEventListener('click', handleEnter);
+        codeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                handleEnter();
+            }
+        });
+    </script>
+</body>
+</html>
