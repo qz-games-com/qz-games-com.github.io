@@ -11,6 +11,7 @@
         <meta name="title" content="Qz Games" />
         <meta name="author" content="Qz Games" />
 
+        <!-- Preconnect to external domains for better performance -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="preconnect" href="https://www.googletagmanager.com">
@@ -18,6 +19,8 @@
         <link rel="stylesheet" href="./main.css">
 
         <link rel="stylesheet" href="./animations.css">
+        <!-- Redesigned Side Navigation Styles -->
+        <link rel="stylesheet" href="./sidenav-dev.css">
         <link id="themecss" rel="stylesheet" href="./styles/default.css" >
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
@@ -61,6 +64,7 @@
         </script>
         
         <script src="./cookieshandle.js"></script>
+        <!-- Minified bundle (provides issuenote, closeNote, navigation functions) -->
         <script src="./themeshandler.js"></script>
         <script>
             window.addEventListener('load', function () {
@@ -76,7 +80,7 @@
         <script defer src="./errorgen.js"></script>
 
 
-       
+        <!--Blocking-->
         <script async src="https://fundingchoicesmessages.google.com/i/pub-1654900800235927?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
         <script>(function(){'use strict';function aa(a){var b=0;return function(){return b<a.length?{done:!1,value:a[b++]}:{done:!0}}}var ba=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,c){if(a==Array.prototype||a==Object.prototype)return a;a[b]=c.value;return a};
             function ca(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var c=a[b];if(c&&c.Math==Math)return c}throw Error("Cannot find global object");}var da=ca(this);function l(a,b){if(b)a:{var c=da;a=a.split(".");for(var d=0;d<a.length-1;d++){var e=a[d];if(!(e in c))break a;c=c[e]}a=a[a.length-1];d=c[a];b=b(d);b!=d&&b!=null&&ba(c,a,{configurable:!0,writable:!0,value:b})}}
@@ -121,25 +125,26 @@
 
     <body>
 
+        <!--Background Container-->
         <div id="backgroundarea" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; overflow: hidden;"></div>
 
+        <!--overlay-->
 
         <div class="discordlogo" onclick="window.open('https://discord.gg/9ZYn9bf4SU')" role="button" aria-label="Join our Discord server" tabindex="0">
+            <!-- Discord Callout Tooltip -->
             <div class="discord-callout" id="discordCallout">
                 <span class="material-icons discord-callout-close" id="discordCalloutClose" onclick="event.stopPropagation(); closeDiscordCallout();" role="button" aria-label="Close Discord callout" tabindex="0">
                     close
                 </span>
                 <div class="discord-callout-header">Join Our Discord!</div>
                 <div class="discord-callout-content">
-                    Get notified of updates and chat with others!
-                </div>
-                <!--div class="discord-callout-content">
                     Get notified of updates, chat with others, and access new games before release!
-                </div-->
+                </div>
                 <div class="discord-callout-arrow"></div>
             </div>
 
             <?xml version="1.0" encoding="UTF-8"?>
+            <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
             <svg style="left: 50%; top:50%; transform: translate(-50%, -50%); position: relative;" width="30px" height="30px" viewBox="0 -28.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" aria-hidden="true">
                 <g>
                     <path d="M216.856339,16.5966031 C200.285002,8.84328665 182.566144,3.2084988 164.041564,0 C161.766523,4.11318106 159.108624,9.64549908 157.276099,14.0464379 C137.583995,11.0849896 118.072967,11.0849896 98.7430163,14.0464379 C96.9108417,9.64549908 94.1925838,4.11318106 91.8971895,0 C73.3526068,3.2084988 55.6133949,8.86399117 39.0420583,16.6376612 C5.61752293,67.146514 -3.4433191,116.400813 1.08711069,164.955721 C23.2560196,181.510915 44.7403634,191.567697 65.8621325,198.148576 C71.0772151,190.971126 75.7283628,183.341335 79.7352139,175.300261 C72.104019,172.400575 64.7949724,168.822202 57.8887866,164.667963 C59.7209612,163.310589 61.5131304,161.891452 63.2445898,160.431257 C105.36741,180.133187 151.134928,180.133187 192.754523,160.431257 C194.506336,161.891452 196.298154,163.310589 198.110326,164.667963 C191.183787,168.842556 183.854737,172.420929 176.223542,175.320965 C180.230393,183.341335 184.861538,190.991831 190.096624,198.16893 C211.238746,191.588051 232.743023,181.531619 254.911949,164.955721 C260.227747,108.668201 245.831087,59.8662432 216.856339,16.5966031 Z M85.4738752,135.09489 C72.8290281,135.09489 62.4592217,123.290155 62.4592217,108.914901 C62.4592217,94.5396472 72.607595,82.7145587 85.4738752,82.7145587 C98.3405064,82.7145587 108.709962,94.5189427 108.488529,108.914901 C108.508531,123.290155 98.3405064,135.09489 85.4738752,135.09489 Z M170.525237,135.09489 C157.88039,135.09489 147.510584,123.290155 147.510584,108.914901 C147.510584,94.5396472 157.658606,82.7145587 170.525237,82.7145587 C183.391518,82.7145587 193.761324,94.5189427 193.539891,108.914901 C193.539891,123.290155 183.391518,135.09489 170.525237,135.09489 Z" fill="white" fill-rule="nonzero">
@@ -151,7 +156,7 @@
       
 
         <!--Widgetfornav-->
-        
+
         <div id="reccomendationsContainer" class="reccont">
             <iframe id="reciframe" src=""></iframe>
         </div>
@@ -176,26 +181,17 @@
             </div>
         </div>
 
-        <!--NOTIFICATION-->
+        <!--NOTAFICATION-->
 
-        <div id="notafication" class="notafication-v2">
-            <button id="closenote" class="notification-close" aria-label="Close notification">
-                <span class="material-icons" style="margin-top:3px; margin-left: -1.5px;">close</span>
-            </button>
-            <div class="notification-top">
-                <div class="notification-icon">
-                    <img id="cookiepic" src="./cookieimg.png" alt="Cookie icon"/>
+        <div id="notafication" class="notafication">
+            <div class="notaficationin">
+                <img id="cookiepic" src="./cookieimg.png"/>
+                <div class="notaficationinn">
+                    <h1 id="titlenote">We Use Cookies</h1>
+                    <p id="descnote">By using our site you agree to cookies.</p>
+                    <a href="./privacy-policy.html" class="cookie-learn-more" aria-label="Learn more about our cookie policy">Learn More</a>
+                    <span id="closenote" class="material-icons notranslate">close</span>
                 </div>
-                <div class="notification-content">
-                    <h2 id="titlenote" class="notification-title">We Use Cookies</h2>
-                    <p id="descnote" class="notification-desc">By using our site you agree to cookies for analytics and personalization.</p>
-                </div>
-            </div>
-            <div id="notification-bottom" class="notification-bottom" style="display: none;">
-                <a href="./privacy-policy.html" class="notification-btn" aria-label="Learn more about our cookie policy">
-                    <span class="material-icons">info</span>
-                    Learn More
-                </a>
             </div>
         </div>
 
@@ -206,8 +202,8 @@
             
             <div style="width: 100%; position: relative; height: 70px;"> 
 
-                <span class="closefilterw " onclick="ToggleFilter()" style="" role="button" aria-label="Close filter menu" tabindex="0">
-                    <span class="material-icons notranslate">close</span>
+                <span class="material-icons closefilterw notranslate" onclick="ToggleFilter()" style="" role="button" aria-label="Close filter menu" tabindex="0">
+                    close
                 </span>
 
             </div>
@@ -350,16 +346,12 @@
                             <span class="material-icons menu-icon">description</span>
                             <span class="menu-text">Terms of Service</span>
                         </a>
-                        <a href="https://forms.gle/u3R4h8821uH3c2m5A" class="menu-item menu-item-secondary">
-                            <span class="material-icons menu-icon">file_copy</span>
-                            <span class="menu-text">Game takedown Request</span>
-                        </a>
                     </div>
 
                     <!-- Community Section -->
                     <div class="menu-section">
                         <h3 class="menu-section-title">Community</h3>
-                        <a href="https://forms.gle/ZePL2go47CXFLnbH9" class="menu-item menu-item-highlight" style=" background: linear-gradient(135deg, rgb(70, 20, 70)), rgb(73, 9, 73);border-color: rgb(143, 17, 143);" target="_blank" rel="noopener">
+                        <a href="https://forms.gle/ZePL2go47CXFLnbH9" class="menu-item menu-item-highlight" target="_blank" rel="noopener">
                             <span class="material-icons menu-icon">add_circle</span>
                             <span class="menu-text">Request a Game</span>
                             <span class="menu-badge">New</span>
@@ -448,16 +440,9 @@
 
 
         <!--Main-->
-
-        <div class="featured-section" style="margin-top: 15px;">
-            <div class="carousel-container" id="carouselContainer">
-                <div class="loading">Loading featured games...</div>
-            </div>
-        </div>
-
-        <!-- Advertisement -->
-        <div class="adtop">
-            <span class="ad-label">Advertisement</span>
+        
+        <!-- toppage -->
+         <div class="adtop">
             <ins class="adsbygoogle"
                 style="display:block; width: 100%; max-height: 75px; position: relative;"
                 data-ad-client="ca-pub-1654900800235927"
@@ -465,11 +450,17 @@
                 data-ad-format="auto"
                 data-full-width-responsive="true">
             </ins>
-        </div>
+         </div>
         <script>
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-
+        <br>
+        <div class="featured-section">
+            <div class="carousel-container" id="carouselContainer">
+                <div class="loading">Loading featured games...</div>
+            </div>
+        </div>
+<br>
         <div class="searchoptions" id="searchoptions" >
             <input id="gamesearch" placeholder="Search the site..." type="text" name="text" class="inputSEARCH" aria-label="Search games">
             <div onclick="ToggleFilter()" class="filterbutton" role="button" aria-label="Open filter options" tabindex="0">
@@ -483,8 +474,9 @@
 
         </div>
 
-    
+    </body>
 
+    <!-- Additional scripts loaded after page content -->
     <script defer src="./accessibility.js"></script>
     <script defer src="./discord-callout.js"></script>
     <script defer src="./useractivity.js"></script>
@@ -501,5 +493,5 @@
             loadSelectedBackground();
         });
     </script>
-    </body>
+
 </html>

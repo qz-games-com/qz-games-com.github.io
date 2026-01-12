@@ -65,6 +65,55 @@
     --note-bg: rgba(52, 77, 55, 0.849);
     --note-border: rgb(54, 75, 57);
     --note-shadow: rgb(29, 43, 29);
+
+    --notification-bg-start: rgba(40, 40, 40, 0.95);
+    --notification-bg-end: rgba(25, 25, 25, 0.95);
+    --notification-border: rgba(255, 255, 255, 0.15);
+    --notification-accent-start: #4A9EFF;
+    --notification-accent-mid: #7289DA;
+    --notification-accent-end: #9B59B6;
+    --notification-btn-bg-start: rgba(74, 158, 255, 0.2);
+    --notification-btn-bg-end: rgba(114, 137, 218, 0.2);
+    --notification-btn-border: rgba(74, 158, 255, 0.3);
+    --notification-btn-bg-hover-start: rgba(74, 158, 255, 0.3);
+    --notification-btn-bg-hover-end: rgba(114, 137, 218, 0.3);
+    --notification-btn-border-hover: rgba(74, 158, 255, 0.5);
+
+    --sidenav-bg-start: rgba(26, 26, 26, 0.66);
+    --sidenav-bg-end: #0d0d0d;
+    --sidenav-border: rgba(255, 255, 255, 0.1);
+    --sidenav-header-bg-start: #2a2a2a;
+    --sidenav-header-bg-end: #1a1a1a;
+    --sidenav-icon-btn-bg: rgba(255, 255, 255, 0.05);
+    --sidenav-icon-btn-bg-hover: rgba(255, 255, 255, 0.1);
+    --sidenav-icon-btn-border: rgba(255, 255, 255, 0.1);
+    --sidenav-icon-btn-border-hover: rgba(255, 255, 255, 0.2);
+    --sidenav-menu-item-bg: rgba(255, 255, 255, 0.03);
+    --sidenav-menu-item-bg-hover: rgba(255, 255, 255, 0.08);
+    --sidenav-menu-item-border: rgba(255, 255, 255, 0.05);
+    --sidenav-menu-item-border-hover: rgba(255, 255, 255, 0.15);
+    --sidenav-menu-highlight-bg-start: rgba(140, 0, 255, 0.15);
+    --sidenav-menu-highlight-bg-end: rgba(143, 0, 187, 0.15);
+    --sidenav-menu-highlight-border: rgba(140, 0, 255, 0.3);
+    --sidenav-menu-highlight-bg-hover-start: rgba(140, 0, 255, 0.25);
+    --sidenav-menu-highlight-bg-hover-end: rgba(143, 0, 187, 0.25);
+    --sidenav-menu-highlight-border-hover: rgba(140, 0, 255, 0.5);
+    --sidenav-menu-warning-bg-start: rgba(255, 111, 15, 0.15);
+    --sidenav-menu-warning-bg-end: rgba(206, 168, 1, 0.15);
+    --sidenav-menu-warning-border: rgba(255, 111, 15, 0.3);
+    --sidenav-menu-warning-bg-hover-start: rgba(255, 111, 15, 0.25);
+    --sidenav-menu-warning-bg-hover-end: rgba(206, 168, 1, 0.25);
+    --sidenav-menu-warning-border-hover: rgba(255, 111, 15, 0.5);
+    --sidenav-menu-discord-bg-start: rgba(114, 137, 218, 0.15);
+    --sidenav-menu-discord-bg-end: rgba(132, 152, 223, 0.15);
+    --sidenav-menu-discord-border: rgba(114, 137, 218, 0.3);
+    --sidenav-menu-discord-bg-hover-start: rgba(114, 137, 218, 0.25);
+    --sidenav-menu-discord-bg-hover-end: rgba(132, 152, 223, 0.25);
+    --sidenav-menu-discord-border-hover: rgba(114, 137, 218, 0.5);
+    --sidenav-footer-bg-start: #0d0d0d;
+    --sidenav-footer-bg-end: #1a1a1a;
+    --sidenav-stat-bg: rgba(255, 255, 255, 0.05);
+    --sidenav-badge-discord: #7289DA;
 }
 .lol {
     background: var(--main-bg-color);
