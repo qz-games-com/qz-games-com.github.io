@@ -241,12 +241,20 @@
             gap: 24px;
             background: var(--main-bg-color);
             z-index: 2000;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            visibility: visible;
+            transition:
+                opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
         }
 
         .loading-overlay.hidden {
             opacity: 0;
             visibility: hidden;
+            transform: scale(0.95);
+            pointer-events: none;
         }
 
         /* Loading Card - Glassmorphism */
@@ -262,6 +270,14 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
             width: min(440px, 90vw);
             text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .loading-overlay.hidden .loading-card {
+            transform: translateY(-20px);
+            opacity: 0;
         }
 
         .loading-logo {
@@ -469,6 +485,9 @@
             <iframe src="" class="gameiframe" id="gameiframe" allowfullscreen title="Game player"></iframe>
         </div>
 
+        <!-- Flash Game Container (Ruffle) -->
+        <div id="maingamestuff" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: #000;"></div>
+
         <!-- HUD Widget -->
         <div class="hud-wrap" id="hud-wrap">
             <div class="hud-pill" role="region" aria-label="Game controls">
@@ -482,13 +501,13 @@
                     </button>
                 </div>
 
+                <!-- Game Cover -->
+                <img class="hud-cover" id="hud-cover" src="../Q-BIG.png" alt="Game cover">
+
                 <!-- Center Info -->
                 <div class="player-info">
-                    <img class="hud-cover" id="hud-cover" src="../Q-BIG.png" alt="Game cover">
-                    <div>
-                        <div class="game-title" id="game-name">Loading game...</div>
-                        <div class="game-subtitle">Now Playing</div>
-                    </div>
+                    <div class="game-title" id="game-name">Loading game...</div>
+                    <div class="game-subtitle">Now Playing</div>
                 </div>
 
                 <!-- Right Controls -->
@@ -774,8 +793,12 @@
                 Object.defineProperty(loadingcont.style, 'display', {
                     set: function(value) {
                         if (value === 'none') {
+                            // Add hidden class to trigger transition
                             loadingOverlay.classList.add('hidden');
-                            loadingOverlay.style.display = 'none';
+                            // Wait for transition to complete before setting display: none
+                            setTimeout(() => {
+                                loadingOverlay.style.display = 'none';
+                            }, 600); // Match transition duration
                         }
                     },
                     get: function() {
@@ -792,7 +815,10 @@
                 const overlay = document.getElementById('loading-overlay') || document.getElementById('loadingcont');
                 if (overlay) {
                     overlay.classList.add('hidden');
-                    overlay.style.display = 'none';
+                    // Wait for transition to complete before setting display: none
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                    }, 600);
                 }
             };
         }
@@ -870,8 +896,10 @@
 
                         // Update loading screen elements
                         const loadingGameNameEl = document.getElementById('loading-game-name');
+                        const loadingCoverEl = document.getElementById('loading-cover');
                         const gameCoverEl = document.getElementById('gameCover');
                         if (loadingGameNameEl) loadingGameNameEl.textContent = displayName;
+                        if (loadingCoverEl) loadingCoverEl.src = coverPath;
                         if (gameCoverEl) gameCoverEl.src = coverPath;
 
                         // Update page title
