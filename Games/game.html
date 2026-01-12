@@ -482,13 +482,13 @@
                     </button>
                 </div>
 
+                <!-- Game Cover -->
+                <img class="hud-cover" id="hud-cover" src="../Q-BIG.png" alt="Game cover">
+
                 <!-- Center Info -->
                 <div class="player-info">
-                    <img class="hud-cover" id="hud-cover" src="../Q-BIG.png" alt="Game cover">
-                    <div>
-                        <div class="game-title" id="game-name">Loading game...</div>
-                        <div class="game-subtitle">Now Playing</div>
-                    </div>
+                    <div class="game-title" id="game-name">Loading game...</div>
+                    <div class="game-subtitle">Now Playing</div>
                 </div>
 
                 <!-- Right Controls -->
@@ -870,8 +870,10 @@
 
                         // Update loading screen elements
                         const loadingGameNameEl = document.getElementById('loading-game-name');
+                        const loadingCoverEl = document.getElementById('loading-cover');
                         const gameCoverEl = document.getElementById('gameCover');
                         if (loadingGameNameEl) loadingGameNameEl.textContent = displayName;
+                        if (loadingCoverEl) loadingCoverEl.src = coverPath;
                         if (gameCoverEl) gameCoverEl.src = coverPath;
 
                         // Update page title
