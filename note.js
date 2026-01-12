@@ -35,13 +35,14 @@ const notetitle     = document.getElementById('titlenote');
 const notedesc      = document.getElementById('descnote');
 const cookiepicnote = document.getElementById('cookiepic');
 const noteclose     = document.getElementById('closenote');
+const notebottom    = document.getElementById('notification-bottom');
 
 const noteQueue = [];
 let noteBusy = false;
 let cookienote = false;
 
-function issuenote(title, desc, close, type) {
-  noteQueue.push({ title, desc, close, type });
+function issuenote(title, desc, close, type, showLearnMore) {
+  noteQueue.push({ title, desc, close, type, showLearnMore });
   if (!noteBusy) showNextNote();
 }
 
@@ -73,19 +74,21 @@ function showNextNote() {
   noteBusy = true;
   console.log('busy...')
 
-  const { title, desc, close, type } = noteQueue.shift();
+  const { title, desc, close, type, showLearnMore } = noteQueue.shift();
 
   if (type === "cookie") {
     cookienote = true
     notetitle.textContent = "We Use Cookies";
-    notedesc.textContent  = "By using our site you agree to cookies.";
+    notedesc.textContent  = "By using our site you agree to cookies for analytics and personalization.";
     cookiepicnote.style.display = "block";
     noteclose.style.display     = "block";
+    notebottom.style.display    = "block";
   } else {
     notetitle.textContent      = title;
     notedesc.textContent       = desc;
     cookiepicnote.style.display = "none";
     noteclose.style.display     = close === false ? "none" : "block";
+    notebottom.style.display    = showLearnMore ? "block" : "none";
   }
 
   noteclose.onclick = closeNote;

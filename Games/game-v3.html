@@ -9,25 +9,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../styles/default.css" id="theme-stylesheet">
-    <link rel="stylesheet" href="../gamecss.css">
-
-    <!-- Scripts -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('../service-worker.js');
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-    <script src="../useractivity.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J246XWP5WQ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-J246XWP5WQ');
-    </script>
-
     <style>
         * {
             box-sizing: border-box;
@@ -162,7 +143,6 @@
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: 600;
-            margin: 0 !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
@@ -333,7 +313,7 @@
         }
 
         /* Progress Bar */
-        .progress-bar-container {
+        .progress-bar {
             width: 100%;
             height: 6px;
             border-radius: 50px;
@@ -343,7 +323,7 @@
         }
 
         .progress-fill {
-            width: 0%;
+            width: 65%;
             height: 100%;
             background: linear-gradient(90deg,
                 var(--sidenav-menu-highlight-bg-start),
@@ -465,7 +445,7 @@
     <div class="player-shell">
         <!-- Game Player Frame -->
         <div class="player-frame">
-            <iframe src="" class="gameiframe" id="gameiframe" allowfullscreen title="Game player"></iframe>
+            <iframe src="" id="gameiframe" allowfullscreen title="Game player"></iframe>
         </div>
 
         <!-- HUD Widget -->
@@ -526,8 +506,8 @@
                 <h1 class="loading-title" id="loading-title">Getting ready</h1>
                 <div class="loading-subtitle" id="loading-subtitle">Setting up your gaming experience</div>
 
-                <div class="progress-bar-container">
-                    <div class="progress-fill" id="progbar"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
                 </div>
 
                 <div class="loading-actions">
@@ -535,223 +515,16 @@
                         <span class="material-icons">play_arrow</span>
                         <span>Start</span>
                     </button>
-                    <a class="btn" href="../index.html" style="text-decoration: none;">
+                    <a class="btn" href="../index.html">
                         <span class="material-icons">home</span>
                         <span>Home</span>
                     </a>
                 </div>
             </div>
         </div>
-
-        <!-- Controller Settings (from original game.html) -->
-        <div id="menusforgame">
-            <div class="settings-container" id="settings-container">
-                <div class="header">
-                    <span class="material-icons">sports_esports</span>
-                    <div>
-                       <h1>Controller Settings</h1>
-                        <p id="controllerstatus" style="margin-top: -8px;" class="nonec">No Controller Connected</p>
-                    </div>
-                </div>
-
-                <div class="tabs">
-                    <button class="tab-button active" onclick="switchTab('general')">
-                        <span class="material-icons" style="font-size: 18px;">settings</span>
-                        General
-                    </button>
-                    <button class="tab-button" onclick="switchTab('controller')">
-                        <span class="material-icons" style="font-size: 18px;">gamepad</span>
-                        Controller Bindings
-                    </button>
-                </div>
-
-                <div class="tabs-container">
-                    <div class="tab-content active" id="general-tab">
-                        <div class="section">
-                            <h3>
-                                <span class="material-icons">videocam</span>
-                                Camera & Movement
-                            </h3>
-
-                            <div class="setting-row">
-                                <div class="setting-label">Camera Sensitivity</div>
-                                <div class="setting-control">
-                                    <input type="range" id="sensitivity" min="100" max="2000" step="50" value="900" oninput="window.updateControllerConfig({ sensitivity: document.getElementById('sensitivity').value });">
-                                    <div class="value-display" id="sensitivity-value">900</div>
-                                </div>
-                            </div>
-
-                            <div class="setting-row">
-                                <div class="setting-label">Stick Deadzone</div>
-                                <div class="setting-control">
-                                    <input type="range" id="deadzone" min="0.05" max="0.5" step="0.01" value="0.18" oninput="window.updateControllerConfig({ sensitivity: document.getElementById('deadzone').value });">
-                                    <div class="value-display" id="deadzone-value">0.18</div>
-                                </div>
-                            </div>
-
-                            <div class="setting-row">
-                                <div class="setting-label">Invert Y-Axis</div>
-                                <div class="setting-control">
-                                    <div class="checkbox-container">
-                                        <input type="checkbox" id="invertY">
-                                        <label for="invertY">Enable</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content" id="controller-tab">
-                        <div class="section">
-                            <h3>
-                                <span class="material-icons">gamepad</span>
-                                Controller to Keyboard Bindings
-                            </h3>
-                            <p>Click "Rebind" next to any controller button, then press the keyboard key you want to bind it to.</p>
-
-                            <div class="bindings-grid" id="controller-bindings">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="action-button save-btn" onclick="saveSettings()">
-                        <span class="material-icons" style="font-size: 18px;">save</span>
-                        Save Settings
-                    </button>
-                    <button class="action-button reset-btn" onclick="toggleControllerSettings()">
-                        <span class="material-icons" style="font-size: 18px;">close</span>
-                       Close
-                    </button>
-                    <button class="action-button reset-btn" onclick="resetToDefaults()">
-                        <span class="material-icons" style="font-size: 18px;">refresh</span>
-                        Reset to Defaults
-                    </button>
-                </div>
-            </div>
-            <div id="bgcontroller" style="opacity: 0; display: none; width: 100%; height: 100%; backdrop-filter: blur(5px); background-color: rgba(27, 27, 27, 0.685); position: fixed; z-index: 9;"></div>
-            <div class="notificationn" id="notificationn"></div>
-        </div>
-
-        <div id="notification-container"></div>
-        <div class="reminderclose" id="reminderclose">
-            <div style="top: 50%; position: absolute; left: 50%; transform: translate(-50%, -50%);">
-                <span class="material-icons notranslate" style="font-size: 80px; text-shadow: 0px 8px 5px rgb(12, 12, 12); left: 50%; position: relative; transform: translateX(-50%); color: white;">
-                    save
-                </span>
-                <h1 style="text-align: center; color: white; font-size: 25px;">Be Careful!</h1>
-                <h1 style="text-align: center; color: white; font-size: 18px;">Some games may not save when not closed properly.</h1>
-            </div>
-        </div>
     </div>
 
- 
-
     <script>
-        // Global error handler - show notification and allow bug report
-        window.addEventListener('error', function(e) {
-            console.error('Error occurred:', e.error);
-            showErrorNotification();
-        });
-
-        window.addEventListener('unhandledrejection', function(e) {
-            console.error('Promise rejection:', e.reason);
-            showErrorNotification();
-        });
-
-        // Show error notification
-        function showErrorNotification() {
-            // Check if notification already exists
-            if (document.getElementById('error-notification-overlay')) return;
-
-            const overlay = document.createElement('div');
-            overlay.id = 'error-notification-overlay';
-            overlay.style.cssText = `
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.8);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10000;
-            `;
-
-            const card = document.createElement('div');
-            card.style.cssText = `
-                background: linear-gradient(180deg, var(--sidenav-bg-start, rgba(26, 26, 26, 0.95)) 0%, var(--sidenav-bg-end, #0d0d0d) 100%);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-radius: 20px;
-                padding: 40px;
-                border: 1px solid var(--sidenav-border, rgba(255, 255, 255, 0.1));
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-                width: min(400px, 90vw);
-                text-align: center;
-                font-family: 'Poppins', Arial, sans-serif;
-            `;
-
-            card.innerHTML = `
-                <span class="material-icons" style="font-size: 64px; color: #ff6b6b; margin-bottom: 16px;">error_outline</span>
-                <h2 style="margin: 0 0 12px; font-size: 1.5rem; color: white; font-weight: 600;">An Error Occurred</h2>
-                <p style="margin: 0 0 28px; font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6;">
-                    Something went wrong while loading the game. Please report this issue and return to the home page.
-                </p>
-                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <button onclick="reportIssue()" style="
-                        background: var(--sidenav-icon-btn-bg, rgba(255, 255, 255, 0.05));
-                        border: 1px solid var(--sidenav-icon-btn-border, rgba(255, 255, 255, 0.1));
-                        color: white;
-                        padding: 12px 24px;
-                        border-radius: 12px;
-                        font-size: 0.9rem;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s;
-                        font-family: 'Poppins', Arial, sans-serif;
-                    " onmouseover="this.style.background='var(--sidenav-icon-btn-bg-hover, rgba(255, 255, 255, 0.1))'" onmouseout="this.style.background='var(--sidenav-icon-btn-bg, rgba(255, 255, 255, 0.05))'">
-                        <span class="material-icons" style="font-size: 18px; vertical-align: middle; margin-right: 6px;">bug_report</span>
-                        Report Bug
-                    </button>
-                    <button onclick="document.getElementById('error-notification-overlay').remove(); doneloading();" style="
-                        background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.3));
-                        border: 1px solid rgba(255, 193, 7, 0.4);
-                        color: white;
-                        padding: 12px 24px;
-                        border-radius: 12px;
-                        font-size: 0.9rem;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s;
-                        font-family: 'Poppins', Arial, sans-serif;
-                    " onmouseover="this.style.background='linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 193, 7, 0.4))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.3))'">
-                        <span class="material-icons" style="font-size: 18px; vertical-align: middle; margin-right: 6px;">play_arrow</span>
-                        Continue Anyway
-                    </button>
-                    <button onclick="window.location.href='../index.html'" style="
-                        background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.3));
-                        border: 1px solid rgba(255, 107, 107, 0.4);
-                        color: white;
-                        padding: 12px 24px;
-                        border-radius: 12px;
-                        font-size: 0.9rem;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s;
-                        font-family: 'Poppins', Arial, sans-serif;
-                    " onmouseover="this.style.background='linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 107, 107, 0.4))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.3))'">
-                        <span class="material-icons" style="font-size: 18px; vertical-align: middle; margin-right: 6px;">home</span>
-                        Return Home
-                    </button>
-                </div>
-            `;
-
-            overlay.appendChild(card);
-            document.body.appendChild(overlay);
-        }
-
         // Hide loading overlay
         function doneloading() {
             const overlay = document.getElementById('loading-overlay');
@@ -774,6 +547,11 @@
             window.location.href = '../index.html';
         }
 
+        // Controller settings (placeholder)
+        function toggleControllerSettings() {
+            alert('Controller settings panel - connect to your existing settings UI here');
+        }
+
         // Report issue
         function reportIssue() {
             window.open('https://forms.gle/yLyC7rFkY1xeNk3TA', '_blank', 'noopener');
@@ -794,7 +572,7 @@
             setTimeout(doneloading, 800);
         });
 
-        // Simulate loading progress
+        // Simulate loading progress (optional - remove if not needed)
         let progress = 0;
         const progressInterval = setInterval(() => {
             progress += Math.random() * 15;
@@ -802,35 +580,26 @@
                 progress = 100;
                 clearInterval(progressInterval);
             }
-            const progressFill = document.getElementById('progbar');
+            const progressFill = document.getElementById('progress-fill');
             if (progressFill) {
                 progressFill.style.width = progress + '%';
             }
         }, 200);
 
-        // Get game info from URL parameters
+        // Get game info from URL parameters (if you want to populate dynamically)
         const urlParams = new URLSearchParams(window.location.search);
         const gameName = urlParams.get('name');
         const gameUrl = urlParams.get('game');
 
-        // Only update elements if parameters are provided
-        if (gameName && gameName.trim() !== '') {
-            const gameNameEl = document.getElementById('game-name');
-            const loadingGameNameEl = document.getElementById('loading-game-name');
-
-            if (gameNameEl) gameNameEl.textContent = gameName;
-            if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
+        if (gameName) {
+            document.getElementById('game-name').textContent = gameName;
+            document.getElementById('loading-game-name').textContent = gameName;
             document.title = 'Qz Games | ' + gameName;
         }
 
-        if (gameUrl && gameUrl.trim() !== '') {
+        if (gameUrl) {
             iframe.src = gameUrl;
         }
     </script>
-       <!-- Scripts from original game.html -->
-    <script src="../GameMain.js"></script>
-    <script src="../GameInput.js"></script>
-    <script src="../GlobalSettings.js"></script>
-    <script src="../errorgen.js"></script>
 </body>
 </html>

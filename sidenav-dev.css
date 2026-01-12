@@ -1,0 +1,566 @@
+/* ========================================
+   REDESIGNED SIDE NAVIGATION - DEV VERSION
+   Modern, Responsive, Beautiful
+   ======================================== */
+
+/* Side Nav Container (Backdrop) */
+.sidenavcont {
+    width: 100%;
+    position: fixed;
+    visibility: hidden;
+    height: 100%;
+    z-index: 10003;
+    top: 0;
+    left: 0;
+}
+
+.backdropside {
+    width: 100%;
+    position: fixed;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(20, 20, 20, 0.8));
+    backdrop-filter: blur(8px);
+}
+
+/* Main Side Nav */
+.sidenav-dev {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    width: min(420px, 90vw);
+    height: 100vh;
+    background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        -10px 0 40px rgba(0, 0, 0, 0.5),
+        inset 1px 0 0 rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 10004;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.sidenav-dev::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidenav-dev::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sidenav-dev::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.sidenav-dev::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========================================
+   HEADER SECTION
+   ======================================== */
+
+.sidenav-header {
+    padding: 24px 20px;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.sidenav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.sidenav-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.sidenav-logo:hover {
+    transform: scale(1.05) rotate(5deg);
+}
+
+.sidenav-title h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.sidenav-subtitle {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+}
+
+.sidenav-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.sidenav-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidenav-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.sidenav-icon-btn .material-icons {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================
+   NAVIGATION MENU
+   ======================================== */
+
+.sidenav-menu {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+}
+
+.menu-section {
+    margin-bottom: 24px;
+    padding: 0 20px;
+}
+
+.menu-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0 0 12px 8px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.menu-item:hover::before {
+    left: 100%;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item:active {
+    transform: translateX(2px) scale(0.98);
+}
+
+.menu-icon {
+    font-size: 22px;
+    margin-right: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover .menu-icon {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.menu-text {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.menu-arrow {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.menu-item:hover .menu-arrow {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+/* Menu Item Variants */
+.menu-item-secondary {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.menu-item-secondary:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.menu-item-highlight {
+    background: linear-gradient(135deg, rgba(140, 0, 255, 0.15), rgba(143, 0, 187, 0.15));
+    border-color: rgba(140, 0, 255, 0.3);
+}
+
+.menu-item-highlight:hover {
+    background: linear-gradient(135deg, rgba(140, 0, 255, 0.25), rgba(143, 0, 187, 0.25));
+    border-color: rgba(140, 0, 255, 0.5);
+}
+
+.menu-item-warning {
+    background: linear-gradient(135deg, rgba(255, 111, 15, 0.15), rgba(206, 168, 1, 0.15));
+    border-color: rgba(255, 111, 15, 0.3);
+}
+
+.menu-item-warning:hover {
+    background: linear-gradient(135deg, rgba(255, 111, 15, 0.25), rgba(206, 168, 1, 0.25));
+    border-color: rgba(255, 111, 15, 0.5);
+}
+
+.menu-item-discord {
+    background: linear-gradient(135deg, rgba(114, 137, 218, 0.15), rgba(132, 152, 223, 0.15));
+    border-color: rgba(114, 137, 218, 0.3);
+}
+
+.menu-item-discord:hover {
+    background: linear-gradient(135deg, rgba(114, 137, 218, 0.25), rgba(132, 152, 223, 0.25));
+    border-color: rgba(114, 137, 218, 0.5);
+}
+
+/* Badges */
+.menu-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+}
+
+.discord-badge {
+    background: #7289DA;
+    animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+/* ========================================
+   FOOTER SECTION
+   ======================================== */
+
+.sidenav-footer {
+    padding: 20px;
+    background: linear-gradient(0deg, #0d0d0d 0%, #1a1a1a 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.footer-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-icon {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-text {
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablets */
+@media (max-width: 768px) {
+    .sidenav-dev {
+        width: min(380px, 85vw);
+    }
+
+    .sidenav-header {
+        padding: 20px 16px;
+    }
+
+    .sidenav-logo {
+        width: 42px;
+        height: 42px;
+    }
+
+    .sidenav-title h2 {
+        font-size: 16px;
+    }
+
+    .menu-section {
+        padding: 0 16px;
+    }
+
+    .menu-item {
+        padding: 11px 14px;
+    }
+
+    .footer-stats {
+        gap: 10px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+    .sidenav-dev {
+        width: 100vw;
+        max-width: 100vw;
+    }
+
+    .sidenav-header {
+        padding: 18px 14px;
+    }
+
+    .sidenav-logo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .sidenav-title h2 {
+        font-size: 15px;
+    }
+
+    .sidenav-subtitle {
+        font-size: 11px;
+    }
+
+    .sidenav-icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .menu-section {
+        padding: 0 14px;
+        margin-bottom: 20px;
+    }
+
+    .menu-item {
+        padding: 10px 12px;
+    }
+
+    .menu-icon {
+        font-size: 20px;
+        margin-right: 12px;
+    }
+
+    .menu-text {
+        font-size: 14px;
+    }
+
+    .footer-stats {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .stat-item {
+        padding: 10px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 360px) {
+    .sidenav-title h2 {
+        font-size: 14px;
+    }
+
+    .menu-section-title {
+        font-size: 10px;
+    }
+
+    .menu-text {
+        font-size: 13px;
+    }
+
+    .stat-value {
+        font-size: 14px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+    }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes sidenavin-dev {
+    from {
+        transform: translateX(100%);
+        opacity: 0.8;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes sidenavout-dev {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0.8;
+    }
+}
+
+/* Menu Items Stagger Animation */
+.menu-item {
+    animation: fadeInUp 0.4s ease backwards;
+}
+
+.menu-item:nth-child(1) { animation-delay: 0.05s; }
+.menu-item:nth-child(2) { animation-delay: 0.1s; }
+.menu-item:nth-child(3) { animation-delay: 0.15s; }
+.menu-item:nth-child(4) { animation-delay: 0.2s; }
+.menu-item:nth-child(5) { animation-delay: 0.25s; }
+.menu-item:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY IMPROVEMENTS
+   ======================================== */
+
+.menu-item:focus,
+.sidenav-icon-btn:focus {
+    outline: 2px solid #4A9EFF;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidenav-dev,
+    .menu-item,
+    .sidenav-icon-btn,
+    .menu-arrow,
+    .menu-icon {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .sidenav-dev {
+        border-left: 2px solid #fff;
+    }
+
+    .menu-item {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .menu-section-title {
+        color: #fff;
+    }
+}

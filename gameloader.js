@@ -97,27 +97,50 @@ function createAdElement(adIndex) {
   gameItem.classList.add('gameitem');
   gameItem.classList.add('ad-item');
   gameItem.classList.add('hide');
-  
+
   // Create the container with proper constraints
   const adContainer = document.createElement('div');
   adContainer.style.cssText = `
-    position: relative; 
-    width: 185px; 
-    height: 185px; 
-    max-width: 185px; 
-    max-height: 185px; 
+    position: relative;
+    width: 185px;
+    height: 185px;
+    max-width: 185px;
+    max-height: 185px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
   `;
-  
+
+  // Add bottom "Advertisement" label for additional clarity
+  const adLabel = document.createElement('div');
+  adLabel.style.cssText = `
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+  `;
+  adLabel.textContent = 'Advertisement';
+
   const adElement = document.createElement('ins');
   adElement.className = 'adsbygoogle ad-lazy';
   adElement.style.cssText = `
-    display: block; 
-    width: 185px; 
+    display: block;
+    width: 185px;
     height: 185px;
     max-width: 185px !important;
     max-height: 185px !important;
@@ -126,8 +149,9 @@ function createAdElement(adIndex) {
   adElement.setAttribute('data-ad-slot', AD_CONFIG.slot);
   adElement.setAttribute('data-ad-format', 'fixed');
   adElement.setAttribute('data-full-width-responsive', 'false');
-  
+
   adContainer.appendChild(adElement);
+  adContainer.appendChild(adLabel);
   gameItem.appendChild(adContainer);
 
   return gameItem;

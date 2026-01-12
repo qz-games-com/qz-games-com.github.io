@@ -1,74 +1,161 @@
 :root {
-    --text-color: rgb(0, 0, 0);
+    --text-color: rgba(0, 0, 0, 0.87);
 
-    --main-bg-color: rgb(236, 236, 236);
-    --main-topnav-color: rgba(218, 218, 218, 0.63);
-    --main-topnav-shadow: rgb(153, 153, 153);
-    --main-header-old: rgb(19, 19, 19);
-    --main-header-color: rgba(224, 224, 224, 0.644);
-    --main-backdrop-side: rgba(19, 19, 19, 0.541);
+    --main-bg-color: rgb(250, 250, 248);
+    --main-topnav-color: rgba(255, 255, 253, 0.8);
+    --main-topnav-shadow: rgba(0, 0, 0, 0.04);
+    --main-header-old: rgb(248, 248, 246);
+    --main-header-color: rgba(250, 250, 248, 0.85);
+    --main-backdrop-side: rgba(0, 0, 0, 0.3);
 
-    --side-nav-bg: rgb(209, 209, 209);
-    --side-nav-border: rgb(161, 161, 161);
-    --side-nav-shadow: rgb(124, 124, 124);
+    --side-nav-bg: rgb(253, 253, 251);
+    --side-nav-border: rgba(235, 235, 230, 0.9);
+    --side-nav-shadow: rgba(0, 0, 0, 0.06);
 
-    --side-nav-top: rgba(202, 202, 202, 0.76);
-    --side-nav-top-shadow: rgb(102, 102, 102);
-    --side-nav-icons-border: rgba(70, 70, 70, 0.397);
-    --side-nav-icons-shadow: rgba(71, 71, 71, 0.589);
+    --side-nav-top: rgba(250, 250, 248, 0.95);
+    --side-nav-top-shadow: rgba(0, 0, 0, 0.03);
+    --side-nav-icons-border: rgba(230, 230, 225, 0.6);
+    --side-nav-icons-shadow: rgba(0, 0, 0, 0.04);
 
-    --side-nav-options-bg: linear-gradient(to top right, rgb(82, 82, 82), rgb(133, 133, 133));
-    --side-nav-options-border: rgb(148, 148, 148);
-    --side-nav-options-shadow: rgb(150, 150, 150);
-    --side-nav-options-icon-shadow: black;
+    --side-nav-options-bg: linear-gradient(135deg, rgb(248, 248, 246), rgb(243, 243, 241));
+    --side-nav-options-border: rgb(238, 238, 236);
+    --side-nav-options-shadow: rgba(0, 0, 0, 0.03);
+    --side-nav-options-icon-shadow: rgba(0, 0, 0, 0.1);
 
-    --translate-container-bg: rgba(223, 223, 223, 0.842);
-    --translate-container-shadow: rgb(134, 134, 134);
-    --translate-container-border: rgb(133, 133, 133);
+    --translate-container-bg: rgba(253, 253, 251, 0.9);
+    --translate-container-shadow: rgba(0, 0, 0, 0.06);
+    --translate-container-border: rgba(238, 238, 236, 0.9);
 
     --feat-games-bg: none;
     --feat-games-border: none;
 
-    --input-bg: rgba(148, 148, 148, 0.363);
-    --input-border: rgb(122, 122, 122);
+    --input-bg: rgba(245, 245, 243, 0.5);
+    --input-border: rgba(230, 230, 228, 0.8);
     --input-txt-color: var(--text-color);
-    --input-border-hover: rgb(129, 129, 129);
-    --input-focus: rgb(146, 146, 146);
+    --input-border-hover: rgba(215, 215, 213, 0.9);
+    --input-focus: rgba(180, 190, 200, 0.35);
 
-    --filter-btn-bg: rgb(184, 184, 184);
-    --filter-btn-border: rgb(201, 201, 201);
-    --filter-btn-shadow: rgb(151, 151, 151);
+    --filter-btn-bg: rgba(250, 250, 248, 0.8);
+    --filter-btn-border: rgba(238, 238, 236, 0.9);
+    --filter-btn-shadow: rgba(0, 0, 0, 0.03);
 
-    --filter-container-bg: rgba(204, 204, 204, 0.884);
+    --filter-container-bg: rgba(253, 253, 251, 0.95);
 
-    --filter-radio-group-bg: rgba(160, 160, 160, 0.2);
-    --filter-radio-group-shadoow: rgba(0, 0, 0, 0.3);
-    --filter-radio-container-bg: rgba(97, 97, 97, 0.2);
-    --filter-radio-container-shadow: rgba(0, 0, 0, 0.2);
-    --filter-radio-container-bg-hover: rgba(112, 112, 112, 0.3);
-    --filter-radio-container-shadow-hover: rgba(0, 0, 0, 0.4);
+    --filter-radio-group-bg: rgba(245, 245, 243, 0.5);
+    --filter-radio-group-shadoow: rgba(0, 0, 0, 0.03);
+    --filter-radio-container-bg: rgba(238, 238, 236, 0.4);
+    --filter-radio-container-shadow: rgba(0, 0, 0, 0.04);
+    --filter-radio-container-bg-hover: rgba(230, 230, 228, 0.6);
+    --filter-radio-container-shadow-hover: rgba(0, 0, 0, 0.06);
 
-    --filter-radio-checkmark-border: #ffffff;
-    --filter-radio-checkmark-bg: rgba(0, 0, 0, 0.3);
-    --filter-radio-checkmark-shadow: rgba(0, 0, 0, 0.4);
-    --filter-radio-checkmark-after: #424242;
+    --filter-radio-checkmark-border: rgba(100, 120, 150, 0.6);
+    --filter-radio-checkmark-bg: rgba(248, 248, 250, 0.8);
+    --filter-radio-checkmark-shadow: rgba(0, 0, 0, 0.05);
+    --filter-radio-checkmark-after: rgb(100, 120, 150);
 
-    --filter-radio-checkmark-shadow-pulse: rgba(218, 218, 218, 0.2);
+    --filter-radio-checkmark-shadow-pulse: rgba(100, 120, 150, 0.2);
 
-    --game-item-shadow: rgb(129, 129, 129);
-    --game-item-shadow-hover: rgb(31, 31, 31);
+    --game-item-shadow: rgba(0, 0, 0, 0.05);
+    --game-item-shadow-hover: rgba(100, 120, 150, 0.15);
 
-    --game-item-text-over-bg-old: rgba(26, 26, 26, 0.952);
-    --game-item-text-over-bg: rgba(26, 26, 26, 0.719);
-    --game-item-text-over-shadow: black;
+    --game-item-text-over-bg-old: rgba(0, 0, 0, 0.92);
+    --game-item-text-over-bg: rgba(0, 0, 0, 0.80);
+    --game-item-text-over-shadow: rgba(0, 0, 0, 0.15);
     --game-item-text-over-text-color: rgb(255, 255, 255);
 
-    --note-bg: rgba(241, 241, 241, 0.849);
-    --note-border: rgb(170, 170, 170);
-    --note-shadow: rgb(95, 95, 95);
+    --note-bg: rgba(253, 253, 251, 0.92);
+    --note-border: rgba(238, 238, 236, 0.9);
+    --note-shadow: rgba(0, 0, 0, 0.06);
+
+    --notification-bg-start: rgba(255, 255, 253, 0.95);
+    --notification-bg-end: rgba(250, 250, 248, 0.95);
+    --notification-border: rgba(238, 238, 236, 0.9);
+    --notification-accent-start: #B8C5D6;
+    --notification-accent-mid: #A0B0C8;
+    --notification-accent-end: #8898B0;
+    --notification-btn-bg-start: rgba(180, 190, 210, 0.1);
+    --notification-btn-bg-end: rgba(160, 175, 200, 0.1);
+    --notification-btn-border: rgba(180, 190, 210, 0.25);
+    --notification-btn-bg-hover-start: rgba(180, 190, 210, 0.18);
+    --notification-btn-bg-hover-end: rgba(160, 175, 200, 0.18);
+    --notification-btn-border-hover: rgba(160, 175, 200, 0.4);
+
+    --sidenav-bg-start: rgba(253, 253, 251, 0.92);
+    --sidenav-bg-end: rgba(250, 250, 248, 0.95);
+    --sidenav-border: rgba(238, 238, 236, 0.9);
+    --sidenav-header-bg-start: rgba(250, 250, 248, 0.85);
+    --sidenav-header-bg-end: rgba(248, 248, 246, 0.9);
+    --sidenav-icon-btn-bg: rgba(245, 245, 243, 0.7);
+    --sidenav-icon-btn-bg-hover: rgba(240, 240, 238, 0.9);
+    --sidenav-icon-btn-border: rgba(230, 230, 228, 0.6);
+    --sidenav-icon-btn-border-hover: rgba(215, 215, 213, 0.8);
+    --sidenav-menu-item-bg: rgba(248, 248, 246, 0.5);
+    --sidenav-menu-item-bg-hover: rgba(240, 240, 238, 0.8);
+    --sidenav-menu-item-border: rgba(238, 238, 236, 0.6);
+    --sidenav-menu-item-border-hover: rgba(225, 225, 223, 0.9);
+    --sidenav-menu-highlight-bg-start: rgba(180, 150, 220, 0.06);
+    --sidenav-menu-highlight-bg-end: rgba(160, 130, 200, 0.06);
+    --sidenav-menu-highlight-border: rgba(180, 150, 220, 0.2);
+    --sidenav-menu-highlight-bg-hover-start: rgba(180, 150, 220, 0.12);
+    --sidenav-menu-highlight-bg-hover-end: rgba(160, 130, 200, 0.12);
+    --sidenav-menu-highlight-border-hover: rgba(180, 150, 220, 0.35);
+    --sidenav-menu-warning-bg-start: rgba(230, 150, 80, 0.06);
+    --sidenav-menu-warning-bg-end: rgba(220, 170, 90, 0.06);
+    --sidenav-menu-warning-border: rgba(230, 150, 80, 0.2);
+    --sidenav-menu-warning-bg-hover-start: rgba(230, 150, 80, 0.12);
+    --sidenav-menu-warning-bg-hover-end: rgba(220, 170, 90, 0.12);
+    --sidenav-menu-warning-border-hover: rgba(230, 150, 80, 0.35);
+    --sidenav-menu-discord-bg-start: rgba(140, 160, 220, 0.06);
+    --sidenav-menu-discord-bg-end: rgba(120, 145, 210, 0.06);
+    --sidenav-menu-discord-border: rgba(140, 160, 220, 0.2);
+    --sidenav-menu-discord-bg-hover-start: rgba(140, 160, 220, 0.12);
+    --sidenav-menu-discord-bg-hover-end: rgba(120, 145, 210, 0.12);
+    --sidenav-menu-discord-border-hover: rgba(140, 160, 220, 0.35);
+    --sidenav-footer-bg-start: rgba(250, 250, 248, 0.9);
+    --sidenav-footer-bg-end: rgba(248, 248, 246, 0.95);
+    --sidenav-stat-bg: rgba(243, 243, 241, 0.6);
+    --sidenav-badge-discord: #8898B0;
 }
 
 .html {
-    color: rgb(0, 0, 0);
+    color: rgba(0, 0, 0, 0.87);
 }
 
+/* Force text colors to stay black for better readability */
+body,
+.txtnav,
+.menu-text,
+.sidenav-title h2,
+.notification-title,
+.notification-desc,
+.menu-section-title,
+.stat-label,
+.footer-text,
+input,
+textarea,
+select {
+    color: rgba(0, 0, 0, 0.87) !important;
+}
+
+/* Slightly lighter for secondary text */
+.sidenav-subtitle,
+.notification-desc,
+.menu-section-title,
+.stat-label {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Even lighter for tertiary text */
+.footer-text {
+    color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Icons should be dark */
+.material-icons,
+.menu-icon {
+    color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.menu-arrow {
+    color: rgba(0, 0, 0, 0.4) !important;
+}
