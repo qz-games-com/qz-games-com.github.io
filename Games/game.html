@@ -114,9 +114,10 @@
         .player-info {
             flex: 1;
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 2px;
             min-width: 0;
         }
 
@@ -543,6 +544,16 @@
             </div>
         </div>
 
+        <!-- Legacy Compatibility Elements for GameMain.js -->
+        <div id="loadingcont" style="display: none;">
+            <img id="gameCover" src="../Q-BIG.png" alt="Game Cover" style="opacity: 0;">
+            <div id="loadan" style="opacity: 0;"></div>
+            <div id="gradientBg" style="opacity: 0;"></div>
+            <div id="options" style="display: none;"></div>
+            <h1 id="gameTitle" style="opacity: 0;"></h1>
+            <div id="errorMessage" style="display: none;"></div>
+        </div>
+
         <!-- Controller Settings (from original game.html) -->
         <div id="menusforgame">
             <div class="settings-container" id="settings-container">
@@ -752,12 +763,38 @@
             document.body.appendChild(overlay);
         }
 
-        // Hide loading overlay
-        function doneloading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-                overlay.classList.add('hidden');
+        // Set up compatibility bridge for GameMain.js
+        // Link loading-overlay to loadingcont for backward compatibility
+        (function() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingcont = document.getElementById('loadingcont');
+
+            if (loadingOverlay && loadingcont) {
+                // When GameMain.js tries to hide loadingcont, hide loading-overlay instead
+                Object.defineProperty(loadingcont.style, 'display', {
+                    set: function(value) {
+                        if (value === 'none') {
+                            loadingOverlay.classList.add('hidden');
+                            loadingOverlay.style.display = 'none';
+                        }
+                    },
+                    get: function() {
+                        return loadingOverlay.classList.contains('hidden') ? 'none' : 'flex';
+                    }
+                });
             }
+        })();
+
+        // Hide loading overlay - will be overridden by GameMain.js
+        // This is just a fallback in case GameMain.js doesn't load
+        if (typeof window.doneloading === 'undefined') {
+            window.doneloading = function() {
+                const overlay = document.getElementById('loading-overlay') || document.getElementById('loadingcont');
+                if (overlay) {
+                    overlay.classList.add('hidden');
+                    overlay.style.display = 'none';
+                }
+            };
         }
 
         // Toggle fullscreen
@@ -787,14 +824,7 @@
             }
         }
 
-        // Update game name and cover when iframe loads
-        const iframe = document.getElementById('gameiframe');
-        iframe.addEventListener('load', function() {
-            // Auto-hide loading screen after iframe loads
-            setTimeout(doneloading, 800);
-        });
-
-        // Simulate loading progress
+        // Simulate loading progress (visual feedback only)
         let progress = 0;
         const progressInterval = setInterval(() => {
             progress += Math.random() * 15;
@@ -808,24 +838,67 @@
             }
         }, 200);
 
+        // Don't call doneloading() from here - let GameMain.js handle it
+        // GameMain.js has the proper elements setup and will call doneloading() when ready
+
         // Get game info from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const gameName = urlParams.get('name');
         const gameUrl = urlParams.get('game');
+        const gameType = urlParams.get('type');
 
-        // Only update elements if parameters are provided
+        // Fetch game data from games.json
         if (gameName && gameName.trim() !== '') {
-            const gameNameEl = document.getElementById('game-name');
-            const loadingGameNameEl = document.getElementById('loading-game-name');
+            fetch('../games.json')
+                .then(response => response.json())
+                .then(gamesData => {
+                    // Search for the game by name (case-insensitive)
+                    const gameKey = Object.keys(gamesData).find(key =>
+                        key.toLowerCase() === gameName.toLowerCase()
+                    );
 
-            if (gameNameEl) gameNameEl.textContent = gameName;
-            if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
-            document.title = 'Qz Games | ' + gameName;
+                    if (gameKey && gamesData[gameKey]) {
+                        const gameData = gamesData[gameKey];
+                        const displayName = gameData.name;
+                        const coverPath = `../covers/${gameData.cover}`;
+
+                        // Update HUD elements
+                        const gameNameEl = document.getElementById('game-name');
+                        const hudCoverEl = document.getElementById('hud-cover');
+                        if (gameNameEl) gameNameEl.textContent = displayName;
+                        if (hudCoverEl) hudCoverEl.src = coverPath;
+
+                        // Update loading screen elements
+                        const loadingGameNameEl = document.getElementById('loading-game-name');
+                        const gameCoverEl = document.getElementById('gameCover');
+                        if (loadingGameNameEl) loadingGameNameEl.textContent = displayName;
+                        if (gameCoverEl) gameCoverEl.src = coverPath;
+
+                        // Update page title
+                        document.title = 'Qz Games | ' + displayName;
+                    } else {
+                        // Fallback: use the raw name from URL if not found in JSON
+                        const gameNameEl = document.getElementById('game-name');
+                        const loadingGameNameEl = document.getElementById('loading-game-name');
+                        if (gameNameEl) gameNameEl.textContent = gameName;
+                        if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
+                        document.title = 'Qz Games | ' + gameName;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading game data:', error);
+                    // Fallback: use the raw name from URL
+                    const gameNameEl = document.getElementById('game-name');
+                    const loadingGameNameEl = document.getElementById('loading-game-name');
+                    if (gameNameEl) gameNameEl.textContent = gameName;
+                    if (loadingGameNameEl) loadingGameNameEl.textContent = gameName;
+                    document.title = 'Qz Games | ' + gameName;
+                });
         }
 
-        if (gameUrl && gameUrl.trim() !== '') {
-            iframe.src = gameUrl;
-        }
+        // Don't set iframe.src directly - let GameMain.js handle it
+        // This prevents Flash games from being downloaded instead of played
+        // GameMain.js initGame() will properly load Flash games with Ruffle
     </script>
        <!-- Scripts from original game.html -->
     <script src="../GameMain.js"></script>
