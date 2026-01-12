@@ -457,7 +457,11 @@ async function doneloading() {
     await hideLoadingContainer();
 
     console.log('Loading completion sequence finished');
-
+    if(gameType==="flash") {
+      document.getElementById('maingamestuff').style.display = "block"
+    } else {
+      document.getElementById('maingamestuff').style.display = "none"
+    }
   } catch (error) {
     console.error('Error during loading completion:', error);
     elements.loadingcont?.style.setProperty('display', 'none');
