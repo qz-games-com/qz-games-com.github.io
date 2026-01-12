@@ -543,6 +543,16 @@
             </div>
         </div>
 
+        <!-- Legacy Compatibility Elements for GameMain.js -->
+        <div id="loadingcont" style="display: none;">
+            <img id="gameCover" src="../Q-BIG.png" alt="Game Cover" style="opacity: 0;">
+            <div id="loadan" style="opacity: 0;"></div>
+            <div id="gradientBg" style="opacity: 0;"></div>
+            <div id="options" style="display: none;"></div>
+            <h1 id="gameTitle" style="opacity: 0;"></h1>
+            <div id="errorMessage" style="display: none;"></div>
+        </div>
+
         <!-- Controller Settings (from original game.html) -->
         <div id="menusforgame">
             <div class="settings-container" id="settings-container">
@@ -751,6 +761,28 @@
             overlay.appendChild(card);
             document.body.appendChild(overlay);
         }
+
+        // Set up compatibility bridge for GameMain.js
+        // Link loading-overlay to loadingcont for backward compatibility
+        (function() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingcont = document.getElementById('loadingcont');
+
+            if (loadingOverlay && loadingcont) {
+                // When GameMain.js tries to hide loadingcont, hide loading-overlay instead
+                Object.defineProperty(loadingcont.style, 'display', {
+                    set: function(value) {
+                        if (value === 'none') {
+                            loadingOverlay.classList.add('hidden');
+                            loadingOverlay.style.display = 'none';
+                        }
+                    },
+                    get: function() {
+                        return loadingOverlay.classList.contains('hidden') ? 'none' : 'flex';
+                    }
+                });
+            }
+        })();
 
         // Hide loading overlay - will be overridden by GameMain.js
         // This is just a fallback in case GameMain.js doesn't load
