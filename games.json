@@ -132,7 +132,7 @@
         "name": "Geometry Dash",
         "gradient": "lightblue",
         "catagory": "casual",
-        "link": "../Games01/geodash",
+        "link": "../Games03/Repo4/geometry-dash-lite/",
         "type": "html"   
     },
     "motox3m": {
@@ -596,7 +596,7 @@
         "name": "Bloons Tower Defence 4",
         "gradient": "green",
         "catagory": "casual idle flash",
-        "link": "../Games02/btd4/game.swf",
+        "link": "../Games02/btd4/btd4.swf",
         "type": "flash"   
     },
     "bloons tower defence 5": {
@@ -678,7 +678,23 @@
         "catagory": "casual shooter",
         "link": "../buckshot/buckshot",
         "type": "buckshot"   
+    },
+    "retro bowl": {
+        "cover": "RetroBowl.jpg",
+        "name": "Retro Bowl",
+        "gradient": "green",
+        "catagory": "casual sports",
+        "link": "../Games03/Repo4/retro-bowl",
+        "type": "html"   
+    },
+    "boxing random": {
+        "cover": "boxingr.jpg",
+        "name": "Boxing Random",
+        "gradient": "grey",
+        "catagory": "casual sports",
+        "link": "../Games03/Repo4/boxingrandom",
+        "type": "html"   
     }
-
+    
 
 }
