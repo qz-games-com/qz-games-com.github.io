@@ -127,9 +127,9 @@
         "link": "../Games01/FUNNYBATTLE2",
         "type": "html"   
     },
-    "geometry dash": {
+    "geometry dash lite": {
         "cover": "GDASH.png",
-        "name": "Geometry Dash",
+        "name": "Geometry Dash Lite",
         "gradient": "lightblue",
         "catagory": "casual",
         "link": "../Games03/Repo4/geometry-dash-lite/",
