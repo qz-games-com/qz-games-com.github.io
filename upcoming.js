@@ -7,7 +7,13 @@
     const CONFIG = {
         JSON_FILE: './upcoming.json',
         COVERS_PATH: './covers/',
-        STEP_NAMES: ['Planned', 'In Progress', 'Ready', 'Added']
+        STEPS: {
+            1: { name: 'Planned', tooltip: 'Game request has been reviewed and is planned to be added' },
+            2: { name: 'In Progress', tooltip: 'The game is being prepared for release' },
+            3: { name: 'Ready', tooltip: 'Game is ready for release and undergoing final checks' },
+            4: { name: 'Added', tooltip: 'Game has been added to the site - go play it now!' },
+            5: { name: 'Fix in Progress', tooltip: 'Game is being fixed before release and will be available very soon' }
+        }
     };
 
     // DOM Elements
@@ -111,7 +117,7 @@
         return card;
     }
 
-    // Create progress bar with 4 steps
+    // Create progress bar with 4 or 5 steps (5 if game is being fixed)
     function createProgressBar(currentStep) {
         const container = document.createElement('div');
         container.className = 'progress-container';
@@ -119,9 +125,20 @@
         const progressBar = document.createElement('div');
         progressBar.className = 'progress-bar';
 
-        // Create 4 steps
-        for (let i = 1; i <= 4; i++) {
-            const step = createProgressStep(i, currentStep);
+        let stepOrder;
+
+        // If step is 5 (Fix in Progress), show 5 steps: Planned → In Progress → Ready → Fix in Progress → Added
+        if (currentStep === 5) {
+            stepOrder = [1, 2, 3, 5, 4]; // Added (4) is LAST
+        } else {
+            // Normal 4 steps: Planned → In Progress → Ready → Added
+            stepOrder = [1, 2, 3, 4];
+        }
+
+        // Create each step
+        for (let i = 0; i < stepOrder.length; i++) {
+            const stepNum = stepOrder[i];
+            const step = createProgressStep(stepNum, currentStep, i + 1);
             progressBar.appendChild(step);
         }
 
@@ -130,14 +147,36 @@
     }
 
     // Create individual progress step
-    function createProgressStep(stepNumber, currentStep) {
+    function createProgressStep(stepNumber, currentStep, displayPosition) {
         const stepDiv = document.createElement('div');
         stepDiv.className = 'progress-step';
 
-        // Determine step state
-        if (stepNumber < currentStep) {
+        // Determine step state based on logic
+        let isCompleted = false;
+        let isCurrent = false;
+
+        if (currentStep === 5) {
+            // When step is 5 (Fix in Progress):
+            // - Steps 1, 2, 3 are completed
+            // - Step 5 is current
+            // - Step 4 (Added) is pending (not completed, not current)
+            if (stepNumber < 5 && stepNumber !== 4) {
+                isCompleted = true;
+            } else if (stepNumber === 5) {
+                isCurrent = true;
+            }
+        } else {
+            // Normal flow (steps 1-4)
+            if (stepNumber < currentStep) {
+                isCompleted = true;
+            } else if (stepNumber === currentStep) {
+                isCurrent = true;
+            }
+        }
+
+        if (isCompleted) {
             stepDiv.classList.add('completed');
-        } else if (stepNumber === currentStep) {
+        } else if (isCurrent) {
             stepDiv.classList.add('current');
         }
 
@@ -145,21 +184,32 @@
         const circle = document.createElement('div');
         circle.className = 'step-circle';
 
-        // Show number only if not completed
-        if (stepNumber >= currentStep) {
-            const number = document.createElement('span');
-            number.className = 'step-number';
-            number.textContent = stepNumber;
-            circle.appendChild(number);
+        // Add wrench icon for step 5 (Fix in Progress)
+        if (stepNumber === 5) {
+            circle.innerHTML = '🔧';
+        } else {
+            // Show number only if not completed
+            if (!isCompleted) {
+                const number = document.createElement('span');
+                number.className = 'step-number';
+                number.textContent = displayPosition;
+                circle.appendChild(number);
+            }
         }
 
         // Step label
         const label = document.createElement('div');
         label.className = 'step-label';
-        label.textContent = CONFIG.STEP_NAMES[stepNumber - 1];
+        label.textContent = CONFIG.STEPS[stepNumber].name;
+
+        // Add tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'step-tooltip';
+        tooltip.textContent = CONFIG.STEPS[stepNumber].tooltip;
 
         stepDiv.appendChild(circle);
         stepDiv.appendChild(label);
+        stepDiv.appendChild(tooltip);
 
         return stepDiv;
     }
