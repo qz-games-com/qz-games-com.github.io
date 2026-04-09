@@ -18,9 +18,9 @@
   }
 
   function getFullscreenTarget() {
-    const { game } = getGameParams();
+    const { game, type } = getGameParams();
 
-    if (game && game.toLowerCase().includes('.swf')) {
+    if (type === 'flash' || (game && game.toLowerCase().includes('.swf'))) {
       return document.getElementById('rufflePlayer') || document.getElementById('maingamestuff');
     }
 
@@ -131,50 +131,62 @@
 
   async function initGame(url, type) {
     const container = document.getElementById('maingamestuff');
+    const modernShell = isModernGameShell();
 
     switch (type) {
       case 'flash':
+        if (container) {
+          container.style.display = 'block';
+        }
         await loadRuffle(url);
         break;
 
       case 'unity':
       case 'html':
       default: {
-        if (container) {
+        if (container && !modernShell) {
           container.style.display = 'block';
 
           if (!document.getElementById('gameiframe')) {
             container.innerHTML = '<iframe src="" class="gameiframe" id="gameiframe" allowfullscreen></iframe>';
           }
+        } else if (container) {
+          container.style.display = 'none';
         }
 
         const iframe = document.getElementById('gameiframe');
         if (iframe) {
           iframe.style.display = 'block';
-          iframe.src = url;
-        }
+          let loadingCompleted = false;
+          let loadingFallbackTimer;
+          const completeLoading = () => {
+            if (loadingCompleted) {
+              return;
+            }
 
-        const whenPageSettled = window.QZGameMainCore && window.QZGameMainCore.whenPageSettled;
-        if (typeof whenPageSettled === 'function') {
-          whenPageSettled().then(() => {
+            loadingCompleted = true;
+            if (loadingFallbackTimer) {
+              window.clearTimeout(loadingFallbackTimer);
+            }
+
             if (typeof window.doneloading === 'function') {
               window.doneloading();
             }
-          });
-        } else if (typeof window.doneloading === 'function') {
-          window.doneloading();
+          };
+
+          iframe.addEventListener('load', completeLoading, { once: true });
+          iframe.src = url;
+          loadingFallbackTimer = window.setTimeout(completeLoading, 3500);
+          break;
         }
+
+        console.error('#gameiframe not found');
       }
     }
   }
 
   function init() {
     if (window.__qzGamePlayerInitialized) {
-      return;
-    }
-
-    if (isModernGameShell()) {
-      window.__qzGamePlayerInitialized = true;
       return;
     }
 
