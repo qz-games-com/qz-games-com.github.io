@@ -73,7 +73,7 @@
     <body data-qz-theme-scripts="enabled" data-bg="mesh" data-density="cozy">
 
         <!-- Version tag -->
-        <p style="position:fixed;bottom:-3px;left:8px;font-size:10.5px;color:rgba(255,255,255,0.432);z-index:10000;">v2.5.0 (production preview)</p>
+        <p class="site-version-floating"><span data-qz-version="label">v2.5.0 (production preview)</span></p>
 
         <!-- Animated background stage -->
         <div class="bg-stage" aria-hidden="true">
@@ -409,7 +409,7 @@
                     <div class="hero-brand-glow" aria-hidden="true"></div>
                     <img src="./Q-BIG.png" alt="" class="hero-brand-logo" aria-hidden="true">
                     <div class="hero-spot-content">
-                        <div>
+                        <div class="hero-spot-main">
                             <div class="hero-eyebrow"><span class="dot" aria-hidden="true"></span> Unblocked games</div>
                             <h1 class="hero-title">Play Anywhere.</h1>
                             <div class="hero-meta">
@@ -422,6 +422,10 @@
                                 Browse Games
                             </a>
                         </div>
+                        <aside class="hero-jumpback" id="heroJumpBack" hidden aria-label="Recent games">
+                            <h3>Jump back in</h3>
+                            <div class="hero-jumpback-list" id="heroJumpBackList"></div>
+                        </aside>
                     </div>
                 </div>
 
@@ -507,16 +511,13 @@
             <!-- ── All Games (gameloader.js → #games, gameSearch.js filters) ── -->
             <!-- â”€â”€ Ad slot â”€â”€ -->
             <div class="home-ad catalog-ad">
-                <div style="width:100%;">
-                    <span class="ad-label">Advertisement</span>
-                    <ins class="adsbygoogle"
-                        style="display:block;width:100%;max-height:75px;"
-                        data-ad-client="ca-pub-1654900800235927"
-                        data-ad-slot="8171548106"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true">
-                    </ins>
-                </div>
+                <ins class="adsbygoogle"
+                    style="display:block;"
+                    data-ad-client="ca-pub-1654900800235927"
+                    data-ad-slot="8171548106"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true">
+                </ins>
             </div>
 
             <section class="section" id="games-section" aria-labelledby="gamesTitle">
@@ -565,7 +566,7 @@
 
             <!-- ── Footer ── -->
             <footer class="foot">
-                <div>© 2026 Qz Games · v2.4.1 (production)</div>
+                <div class="foot-copy">© 2026 Qz Games · <span data-qz-version="label">v2.5.0 (production preview)</span></div>
                 <div style="display:flex;gap:18px;">
                     <a href="./privacy-policy.html">Privacy</a>
                     <a href="./terms-of-service.html">Terms</a>
@@ -711,55 +712,182 @@
             }
 
             /* ---- Recently played (loads after useractivity.js is available) ---- */
+            function parseTimestamp(value) {
+                if (typeof value === 'number' && Number.isFinite(value)) return value;
+                if (typeof value === 'string') {
+                    var parsed = Date.parse(value);
+                    if (Number.isFinite(parsed)) return parsed;
+                }
+                return 0;
+            }
+
             function formatTimeAgo(ts) {
                 var diff = Date.now() - ts;
+                if (diff < 0) diff = 0;
+                if (diff < 60000) return 'just now';
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hr ago';
                 if (diff < 172800000) return 'yesterday';
                 return Math.floor(diff / 86400000) + ' days ago';
             }
 
+            function normalizeActivityEntries(data) {
+                if (!data) return [];
+
+                if (Array.isArray(data)) {
+                    return data
+                        .filter(function (entry) { return entry && entry.gameKey; })
+                        .map(function (entry) {
+                            return [String(entry.gameKey), entry];
+                        });
+                }
+
+                if (data.games && typeof data.games === 'object') {
+                    return Object.entries(data.games);
+                }
+
+                return [];
+            }
+
+            function resolveGameByKey(gamesData, key) {
+                if (!gamesData || !key) return null;
+                if (gamesData[key]) return gamesData[key];
+
+                var normalizedKey = String(key).toLowerCase();
+                var keys = Object.keys(gamesData);
+                for (var i = 0; i < keys.length; i += 1) {
+                    if (String(keys[i]).toLowerCase() === normalizedKey) {
+                        return gamesData[keys[i]];
+                    }
+                }
+                return null;
+            }
+
+            function resolveGameEntryByKey(gamesData, key) {
+                if (!gamesData || !key) {
+                    return { id: String(key || ''), game: null };
+                }
+
+                if (gamesData[key]) {
+                    return { id: String(key), game: gamesData[key] };
+                }
+
+                var normalizedKey = String(key).toLowerCase();
+                var keys = Object.keys(gamesData);
+                for (var i = 0; i < keys.length; i += 1) {
+                    if (String(keys[i]).toLowerCase() === normalizedKey) {
+                        return { id: String(keys[i]), game: gamesData[keys[i]] };
+                    }
+                }
+
+                return { id: String(key), game: null };
+            }
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function renderHeroJumpBack(entries, gamesData) {
+                var wrap = document.getElementById('heroJumpBack');
+                var list = document.getElementById('heroJumpBackList');
+                if (!wrap || !list) return;
+
+                if (!entries || entries.length === 0) {
+                    wrap.hidden = true;
+                    list.innerHTML = '';
+                    return;
+                }
+
+                list.innerHTML = '';
+                entries.slice(0, 3).forEach(function (entry) {
+                    var key = entry[0];
+                    var activity = entry[1] || {};
+                    var resolved = resolveGameEntryByKey(gamesData, key);
+                    var resolvedId = resolved.id;
+                    var game = resolved.game;
+                    var name = game && game.name ? game.name : String(key).replace(/[-_]+/g, ' ');
+                    var playedAt = parseTimestamp(activity.lastPlayed);
+                    var played = playedAt ? formatTimeAgo(playedAt) : 'played recently';
+                    var cover = game && game.cover ? './covers/' + game.cover : '';
+                    var link = './Games/game.html?id=' + encodeURIComponent(resolvedId);
+                    if (game && window.GameCatalog && typeof window.GameCatalog.getGameLink === 'function') {
+                        link = window.GameCatalog.getGameLink(game, { gameId: resolvedId });
+                    }
+
+                    var item = document.createElement('a');
+                    item.className = 'hero-jump-link';
+                    item.href = link;
+                    item.dataset.gameId = resolvedId;
+                    item.dataset.gameName = name;
+                    item.setAttribute('aria-label', 'Play ' + name);
+                    item.innerHTML =
+                        '<span class="hero-jump-thumb">' +
+                            (cover
+                                ? '<img loading="lazy" src="' + escapeHtml(cover) + '" alt="' + escapeHtml(name) + '">'
+                                : '<span class="hero-jump-thumb-fallback" aria-hidden="true">▶</span>') +
+                        '</span>' +
+                        '<span class="hero-jump-copy">' +
+                            '<span class="hero-jump-name">' + escapeHtml(name) + '</span>' +
+                            '<span class="hero-jump-meta">' + escapeHtml(played) + '</span>' +
+                        '</span>';
+                    list.appendChild(item);
+                });
+
+                wrap.hidden = false;
+            }
+
             function renderRecentlyPlayed(gamesData) {
+                if (typeof getActivityData !== 'function') return;
+
+                var data = getActivityData();
+                var entries = normalizeActivityEntries(data)
+                    .map(function (entry) {
+                        return [entry[0], entry[1], parseTimestamp(entry[1] && entry[1].lastPlayed)];
+                    })
+                    .filter(function (entry) { return entry[2] > 0; })
+                    .sort(function (a, b) { return b[2] - a[2]; });
+
+                renderHeroJumpBack(entries.map(function (entry) { return [entry[0], entry[1]]; }), gamesData);
+
                 var recSection = document.getElementById('recSection');
                 var recTrack = document.getElementById('recTrack');
-                if (!recSection || !recTrack) return;
-
-                if (typeof getActivityData !== 'function') return;
-                var data = getActivityData();
-                if (!data || !data.games || Object.keys(data.games).length === 0) return;
-
-                var entries = Object.entries(data.games)
-                    .filter(function (e) { return e[1].lastPlayed; })
-                    .sort(function (a, b) { return b[1].lastPlayed - a[1].lastPlayed; })
-                    .slice(0, 8);
-
-                if (entries.length === 0) return;
+                if (!recSection || !recTrack || entries.length === 0) return;
 
                 recTrack.innerHTML = '';
-                entries.forEach(function (entry) {
+                entries.slice(0, 8).forEach(function (entry) {
                     var key = entry[0];
-                    var activity = entry[1];
-                    var game = gamesData && gamesData[key];
-                    var cover = game ? './covers/' + game.cover : null;
-                    var name = game ? game.name : key.replace(/-/g, ' ');
-                    var link = '#';
+                    var activity = entry[1] || {};
+                    var playedAt = entry[2];
+                    var resolved = resolveGameEntryByKey(gamesData, key);
+                    var resolvedId = resolved.id;
+                    var game = resolved.game;
+                    var cover = game && game.cover ? './covers/' + game.cover : null;
+                    var name = game && game.name ? game.name : String(key).replace(/[-_]+/g, ' ');
+                    var link = './Games/game.html?id=' + encodeURIComponent(resolvedId);
                     if (game && window.GameCatalog && typeof window.GameCatalog.getGameLink === 'function') {
-                        link = window.GameCatalog.getGameLink(game, { gameId: key });
+                        link = window.GameCatalog.getGameLink(game, { gameId: resolvedId });
                     }
-                    var played = formatTimeAgo(activity.lastPlayed);
-                    var pct = Math.min(100, (activity.playCount || 1) * 12);
+                    var played = formatTimeAgo(playedAt);
+                    var pct = Math.min(100, Number(activity.playCount || 1) * 12);
 
                     var card = document.createElement('a');
                     card.className = 'r-card';
                     card.href = link;
                     card.innerHTML =
                         '<div class="r-thumb">' +
-                            (cover ? '<img loading="lazy" src="' + cover + '" alt="' + name + '">' : '<div style="width:100%;height:100%;background:var(--bg-2);border-radius:inherit;"></div>') +
+                            (cover
+                                ? '<img loading="lazy" src="' + escapeHtml(cover) + '" alt="' + escapeHtml(name) + '">'
+                                : '<div style="width:100%;height:100%;background:var(--bg-2);border-radius:inherit;"></div>') +
                             '<div class="r-play"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>' +
                         '</div>' +
                         '<div class="r-body">' +
-                            '<div class="r-name">' + name + '</div>' +
-                            '<div class="r-meta">' + played + '</div>' +
+                            '<div class="r-name">' + escapeHtml(name) + '</div>' +
+                            '<div class="r-meta">' + escapeHtml(played) + '</div>' +
                             '<div class="r-progress"><span style="width:' + pct + '%"></span></div>' +
                         '</div>';
                     recTrack.appendChild(card);
@@ -767,7 +895,6 @@
 
                 recSection.style.display = '';
 
-                /* Chevron scroll */
                 var prev = document.getElementById('recPrev');
                 var next = document.getElementById('recNext');
                 if (prev) prev.addEventListener('click', function () { recTrack.scrollBy({ left: -recTrack.clientWidth * 0.8, behavior: 'smooth' }); });
