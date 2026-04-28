@@ -844,7 +844,6 @@
         "name": "Five Nights At Epsteins",
         "gradient": "grey",
         "catagory": "casual",
-        "detailsPage": "./Games/five-nights-at-epstiens.html",
         "link": "../Games04/fnae/",
         "type": "html"   
     }
