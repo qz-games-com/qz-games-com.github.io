@@ -64,6 +64,13 @@
                 src: 'scripts/aurora-theme.js'
             }
         },
+        cyberpunk: {
+            css: 'styles/cyberpunk.css',
+            script: {
+                id: 'theme-script-cyberpunk',
+                src: 'scripts/cyberpunk-theme.js'
+            }
+        },
         'obsidian-gold': { css: 'styles/obsidian-gold.css' },
         'rose-noir': { css: 'styles/rose-noir.css' },
         matcha: { css: 'styles/matcha.css' },
@@ -77,7 +84,8 @@
     };
 
     const THEME_VARIANTS = {
-        aurora: ['simple', 'simulated']
+        aurora: ['simple', 'simulated'],
+        cyberpunk: ['static', 'video']
     };
 
     const BACKGROUND_MAP = {
