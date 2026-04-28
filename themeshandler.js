@@ -245,12 +245,29 @@
         }
     }
 
+    function isNoteElementVisible(noteContainer) {
+        if (!noteContainer) {
+            return false;
+        }
+
+        return window.getComputedStyle(noteContainer).display !== 'none';
+    }
+
     function isThemeLoadingNoteVisible() {
         const noteContainer = document.getElementById('notafication');
         return Boolean(
             noteContainer
             && noteContainer.dataset.noteStyle === 'theme-loading'
-            && noteContainer.style.display !== 'none'
+            && isNoteElementVisible(noteContainer)
+        );
+    }
+
+    function isNonThemeNoteVisible() {
+        const noteContainer = document.getElementById('notafication');
+        return Boolean(
+            noteContainer
+            && noteContainer.dataset.noteStyle !== 'theme-loading'
+            && isNoteElementVisible(noteContainer)
         );
     }
 
@@ -267,14 +284,20 @@
                 return;
             }
 
-            if (typeof closeNote === 'function') {
-                closeNote();
+            if (!isThemeLoadingNoteVisible()) {
+                return;
+            }
+
+            if (window.QZNote && typeof window.QZNote.closeType === 'function') {
+                window.QZNote.closeType('theme-loading');
+            } else if (typeof closeNote === 'function') {
+                closeNote({ type: 'theme-loading', confirmCookie: false });
             }
         }, 1000);
     }
 
     function showThemeLoadingNote() {
-        if (isThemeLoadingNoteVisible()) {
+        if (isThemeLoadingNoteVisible() || isNonThemeNoteVisible()) {
             return;
         }
 
